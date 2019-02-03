@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Row, Steps, Button } from "antd";
 import LanguageForm from "../components/LanguageForm";
+import InfoForm from "../components/InfoForm";
 
 const Step = Steps.Step;
 
@@ -25,7 +26,7 @@ class UpdateAccountPage extends Component {
     },
     {
       title: "Info",
-      content: "Info",
+      content: <InfoForm formData={formData} formObject={this.props.form} />,
       newLang: true
     },
     {
