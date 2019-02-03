@@ -3,7 +3,6 @@ import "./App.css";
 import "antd/dist/antd.css";
 import Layout from "antd/lib/layout";
 import HomePage from "./pages/HomePage";
-
 const { Content, Footer } = Layout;
 
 class App extends Component {
