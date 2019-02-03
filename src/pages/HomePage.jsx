@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import Button from "antd/lib/button";
-import { Row, Col } from "antd";
+import { Row, Col, Button } from "antd";
 
 class HomePage extends Component {
   state = {};
