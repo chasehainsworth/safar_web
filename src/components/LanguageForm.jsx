@@ -20,7 +20,7 @@ class LanguageForm extends StepFormComponent {
           help={noLangError || ""}
         >
           {getFieldDecorator("language", {
-            rules: [{ required: true, message: "Please choose a language!" }]
+            rules: [{ required: true }]
           })(
             <Select
               placeholder={!this.props.formData["Language"] && "Language"}

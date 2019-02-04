@@ -50,7 +50,8 @@ class UpdateAccountPage extends Component {
 
   state = {
     currentStep: 0,
-    isAnotherLang: false
+    isAnotherLang: false,
+    allSteps: this.steps
   };
 
   next() {
@@ -64,7 +65,11 @@ class UpdateAccountPage extends Component {
   }
 
   addLang() {
-    this.setState({ currentStep: 0, isAnotherLang: true });
+    this.setState({
+      currentStep: 0,
+      isAnotherLang: true,
+      allSteps: this.steps.filter(s => s.newLang)
+    });
   }
 
   handleSubmit = e => {
@@ -74,7 +79,11 @@ class UpdateAccountPage extends Component {
         for (let v in values) {
           formData[v] = values[v];
         }
-        this.next();
+        if (this.state.currentStep < this.state.allSteps.length - 1) {
+          this.next();
+        } else {
+          console.log(formData);
+        }
       }
     });
   };
@@ -82,27 +91,25 @@ class UpdateAccountPage extends Component {
   render() {
     const { currentStep: current } = this.state;
 
-    const allSteps = !this.state.isAnotherLang
-      ? this.steps
-      : this.steps.filter(s => s.newLang);
-
     const { getFieldsError } = this.props.form;
 
     return (
       <Form onSubmit={this.handleSubmit}>
         <Row style={{ margin: 20 }}>
           <Steps current={current}>
-            {allSteps.map(item => (
+            {this.state.allSteps.map(item => (
               <Step key={item.title} title={item.title} />
             ))}
           </Steps>
         </Row>
-        <div className='steps-content'>{allSteps[current].content}</div>
+        <div className='steps-content'>
+          {this.state.allSteps[current].content}
+        </div>
         <div className='steps-action'>
           {// TODO: this will disable next button if any form data not valid.
           // change to each page.
           // TODO: button enabled on second language pass.
-          current < allSteps.length - 1 && (
+          current < this.state.allSteps.length - 1 && (
             <Button
               disabled={hasErrors(getFieldsError())}
               type='primary'
@@ -111,12 +118,12 @@ class UpdateAccountPage extends Component {
               Next
             </Button>
           )}
-          {current === allSteps.length - 1 && (
+          {current === this.state.allSteps.length - 1 && (
             <Button htmlType='submit' type='primary'>
               Done
             </Button>
           )}
-          {current === allSteps.length - 1 && (
+          {current === this.state.allSteps.length - 1 && (
             <Button
               style={{ marginLeft: 8 }}
               onClick={() => this.addLang()}
