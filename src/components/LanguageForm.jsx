@@ -1,19 +1,16 @@
 import React, { Component } from "react";
+import StepFormComponent from "./StepFormComponent";
 import { Form, Select } from "antd";
 
 const languages = ["English", "Farsi", "Arabic", "French"];
 
-let formObject = {};
-
-class LanguageForm extends Component {
-  constructor(props) {
-    super(props);
-    formObject = props.formObject;
-    this.state = {};
-  }
-
+class LanguageForm extends StepFormComponent {
   render() {
-    const { getFieldDecorator, getFieldError, isFieldTouched } = formObject;
+    const {
+      getFieldDecorator,
+      getFieldError,
+      isFieldTouched
+    } = this.getFormObject();
 
     const noLangError = isFieldTouched("language") && getFieldError("language");
     return (
@@ -25,7 +22,10 @@ class LanguageForm extends Component {
           {getFieldDecorator("language", {
             rules: [{ required: true, message: "Please choose a language!" }]
           })(
-            <Select placeholder='Language' style={{ width: 120 }}>
+            <Select
+              placeholder={!this.props.formData["Language"] && "Language"}
+              style={{ width: 120 }}
+            >
               {languages.map(l => (
                 <Select.Option key={l} value={l}>
                   {l}

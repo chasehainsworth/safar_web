@@ -12,16 +12,15 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-class UpdateAccountPage extends Component {
-  componentDidMount() {
-    // To disabled next button at the beginning.
-    this.props.form.validateFields();
-  }
+let formData = {};
 
+class UpdateAccountPage extends Component {
   steps = [
     {
       title: "Language",
-      content: <LanguageForm formObject={this.props.form} />, // contents will be components with the forms
+      content: (
+        <LanguageForm formData={formData} formObject={this.props.form} />
+      ), // contents will be components with the forms
       newLang: true // if this page is necessary for setting 2nd language
     },
     {
@@ -68,6 +67,18 @@ class UpdateAccountPage extends Component {
     this.setState({ currentStep: 0, isAnotherLang: true });
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        for (let v in values) {
+          formData[v] = values[v];
+        }
+        this.next();
+      }
+    });
+  };
+
   render() {
     const { currentStep: current } = this.state;
 
@@ -95,7 +106,7 @@ class UpdateAccountPage extends Component {
             <Button
               disabled={hasErrors(getFieldsError())}
               type='primary'
-              onClick={() => this.next()}
+              htmlType='submit'
             >
               Next
             </Button>
