@@ -6,10 +6,10 @@ import InfoForm from "../components/InfoForm";
 const Step = Steps.Step;
 
 function hasErrors(fieldsError) {
-  console.log(
-    "Errors: ",
-    Object.keys(fieldsError).some(field => fieldsError[field])
-  );
+  // console.log(
+  //   "Errors: ",
+  //   Object.keys(fieldsError).some(field => fieldsError[field])
+  // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
