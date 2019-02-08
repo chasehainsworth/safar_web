@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Form, Select } from "antd";
 
