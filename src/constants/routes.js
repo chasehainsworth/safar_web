@@ -4,3 +4,4 @@ export const HOME = "/";
 export const ACCOUNT = "/Account";
 export const UPDATE_ACC = "/UpdateAccount";
 export const PASSWORD_FORGET = "/pw-forget";
+export const RESOURCES = "/Resources";

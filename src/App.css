@@ -6,6 +6,16 @@
   height: 100%;
 }
 
+.logo {
+  width: 8rem;
+  font-size: 22px;
+  font-family: "Avenir", sans-serif;
+  font-weight: bold;
+  color: whitesmoke;
+  margin: 0 0 1rem 2rem;
+  float: left;
+}
+
 /* HomePage */
 .title {
   font-size: 10rem;
