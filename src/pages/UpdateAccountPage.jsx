@@ -66,6 +66,8 @@ class UpdateAccountPage extends Component {
   }
 
   addLang() {
+    // TODO: submit formData to db here
+    console.log(formData);
     this.setState({
       currentStep: 0,
       isAnotherLang: true,
@@ -83,6 +85,7 @@ class UpdateAccountPage extends Component {
         if (this.state.currentStep < this.state.allSteps.length - 1) {
           this.next();
         } else {
+          // TODO: submit formData to db here
           console.log(formData);
         }
       }

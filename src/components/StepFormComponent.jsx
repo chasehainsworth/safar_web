@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 
 class StepFormComponent extends Component {
   constructor(props) {
