@@ -86,7 +86,12 @@ class UpdateAccountPage extends Component {
         if (this.state.currentStep < this.state.allSteps.length - 1) {
           this.next();
         } else {
-          // TODO: submit formData to db here
+          // TODO: currently submits data by each field name to
+          //       a collection named by the user's uid.
+          //       Assumes 1 user per provider. Could name by provider instead?
+          this.props.firebase
+            .provider(this.props.firebase.auth.currentUser.uid)
+            .set({ ...formData }, { merge: true });
           console.log(formData);
         }
       }

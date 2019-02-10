@@ -24,9 +24,23 @@ class SignUpPage extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
+      const { username, email, passOne } = values;
       if (!fieldErr) {
         this.props.firebase
-          .doCreateUserWithEmailAndPassword(values.email, values.passOne)
+          .doCreateUserWithEmailAndPassword(email, passOne)
+          .then(authUser => {
+            // Create a user in your Firebase realtime database
+            return this.props.firebase.user(authUser.user.uid).set(
+              {
+                username,
+                email
+              },
+              { merge: true }
+            );
+          })
+          // .then(() => {
+          //   return this.props.firebase.doSendEmailVerification();
+          // })
           .then(authUser => {
             console.log("Success:", values.username);
             this.props.history.push(ROUTES.HOME);
