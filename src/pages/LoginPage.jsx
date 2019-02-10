@@ -14,7 +14,9 @@ function hasErrors(fieldsError) {
 }
 
 class LoginPage extends Component {
-  state = {};
+  state = {
+    forgotPassword: false
+  };
 
   componentDidMount() {
     // To disabled next button at the beginning.
@@ -25,17 +27,36 @@ class LoginPage extends Component {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
       if (!fieldErr) {
-        this.props.firebase
-          .doSignInWithEmailAndPassword(values.email, values.password)
-          .then(() => {
-            console.log("Success:", values.email);
-            this.props.history.push(ROUTES.HOME);
-          })
-          .catch(firebaseErr => {
-            console.log("Failed:", firebaseErr);
-          });
+        if (this.state.forgotPassword) {
+          this.submitResetPW(values);
+        } else {
+          this.submitLogin(values);
+        }
       }
     });
+  };
+
+  submitLogin = values => {
+    this.props.firebase
+      .doSignInWithEmailAndPassword(values.email, values.password)
+      .then(() => {
+        console.log("Success:", values.email);
+        this.props.history.push(ROUTES.HOME);
+      })
+      .catch(firebaseErr => {
+        console.log("Failed:", firebaseErr);
+      });
+  };
+
+  submitResetPW = values => {
+    this.props.firebase
+      .doPasswordReset(values.email)
+      .then(() => {
+        this.setState({ forgotPassword: false });
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
   };
 
   render() {
@@ -65,30 +86,39 @@ class LoginPage extends Component {
             />
           )}
         </Form.Item>
-        <Form.Item
-          validateStatus={noPassOneError ? "error" : ""}
-          help={noPassOneError || ""}
-        >
-          {getFieldDecorator("password", {
-            rules: [
-              { required: true, message: "Please input a password!" },
-              { validator: this.validateToNextPassword }
-            ]
-          })(
-            <Input
-              prefix={<Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Password'
-              type='password'
-            />
-          )}
-        </Form.Item>
+        {!this.state.forgotPassword && (
+          <Form.Item
+            validateStatus={noPassOneError ? "error" : ""}
+            help={noPassOneError || ""}
+          >
+            {getFieldDecorator("password", {
+              rules: [
+                { required: true, message: "Please input a password!" },
+                { validator: this.validateToNextPassword }
+              ]
+            })(
+              <Input
+                prefix={
+                  <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                placeholder='Password'
+                type='password'
+              />
+            )}
+          </Form.Item>
+        )}
         <Button
           htmlType='submit'
           type='primary'
           disabled={hasErrors(getFieldsError())}
         >
-          Login
+          {this.state.forgotPassword ? "Send reset password email" : "Login"}
         </Button>
+        {!this.state.forgotPassword && (
+          <a onClick={() => this.setState({ forgotPassword: true })}>
+            Forgot Password?
+          </a>
+        )}
       </Form>
     );
   }

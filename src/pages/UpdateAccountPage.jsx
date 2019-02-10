@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Row, Steps, Button } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
+import { withAuthorization } from "../components/Firebase";
 
 const Step = Steps.Step;
 
@@ -151,4 +152,7 @@ const WrappedUpdateAccountPage = Form.create({ name: "update_account" })(
   UpdateAccountPage
 );
 
-export default WrappedUpdateAccountPage;
+// If not logged in, redirects to login page
+const condition = authUser => !!authUser;
+
+export default withAuthorization(condition)(WrappedUpdateAccountPage);

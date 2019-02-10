@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Button } from "antd";
 import { AuthUserContext } from "../components/Firebase";
-import SignOutButton from "../components/Firebase/SignOutButton";
+import SignOutButton from "../components/Firebase/Session/SignOutButton";
 
 class HomePage extends Component {
   state = {};
@@ -12,9 +12,15 @@ class HomePage extends Component {
         <h2 style={{ marginBottom: 10 }}>Provider Portal</h2>
         <Row type='flex' justify='center' gutter={8}>
           <Col xs={24} sm={6} md={4} lg={3} xl={2}>
-            <Button type='primary' size='large'>
-              Request Access
-            </Button>
+            <AuthUserContext.Consumer>
+              {authUser =>
+                !authUser && (
+                  <Button type='primary' size='large'>
+                    Request Access
+                  </Button>
+                )
+              }
+            </AuthUserContext.Consumer>
           </Col>
           <Col xs={24} sm={4} md={4} lg={3} xl={4}>
             <AuthUserContext.Consumer>
