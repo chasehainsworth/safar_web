@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import { Form, Row, Steps, Button } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
+import { withAuthorization } from "../components/Firebase";
 
 const Step = Steps.Step;
 
 function hasErrors(fieldsError) {
-  console.log(
-    "Errors: ",
-    Object.keys(fieldsError).some(field => fieldsError[field])
-  );
+  // console.log(
+  //   "Errors: ",
+  //   Object.keys(fieldsError).some(field => fieldsError[field])
+  // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
@@ -85,7 +86,12 @@ class UpdateAccountPage extends Component {
         if (this.state.currentStep < this.state.allSteps.length - 1) {
           this.next();
         } else {
-          // TODO: submit formData to db here
+          // TODO: currently submits data by each field name to
+          //       a collection named by the user's uid.
+          //       Assumes 1 user per provider. Could name by provider instead?
+          this.props.firebase
+            .provider(this.props.firebase.auth.currentUser.uid)
+            .set({ ...formData }, { merge: true });
           console.log(formData);
         }
       }
@@ -151,4 +157,7 @@ const WrappedUpdateAccountPage = Form.create({ name: "update_account" })(
   UpdateAccountPage
 );
 
-export default WrappedUpdateAccountPage;
+// If not logged in, redirects to login page
+const condition = authUser => !!authUser;
+
+export default withAuthorization(condition)(WrappedUpdateAccountPage);
