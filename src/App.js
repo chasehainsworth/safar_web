@@ -14,6 +14,7 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import Menu from "antd/lib/menu";
+import TopMenu from "./components/TopMenu"
 
 const { Content, Footer, Header } = Layout;
 
@@ -21,12 +22,7 @@ class App extends Component {
   render() {
     return (
       <Layout className='layout'>
-        <Header>
-          <div className='logo'>S A F A R</div>
-          <Menu theme='dark' mode='horizontal' style={{ height: "25px" }}>
-            <Menu.Item key='1'>Account</Menu.Item>
-          </Menu>
-        </Header>
+        <TopMenu />
         <Content>
           <Switch>
             <Route exact path='/' component={HomePage} />
