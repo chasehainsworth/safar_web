@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Row, Col, Button } from "antd";
 import { AuthUserContext } from "../components/Firebase";
 import SignOutButton from "../components/Firebase/Session/SignOutButton";
@@ -26,9 +27,11 @@ class HomePage extends Component {
             <AuthUserContext.Consumer>
               {authUser =>
                 !authUser ? (
-                  <Button type='primary' size='large' href='/Login'>
+                  <Link to="/Login">
+                  <Button type='primary' size='large'>
                     Login
                   </Button>
+                  </Link>
                 ) : (
                   <SignOutButton />
                 )
