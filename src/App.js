@@ -13,10 +13,9 @@ import UpdateAccountPage from "./pages/UpdateAccountPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import ResourcesPage from "./pages/ResourcesPage";
-import Menu from "antd/lib/menu";
 import TopMenu from "./components/TopMenu"
 
-const { Content, Footer, Header } = Layout;
+const { Content, Footer } = Layout;
 
 class App extends Component {
   render() {

@@ -3,6 +3,7 @@ import { Form, Row, Steps, Button } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization } from "../components/Firebase";
+import SocialForm from "../components/SocialForm";
 
 const Step = Steps.Step;
 
@@ -32,7 +33,7 @@ class UpdateAccountPage extends Component {
     },
     {
       title: "Socials",
-      content: "Socials"
+      content: <SocialForm formData={formData} formObject={this.props.form} />
     },
     {
       title: "Location",
