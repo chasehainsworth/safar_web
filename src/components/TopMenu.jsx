@@ -16,7 +16,7 @@ class TopMenu extends Component {
                     {authUser =>
                         authUser && (
                             <Link to="/Account">
-                                <Menu.Item key='1' style={{ marginTop: "7px" }}>Account</Menu.Item>
+                                <Menu.Item key='1' style={{ marginTop: "8px", marginLeft: "200px"}}>Account</Menu.Item>
                             </Link>
                         )
                     }

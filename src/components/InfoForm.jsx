@@ -1,23 +1,24 @@
-import React, { Component } from "react";
+import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Row, Col, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 
 class InfoForm extends StepFormComponent {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const { getFieldDecorator, getFieldError, isFieldTouched } = this.props.formObject;
+        const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
+        const descError = isFieldTouched("desc") && getFieldError("desc");
+        const phoneError = isFieldTouched("phone") && getFieldError("phone");
+
         return (
             <div>
                 <Row type="flex" justify="start" gutter={32}>
                     <Col offset={10}>Organization Name: </Col>
                     <Col>
                         <Form.Item
-                        validateStatus ={isFieldTouched("orgName") && getFieldError("orgName") ? "error" : ""}
-                        help ={isFieldTouched("orgName") && getFieldError("orgName") || ""}>
+                        validateStatus ={orgNameError ? "error" : ""}
+                        help ={orgNameError || ""}>
                             {getFieldDecorator("orgName", {
                             rules: [{ required: true, message: "Enter organization name" }]
                             })(
@@ -30,8 +31,8 @@ class InfoForm extends StepFormComponent {
                     <Col offset={10}>Description: </Col>
                     <Col>
                         <Form.Item
-                        validateStatus = {isFieldTouched("desc") && getFieldError("desc") ? "error" : ""}
-                        help = {isFieldTouched("desc") && getFieldError("desc") || ""}>
+                        validateStatus = {descError? "error" : ""}
+                        help = {descError || ""}>
                             {getFieldDecorator("desc", {
                             rules: [{ required: true, message: "Enter organization description"}]
                             })(
@@ -44,8 +45,8 @@ class InfoForm extends StepFormComponent {
                     <Col offset={10}>Phone Number: </Col>
                     <Col>
                         <Form.Item
-                        validateStatus = {isFieldTouched("phone") && getFieldError("phone") ? "error" : ""}
-                        help = {isFieldTouched("phone") && getFieldError("phone") || ""}>
+                        validateStatus = {phoneError ? "error" : ""}
+                        help = {phoneError || ""}>
                             {getFieldDecorator("phone", {
                             rules: [{ required: true, message: "Enter phone number"}]
                             })(
