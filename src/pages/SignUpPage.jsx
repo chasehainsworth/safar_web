@@ -158,8 +158,6 @@ class SignUpPage extends Component {
   }
 }
 
-const WrappedSignUpPage = Form.create({ name: "signup" })(
-  withRouter(withFirebase(SignUpPage))
-);
+const WrappedSignUpPage = Form.create({ name: "signup" })(SignUpPage);
 
-export default WrappedSignUpPage;
+export default withRouter(withFirebase(WrappedSignUpPage));
