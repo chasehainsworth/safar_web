@@ -2,6 +2,7 @@ import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Row, Col, Form, Input, Icon } from "antd";
 
+const initial = ""
 const whatsapp = () => (
   <svg
     t='1550193389257'
@@ -67,7 +68,9 @@ class SocialForm extends StepFormComponent {
           <Col>Facebook: </Col>
           <Col>
             <Form.Item>
-              {getFieldDecorator("facebook")(<Input style={{ width: 120 }} />)}
+              {getFieldDecorator("facebook", { initialValue: initial })(
+                <Input style={{ width: 120 }} />
+              )}
             </Form.Item>
           </Col>
         </Row>
@@ -82,7 +85,9 @@ class SocialForm extends StepFormComponent {
           <Col>WhatsApp: </Col>
           <Col>
             <Form.Item>
-              {getFieldDecorator("whatsapp")(<Input style={{ width: 120 }} />)}
+              {getFieldDecorator("whatsapp", { initialValue: initial })(
+                <Input style={{ width: 120 }} />
+              )}
             </Form.Item>
           </Col>
         </Row>
@@ -97,7 +102,9 @@ class SocialForm extends StepFormComponent {
           <Col>Twitter: </Col>
           <Col>
             <Form.Item>
-              {getFieldDecorator("twitter")(<Input style={{ width: 120 }} />)}
+              {getFieldDecorator("twitter", { initialValue: initial })(
+                <Input style={{ width: 120 }} />
+              )}
             </Form.Item>
           </Col>
         </Row>
