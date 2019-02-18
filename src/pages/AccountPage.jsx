@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Row, Button } from "antd";
+import { Link } from "react-router-dom";
 
 import { withAuthorization } from "../components/Firebase";
+import SignOutButton from "../components/Firebase/Session/SignOutButton";
 
 class AccountPage extends Component {
   state = {
@@ -18,9 +20,11 @@ class AccountPage extends Component {
           </Button>
         </Row>
         <Row className='spaced'>
-          <Button type='default' size='large'>
-            Update All Account Information
-          </Button>
+          <Link to='/UpdateAccount'>
+            <Button type='default' size='large'>
+              Update All Account Information
+            </Button>
+          </Link>
         </Row>
         <Row className='spaced'>
           <Button type='default' size='large'>
@@ -28,9 +32,7 @@ class AccountPage extends Component {
           </Button>
         </Row>
         <Row>
-          <Button type='primary' size='large'>
-            Logout
-          </Button>
+          <SignOutButton />
         </Row>
       </div>
     );

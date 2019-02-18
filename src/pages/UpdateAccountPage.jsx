@@ -4,6 +4,7 @@ import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization } from "../components/Firebase";
 import SocialForm from "../components/SocialForm";
+import CategoriesForm from "../components/CategoriesForm";
 
 const Step = Steps.Step;
 
@@ -36,12 +37,10 @@ class UpdateAccountPage extends Component {
       content: <SocialForm formData={formData} formObject={this.props.form} />
     },
     {
-      title: "Location",
-      content: "Location"
-    },
-    {
       title: "Categories",
-      content: "Categories"
+      content: (
+        <CategoriesForm formData={formData} formObject={this.props.form} />
+      )
     },
     {
       title: "Finished",
