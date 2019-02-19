@@ -4,6 +4,8 @@ import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 
+const initial = "";
+
 class InfoForm extends StepFormComponent {
   state = {
     previewVisible: false,
@@ -108,12 +110,13 @@ class InfoForm extends StepFormComponent {
     } = this.props.formObject;
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
     const descError = isFieldTouched("desc") && getFieldError("desc");
+    const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
 
     return (
       <div>
         <Row type='flex' justify='start' gutter={32}>
-          <Col offset={10}>Organization Name: </Col>
+          <Col offset={9}>Organization Name: </Col>
           <Col>
             <Form.Item
               validateStatus={orgNameError ? "error" : ""}
@@ -121,12 +124,12 @@ class InfoForm extends StepFormComponent {
             >
               {getFieldDecorator("orgName", {
                 rules: [{ required: true, message: "Enter organization name" }]
-              })(<Input style={{ width: 120 }} />)}
+              })(<Input style={{ width: 240 }} />)}
             </Form.Item>
           </Col>
         </Row>
         <Row type='flex' justify='start' gutter={32}>
-          <Col offset={10}>Description: </Col>
+          <Col offset={9}>Description: </Col>
           <Col>
             <Form.Item
               validateStatus={descError ? "error" : ""}
@@ -139,14 +142,14 @@ class InfoForm extends StepFormComponent {
               })(
                 <TextArea
                   autosize={{ minRows: 2, maxRows: 4 }}
-                  style={{ width: 120 }}
+                  style={{ width: 240 }}
                 />
               )}
             </Form.Item>
           </Col>
         </Row>
         <Row type='flex' justify='start' gutter={32}>
-          <Col offset={10}>Phone Number: </Col>
+          <Col offset={9}>Phone Number: </Col>
           <Col>
             <Form.Item
               validateStatus={phoneError ? "error" : ""}
@@ -156,10 +159,10 @@ class InfoForm extends StepFormComponent {
                 initialValue: "+30",
                 rules: [
                   { required: true, message: "Enter phone number" },
-                  { min: 10 },
+                  { min: 9 },
                   { validator: this.checkPassword }
                 ]
-              })(<Input style={{ width: 120 }} />)}
+              })(<Input style={{ width: 240 }} />)}
             </Form.Item>
           </Col>
         </Row>
@@ -191,12 +194,27 @@ class InfoForm extends StepFormComponent {
           </Col>
         </Row>
         <Row type='flex' justify='start' gutter={32}>
-          <Col offset={10}>Any special notes regarding availability?</Col>
+          <Col offset={9}>Hours: </Col>
+          <Col>
+            <Form.Item
+              validateStatus={hoursError ? "error" : ""}
+              help={hoursError || ""}
+            >
+              {getFieldDecorator("hours", {
+                rules: [{ required: true, message: "Enter hours" }]
+              })(<Input style={{ width: 240 }} />)}
+            </Form.Item>
+          </Col>
         </Row>
         <Row type='flex' justify='start' gutter={32}>
-          <Col offset={10}>
+          <Col offset={9}>Any special notes regarding availability?</Col>
+        </Row>
+        <Row type='flex' justify='start' gutter={32}>
+          <Col offset={9}>
             <Form.Item>
-              <Input style={{ width: 120 }} />
+              {getFieldDecorator("availabilityNote")(
+                <Input style={{ width: 240 }} />
+              )}
             </Form.Item>
           </Col>
         </Row>
