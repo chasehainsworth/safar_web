@@ -1,6 +1,7 @@
 import app from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -24,6 +25,7 @@ class Firebase {
 
     this.auth = app.auth();
     this.db = app.firestore();
+    this.storage = app.storage();
     //this.db.settings({ timestampsInSnapshots: true });
   }
 
@@ -96,6 +98,10 @@ class Firebase {
   service = uid => this.db.doc(`services/${uid}`);
 
   services = () => this.db.collection("services");
+
+  storageRef = () => this.storage.ref();
+
+  imageUploads = () => this.storageRef().child("uploads/images");
 }
 
 export default Firebase;
