@@ -166,31 +166,32 @@ class InfoForm extends StepFormComponent {
             </Form.Item>
           </Col>
         </Row>
-        <div>
-          <Upload
-            accept='image/*'
-            action=''
-            listType='picture-card'
-            fileList={fileList}
-            onPreview={this.handlePreview}
-            onChange={this.handleChange}
-            beforeUpload={this.firebaseUpload}
-            onRemove={this.handleRemove}
-          >
-            {fileList.length >= 3 ? null : uploadButton}
-          </Upload>
-          <Modal
-            visible={previewVisible}
-            footer={null}
-            onCancel={this.handleCancel}
-          >
-            <img alt='example' style={{ width: "100%" }} src={previewImage} />
-          </Modal>
-        </div>
-        <Row type='flex' justify='start' gutter={32} className='spaced'>
-          <Col offset={10}>Hours: </Col>
-          <Col>
-            <Form.Item />
+        <Row type='flex' justify='start' gutter={32}>
+          <Col offset={9} style={{ marginBottom: 10 }}>
+            Upload Images:{" "}
+          </Col>
+        </Row>
+        <Row type='flex' justify='start' gutter={32}>
+          <Col offset={9}>
+            <Upload
+              accept='image/*'
+              action=''
+              listType='picture-card'
+              fileList={fileList}
+              onPreview={this.handlePreview}
+              onChange={this.handleChange}
+              beforeUpload={this.firebaseUpload}
+              onRemove={this.handleRemove}
+            >
+              {fileList.length >= 3 ? null : uploadButton}
+            </Upload>
+            <Modal
+              visible={previewVisible}
+              footer={null}
+              onCancel={this.handleCancel}
+            >
+              <img alt='example' style={{ width: "100%" }} src={previewImage} />
+            </Modal>
           </Col>
         </Row>
         <Row type='flex' justify='start' gutter={32}>
