@@ -26,6 +26,7 @@ class InfoForm extends StepFormComponent {
     } = this.props.formObject;
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
     const descError = isFieldTouched("desc") && getFieldError("desc");
+    const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
 
     return (
@@ -81,12 +82,21 @@ class InfoForm extends StepFormComponent {
             </Form.Item>
           </Col>
         </Row>
-        <Row type='flex' justify='start' gutter={32} className='spaced'>
-          <Col offset={10}>Hours: </Col>
-          <Col>
-            <Form.Item />
-          </Col>
-        </Row>
+        <Row type="flex" justify="start" gutter={32} className="spaced">
+            <Col offset={10}>Hours: </Col>
+            <Col>
+                <Form.Item
+                validateStatus = {hoursError ? "error" : ""}
+                help = {hoursError || ""}>
+                    {getFieldDecorator("hours", {
+                    rules: [{ required: true, message: "Enter hours"}]
+                    })(
+                    <Input style={{width: 120}} />
+                    )
+                    }
+                </Form.Item>
+            </Col>
+        </Row> 
         <Row type='flex' justify='start' gutter={32}>
           <Col offset={10}>Any special notes regarding availability?</Col>
         </Row>

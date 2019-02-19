@@ -89,6 +89,7 @@ class UpdateAccountPage extends Component {
           // TODO: currently submits data by each field name to
           //       a collection named by the user's uid.
           //       Assumes 1 user per provider. Could name by provider instead?
+          console.log(formData)
           this.props.firebase
             .provider(this.props.firebase.auth.currentUser.uid)
             .set({ ...formData }, { merge: true });
