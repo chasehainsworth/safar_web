@@ -45,7 +45,7 @@ class UpdateAccountPage extends Component {
     {
       title: "Finished",
       content:
-        "You're all done. Please try to fill out your information in as many languages as possible.",
+        <div style={{paddingTop: '60px'}}>You're all done. Please try to fill out your information in as many languages as possible.</div>,
       newLang: true
     }
   ];
