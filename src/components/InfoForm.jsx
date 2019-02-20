@@ -80,7 +80,7 @@ class InfoForm extends StepFormComponent {
     return false;
   };
 
-  checkPassword = (rule, value, callback) => {
+  checkPhoneNumber = (rule, value, callback) => {
     if (value) {
       for (const i of value) {
         if (i === "(" || i === ")" || i === " " || i === "+" || i.match(/\d/)) {
@@ -112,28 +112,31 @@ class InfoForm extends StepFormComponent {
     const descError = isFieldTouched("desc") && getFieldError("desc");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
+    const emailError = isFieldTouched("email") && getFieldError("email");
+    const imageError = isFieldTouched("image") && getFieldError("image");
 
+    const formItemLayout = {
+        labelCol: { offset: 5, span: 6 },
+        wrapperCol: { span: 6 },
+      };
+    
     return (
       <div>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>Organization Name: </Col>
-          <Col>
             <Form.Item
+              {...formItemLayout}
               validateStatus={orgNameError ? "error" : ""}
               help={orgNameError || ""}
+              label="Organization Name"
             >
               {getFieldDecorator("orgName", {
                 rules: [{ required: true, message: "Enter organization name" }]
               })(<Input style={{ width: 240 }} />)}
             </Form.Item>
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>Description: </Col>
-          <Col>
             <Form.Item
               validateStatus={descError ? "error" : ""}
+              {...formItemLayout}
               help={descError || ""}
+              label="Description"
             >
               {getFieldDecorator("desc", {
                 rules: [
@@ -146,79 +149,83 @@ class InfoForm extends StepFormComponent {
                 />
               )}
             </Form.Item>
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>Phone Number: </Col>
-          <Col>
             <Form.Item
               validateStatus={phoneError ? "error" : ""}
               help={phoneError || ""}
+              label="Phone Number"
+              {...formItemLayout}
             >
               {getFieldDecorator("phone", {
                 initialValue: "+30",
                 rules: [
                   { required: true, message: "Enter phone number" },
                   { min: 9 },
-                  { validator: this.checkPassword }
+                  { validator: this.checkPhoneNumber }
                 ]
               })(<Input style={{ width: 240 }} />)}
             </Form.Item>
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9} style={{ marginBottom: 10 }}>
-            Upload Images:{" "}
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>
-            <Upload
-              accept='image/*'
-              action=''
-              listType='picture-card'
-              fileList={fileList}
-              onPreview={this.handlePreview}
-              onChange={this.handleChange}
-              beforeUpload={this.firebaseUpload}
-              onRemove={this.handleRemove}
-            >
-              {fileList.length >= 3 ? null : uploadButton}
-            </Upload>
-            <Modal
-              visible={previewVisible}
-              footer={null}
-              onCancel={this.handleCancel}
-            >
-              <img alt='example' style={{ width: "100%" }} src={previewImage} />
-            </Modal>
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>Hours: </Col>
-          <Col>
-            <Form.Item
-              validateStatus={hoursError ? "error" : ""}
-              help={hoursError || ""}
-            >
-              {getFieldDecorator("hours", {
-                rules: [{ required: true, message: "Enter hours" }]
-              })(<Input style={{ width: 240 }} />)}
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>Any special notes regarding availability?</Col>
-        </Row>
-        <Row type='flex' justify='start' gutter={32}>
-          <Col offset={9}>
-            <Form.Item>
-              {getFieldDecorator("availabilityNote")(
+        <Form.Item
+        validateStatus={imageError ? "error" : ""}
+        help={imageError || ""}
+        {...formItemLayout}
+        label="Upload Images">
+            <div>
+                {getFieldDecorator("image", {
+                    rules: [
+                    { required: true, message: "Enter organization image" }
+                    ]
+                })(
+                <Upload
+                accept='image/*'
+                action=''
+                listType='picture-card'
+                fileList={fileList}
+                onPreview={this.handlePreview}
+                onChange={this.handleChange}
+                beforeUpload={this.firebaseUpload}
+                onRemove={this.handleRemove}
+                >
+                    {fileList.length >= 3 ? null : uploadButton}
+                </Upload>
+                )}
+                <Modal
+                visible={previewVisible}
+                footer={null}
+                onCancel={this.handleCancel}
+                >
+                <img alt='example' style={{ width: "100%" }} src={previewImage} />
+                </Modal>
+            </div>
+        </Form.Item>
+        <Form.Item
+            {...formItemLayout}
+            validateStatus = {emailError ? "error" : ""}
+            help = {emailError || ""}
+            label="Email">
+                {getFieldDecorator("email", {
+                rules: [{ required: true, message: "Enter email"}]
+                })(
+                <Input style={{width: 240}} />
+                )}
+        </Form.Item>
+        <Form.Item
+            {...formItemLayout}
+            validateStatus = {hoursError ? "error" : ""}
+            help = {hoursError || ""}
+            label="Hours">
+                {getFieldDecorator("hours", {
+                rules: [{ required: true, message: "Enter hours"}]
+                })(
+                <Input style={{width: 240}} />
+                )}
+        </Form.Item>
+        <Form.Item 
+        label="Any special notes regarding availability?" 
+        {...formItemLayout}>
+            {getFieldDecorator("availabilityNote")(
                 <Input style={{ width: 240 }} />
-              )}
-            </Form.Item>
-          </Col>
-        </Row>
+            )}
+        </Form.Item>
       </div>
     );
   }
