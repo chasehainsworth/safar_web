@@ -18,7 +18,7 @@ function hasErrors(fieldsError) {
 
 const languageFields = new Set(["orgName", "description", "hours", "availabilityNote"]);
 let currLanguage = {};
-let formData = {};
+let formData = {images: []};
 
 class UpdateAccountPage extends Component {
   steps = [
@@ -69,7 +69,7 @@ class UpdateAccountPage extends Component {
   }
   
   submitCompletedNonLang = () => {
-    const { language, fileList, orgName, description, hours, availabilityNote, ...rest } = formData;
+    const { language, image, fileList, orgName, description, hours, availabilityNote, ...rest } = formData;
     this.props.firebase
     .provider(this.props.firebase.auth.currentUser.uid)
     .set({ ...rest }, { merge: true });

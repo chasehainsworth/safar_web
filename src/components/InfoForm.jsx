@@ -4,9 +4,10 @@ import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 
-const initial = null;
+const initial = "";
 
 class InfoForm extends StepFormComponent {
+
   state = {
     previewVisible: false,
     previewImage: "",
@@ -23,12 +24,13 @@ class InfoForm extends StepFormComponent {
   };
 
   handleChange = ({ fileList }) => {
-    this.props.formData.fileList = fileList;
-    this.setState({ fileList });
+    this.props.formData.fileList = [...fileList];
+    this.setState({ fileList: this.props.formData.fileList });
   };
 
   handleRemove = file => {
     const filename = file.uid + "-" + file.name;
+    this.props.formData.images.filter(image => image === filename);
     this.props.firebase
       .imageUploads()
       .child(filename)
@@ -44,6 +46,7 @@ class InfoForm extends StepFormComponent {
   firebaseUpload = file => {
     console.log(this);
     const filename = file.uid + "-" + file.name;
+    this.props.formData.images.push(filename);
     let uploadTask = this.props.firebase
       .imageUploads()
       .child(filename)

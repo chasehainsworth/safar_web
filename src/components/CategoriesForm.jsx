@@ -9,7 +9,7 @@ const tags = {
   "Health": ["Men", "Women", "Children"],
   "Education": ["Language", "Computer", "Entertainment", "Higher Education"]
 };
-const initial = null;
+const initial = "";
 
 class CategoriesForm extends StepFormComponent {
   state = { categories: [], tags: [] }
