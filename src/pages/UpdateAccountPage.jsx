@@ -68,7 +68,16 @@ class UpdateAccountPage extends Component {
     this.setState({ currentStep: current });
   }
   
+  consolidateTags = () => {
+    let tags = Object.keys(formData).filter(key => key.slice(-4) == "Tags");
+    formData.tags = []
+    for(let i=0; i<tags.length; i++) {
+      formData.tags = formData.tags.concat(formData[tags[i]]);
+    }
+  }
+
   submitCompletedNonLang = () => {
+    this.consolidateTags();
     const { language, image, fileList, orgName, description, hours, availabilityNote, ...rest } = formData;
     this.props.firebase
     .provider(this.props.firebase.auth.currentUser.uid)
