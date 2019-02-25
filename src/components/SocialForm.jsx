@@ -2,7 +2,7 @@ import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Row, Col, Form, Input, Icon } from "antd";
 
-const initial = ""
+const initial = null;
 const whatsapp = () => (
   <svg
     t='1550173387257'

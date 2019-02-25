@@ -4,7 +4,7 @@ import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 
-const initial = "";
+const initial = null;
 
 class InfoForm extends StepFormComponent {
   state = {
@@ -109,7 +109,7 @@ class InfoForm extends StepFormComponent {
       isFieldTouched
     } = this.props.formObject;
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
-    const descError = isFieldTouched("desc") && getFieldError("desc");
+    const descError = isFieldTouched("description") && getFieldError("description");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
     const emailError = isFieldTouched("email") && getFieldError("email");
@@ -138,7 +138,7 @@ class InfoForm extends StepFormComponent {
               help={descError || ""}
               label="Description"
             >
-              {getFieldDecorator("desc", {
+              {getFieldDecorator("description", {
                 rules: [
                   { required: true, message: "Enter organization description" }
                 ]
@@ -222,7 +222,7 @@ class InfoForm extends StepFormComponent {
         <Form.Item 
         label="Any special notes regarding availability?" 
         {...formItemLayout}>
-            {getFieldDecorator("availabilityNote")(
+            {getFieldDecorator("availabilityNote", {initialValue : initial})(
                 <Input style={{ width: 240 }} />
             )}
         </Form.Item>

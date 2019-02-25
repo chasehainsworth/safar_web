@@ -9,6 +9,7 @@ const tags = {
   "Health": ["Men", "Women", "Children"],
   "Education": ["Language", "Computer", "Entertainment", "Higher Education"]
 };
+const initial = null;
 
 class CategoriesForm extends StepFormComponent {
   state = { categories: [], tags: [] }
@@ -54,7 +55,7 @@ class CategoriesForm extends StepFormComponent {
                 return (
                   <TabPane tab={cat} key={index}>
                     <Form.Item>
-                      {getFieldDecorator(cat + "Tags")(
+                      {getFieldDecorator(cat + "Tags", {initialValue: initial})(
                         <CheckboxGroup options={tags[cat]} /> 
                       )}
                     </Form.Item>

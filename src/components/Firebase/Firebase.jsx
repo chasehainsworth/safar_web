@@ -92,6 +92,8 @@ class Firebase {
   provider = uid => this.db.doc(`providers/${uid}`);
 
   providers = () => this.db.collection("providers");
+  
+  providerLanguage = (uid, language) => this.provider(uid).collection("languages").doc(language);
 
   // *** Services API ***
 
