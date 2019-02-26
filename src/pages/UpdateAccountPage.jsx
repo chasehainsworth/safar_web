@@ -91,7 +91,7 @@ class UpdateAccountPage extends Component {
       });
   };
 
-  removeIndividual;
+  // removeIndividual
   submitCompletedNonLang = () => {
     const {
       language,
