@@ -7,6 +7,7 @@ import { withFirebase } from "./Firebase";
 const initial = "";
 
 class InfoForm extends StepFormComponent {
+
   state = {
     previewVisible: false,
     previewImage: "",
@@ -23,12 +24,13 @@ class InfoForm extends StepFormComponent {
   };
 
   handleChange = ({ fileList }) => {
-    this.props.formData.fileList = fileList;
-    this.setState({ fileList });
+    this.props.formData.fileList = [...fileList];
+    this.setState({ fileList: this.props.formData.fileList });
   };
 
   handleRemove = file => {
     const filename = file.uid + "-" + file.name;
+    this.props.formData.images.filter(image => image === filename);
     this.props.firebase
       .imageUploads()
       .child(filename)
@@ -44,6 +46,7 @@ class InfoForm extends StepFormComponent {
   firebaseUpload = file => {
     console.log(this);
     const filename = file.uid + "-" + file.name;
+    this.props.formData.images.push(filename);
     let uploadTask = this.props.firebase
       .imageUploads()
       .child(filename)
@@ -109,7 +112,7 @@ class InfoForm extends StepFormComponent {
       isFieldTouched
     } = this.props.formObject;
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
-    const descError = isFieldTouched("desc") && getFieldError("desc");
+    const descError = isFieldTouched("description") && getFieldError("description");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
     const emailError = isFieldTouched("email") && getFieldError("email");
@@ -138,7 +141,7 @@ class InfoForm extends StepFormComponent {
               help={descError || ""}
               label="Description"
             >
-              {getFieldDecorator("desc", {
+              {getFieldDecorator("description", {
                 rules: [
                   { required: true, message: "Enter organization description" }
                 ]
@@ -222,7 +225,7 @@ class InfoForm extends StepFormComponent {
         <Form.Item 
         label="Any special notes regarding availability?" 
         {...formItemLayout}>
-            {getFieldDecorator("availabilityNote")(
+            {getFieldDecorator("availabilityNote", {initialValue : initial})(
                 <Input style={{ width: 240 }} />
             )}
         </Form.Item>

@@ -11,12 +11,14 @@ const Step = Steps.Step;
 function hasErrors(fieldsError) {
   // console.log(
   //   "Errors: ",
-  //   Object.keys(fieldsError).some(field => fieldsError[field])
+  //   Object.eys(fieldsError).some(field => fieldsError[field])
   // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-let formData = {};
+const languageFields = new Set(["orgName", "description", "hours", "availabilityNote"]);
+let currLanguage = {};
+let formData = {images: []};
 
 class UpdateAccountPage extends Component {
   steps = [
@@ -65,10 +67,36 @@ class UpdateAccountPage extends Component {
     const current = this.state.currentStep - 1;
     this.setState({ currentStep: current });
   }
+  
+  consolidateTags = rest => {
+    formData.tags = {};
+    Object.keys(formData).filter(key => key.slice(-4) == "Tags").map(fullTag => {
+      delete rest[fullTag]
+      let tag = fullTag.slice(0, -4);
+      formData.tags[tag] = formData[fullTag];
+    })
+  }
+
+  removeIndividual
+  submitCompletedNonLang = () => {
+    const { language, image, fileList, orgName, description, hours, availabilityNote, ...rest } = formData;
+    this.consolidateTags(rest);
+    this.props.firebase
+    .provider(this.props.firebase.auth.currentUser.uid)
+    .set({ ...rest }, { merge: true });
+  }
+
+  submitCompletedLang = () => {
+    this.props.firebase
+      .providerLanguage(this.props.firebase.auth.currentUser.uid, formData.language)
+      .set({ ...currLanguage }, { merge: true });
+  }
 
   addLang() {
-    // TODO: submit formData to db here
-    console.log(formData);
+    if(!this.isAnotherLang) {
+      this.submitCompletedNonLang();
+    }
+    this.submitCompletedLang();
     this.setState({
       currentStep: 0,
       isAnotherLang: true,
@@ -76,25 +104,30 @@ class UpdateAccountPage extends Component {
     });
   }
 
+  prepareForm = (values) => {
+    for (let v in values) {
+      if(languageFields.has(v)) {
+        currLanguage[v] = values[v];
+      }
+      formData[v] = values[v];
+    }
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        for (let v in values) {
-          formData[v] = values[v];
+        this.prepareForm(values);
+        console.log(formData)
+      }
+      if (this.state.currentStep < this.state.allSteps.length - 1) {
+        this.next();
+      } 
+      else {
+        if(!this.isAnotherLang) {
+          this.submitCompletedNonLang();
         }
-        if (this.state.currentStep < this.state.allSteps.length - 1) {
-          this.next();
-        } else {
-          // TODO: currently submits data by each field name to
-          //       a collection named by the user's uid.
-          //       Assumes 1 user per provider. Could name by provider instead?
-          console.log(formData)
-          this.props.firebase
-            .provider(this.props.firebase.auth.currentUser.uid)
-            .set({ ...formData }, { merge: true });
-          console.log(formData);
-        }
+        this.submitCompletedLang();
       }
     });
   };
