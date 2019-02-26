@@ -68,17 +68,19 @@ class UpdateAccountPage extends Component {
     this.setState({ currentStep: current });
   }
   
-  consolidateTags = () => {
-    let tags = Object.keys(formData).filter(key => key.slice(-4) == "Tags");
-    formData.tags = []
-    for(let i=0; i<tags.length; i++) {
-      formData.tags = formData.tags.concat(formData[tags[i]]);
-    }
+  consolidateTags = rest => {
+    formData.tags = {};
+    Object.keys(formData).filter(key => key.slice(-4) == "Tags").map(fullTag => {
+      delete rest[fullTag]
+      let tag = fullTag.slice(0, -4);
+      formData.tags[tag] = formData[fullTag];
+    })
   }
 
+  removeIndividual
   submitCompletedNonLang = () => {
-    this.consolidateTags();
     const { language, image, fileList, orgName, description, hours, availabilityNote, ...rest } = formData;
+    this.consolidateTags(rest);
     this.props.firebase
     .provider(this.props.firebase.auth.currentUser.uid)
     .set({ ...rest }, { merge: true });
@@ -91,6 +93,9 @@ class UpdateAccountPage extends Component {
   }
 
   addLang() {
+    if(!this.isAnotherLang) {
+      this.submitCompletedNonLang();
+    }
     this.submitCompletedLang();
     this.setState({
       currentStep: 0,
