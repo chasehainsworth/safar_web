@@ -59,8 +59,8 @@ class Firebase {
             const dbUser = snapshot.data();
 
             // default empty roles
-            if (!dbUser.roles) {
-              dbUser.roles = [];
+            if (!dbUser.role) {
+              dbUser.role = null;
             }
 
             // merge auth and db user

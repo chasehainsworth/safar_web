@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import { Form, Row, Steps, Button } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
-import { withAuthorization } from "../components/Firebase";
+import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import SocialForm from "../components/SocialForm";
 import CategoriesForm from "../components/CategoriesForm";
+
+import * as ROLES from "../constants/roles";
+import * as ROUTES from "../constants/routes";
 
 const Step = Steps.Step;
 
@@ -44,8 +47,12 @@ class UpdateAccountPage extends Component {
     },
     {
       title: "Finished",
-      content:
-        <div style={{paddingTop: '60px'}}>You're all done. Please try to fill out your information in as many languages as possible.</div>,
+      content: (
+        <div style={{ paddingTop: "60px" }}>
+          You're all done. Please try to fill out your information in as many
+          languages as possible.
+        </div>
+      ),
       newLang: true
     }
   ];
@@ -89,7 +96,7 @@ class UpdateAccountPage extends Component {
           // TODO: currently submits data by each field name to
           //       a collection named by the user's uid.
           //       Assumes 1 user per provider. Could name by provider instead?
-          console.log(formData)
+          console.log(formData);
           this.props.firebase
             .provider(this.props.firebase.auth.currentUser.uid)
             .set({ ...formData }, { merge: true });
@@ -104,52 +111,67 @@ class UpdateAccountPage extends Component {
 
     const { getFieldsError } = this.props.form;
 
+    const uid = this.props.match.params.id;
+
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Row style={{ margin: 20 }}>
-          <Steps current={current}>
-            {this.state.allSteps.map(item => (
-              <Step key={item.title} title={item.title} />
-            ))}
-          </Steps>
-        </Row>
-        <div className='steps-content'>
-          {this.state.allSteps[current].content}
-        </div>
-        <div className='steps-action'>
-          {// TODO: this will disable next button if any form data not valid.
-          // change to each page.
-          // TODO: button enabled on second language pass.
-          current < this.state.allSteps.length - 1 && (
-            <Button
-              disabled={hasErrors(getFieldsError())}
-              type='primary'
-              htmlType='submit'
-            >
-              Next
-            </Button>
-          )}
-          {current === this.state.allSteps.length - 1 && (
-            <Button htmlType='submit' type='primary'>
-              Done
-            </Button>
-          )}
-          {current === this.state.allSteps.length - 1 && (
-            <Button
-              style={{ marginLeft: 8 }}
-              onClick={() => this.addLang()}
-              type='primary'
-            >
-              Add another language
-            </Button>
-          )}
-          {current > 0 && (
-            <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-              Previous
-            </Button>
-          )}
-        </div>
-      </Form>
+      <AuthUserContext.Consumer>
+        {authUser => {
+          if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
+            return (
+              <Form onSubmit={this.handleSubmit}>
+                <Row style={{ margin: 20 }}>
+                  <Steps current={current}>
+                    {this.state.allSteps.map(item => (
+                      <Step key={item.title} title={item.title} />
+                    ))}
+                  </Steps>
+                </Row>
+                <div className='steps-content'>
+                  {this.state.allSteps[current].content}
+                </div>
+                <div className='steps-action'>
+                  {// TODO: this will disable next button if any form data not valid.
+                  // change to each page.
+                  // TODO: button enabled on second language pass.
+                  current < this.state.allSteps.length - 1 && (
+                    <Button
+                      disabled={hasErrors(getFieldsError())}
+                      type='primary'
+                      htmlType='submit'
+                    >
+                      Next
+                    </Button>
+                  )}
+                  {current === this.state.allSteps.length - 1 && (
+                    <Button htmlType='submit' type='primary'>
+                      Done
+                    </Button>
+                  )}
+                  {current === this.state.allSteps.length - 1 && (
+                    <Button
+                      style={{ marginLeft: 8 }}
+                      onClick={() => this.addLang()}
+                      type='primary'
+                    >
+                      Add another language
+                    </Button>
+                  )}
+                  {current > 0 && (
+                    <Button
+                      style={{ marginLeft: 8 }}
+                      onClick={() => this.prev()}
+                    >
+                      Previous
+                    </Button>
+                  )}
+                </div>
+              </Form>
+            );
+          } else {
+            this.props.history.push(ROUTES.UPDATE_ACC);
+          }
+        }}
+      </AuthUserContext.Consumer>
     );
   }
 }
@@ -158,7 +180,6 @@ const WrappedUpdateAccountPage = Form.create({ name: "update_account" })(
   UpdateAccountPage
 );
 
-// If not logged in, redirects to login page
 const condition = authUser => !!authUser;
 
 export default withAuthorization(condition)(WrappedUpdateAccountPage);
