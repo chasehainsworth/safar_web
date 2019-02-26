@@ -11,7 +11,7 @@ class InfoForm extends StepFormComponent {
   state = {
     previewVisible: false,
     previewImage: "",
-    fileList: []
+    fileList: this.props.formData.fileList ? this.props.formData.fileList : []
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -71,11 +71,6 @@ class InfoForm extends StepFormComponent {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
           console.log("File available at", downloadURL);
-          this.props.formData.fileList = [
-            ...this.props.formData.fileList,
-            file
-          ];
-          console.log(this.props.formData);
           file.status = "done";
         });
       }

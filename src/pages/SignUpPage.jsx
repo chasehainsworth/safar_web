@@ -4,6 +4,7 @@ import { withFirebase } from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
 import * as ROUTES from "../constants/routes";
+import * as ROLES from "../constants/roles";
 
 function hasErrors(fieldsError) {
   // console.log(
@@ -25,6 +26,7 @@ class SignUpPage extends Component {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
       const { username, email, passOne } = values;
+      const role = ROLES.PROVIDER;
       if (!fieldErr) {
         this.props.firebase
           .doCreateUserWithEmailAndPassword(email, passOne)
@@ -33,7 +35,8 @@ class SignUpPage extends Component {
             return this.props.firebase.user(authUser.user.uid).set(
               {
                 username,
-                email
+                email,
+                role
               },
               { merge: true }
             );

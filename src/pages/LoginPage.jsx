@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button } from "antd";
+import { Form, Icon, Input, Button, Modal } from "antd";
 import { withFirebase } from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
@@ -11,6 +11,14 @@ function hasErrors(fieldsError) {
   //   Object.keys(fieldsError).some(field => fieldsError[field])
   // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
+function errorMessage(title, content) {
+  Modal.error({
+    title,
+    content,
+    centered: true
+  });
 }
 
 class LoginPage extends Component {
@@ -44,7 +52,7 @@ class LoginPage extends Component {
         this.props.history.push(ROUTES.HOME);
       })
       .catch(firebaseErr => {
-        console.log("Failed:", firebaseErr);
+        errorMessage("Failed to Login.", firebaseErr.message);
       });
   };
 
