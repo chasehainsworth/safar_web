@@ -4,11 +4,14 @@ import { Form, Select, Tabs, Row } from "antd";
 import CheckboxGroup from "antd/lib/checkbox/Group";
 
 const TabPane = Tabs.TabPane;
-const categories = ["Health", "Education", "Legal"];
+const categories = ["Health", "Education", "Entertainment", "Legal"];
 const tags = {
-  "Health": ["Men", "Women", "Children"],
-  "Education": ["Language", "Computer", "Entertainment", "Higher Education"]
+  "Health": ["Pregnancy", "Dental", "Emergency", "Shots/Vaccines", "Hospitals", "General", "Specialized"],
+  "Education": ["Computer", "Language", "Child Education", "Adult Education", "Writing"],
+  "Entertainment": ["Sports", "Art", "Community Center", "Cooking", "Music"],
+  "Legal": ["Children's Rights", "Domestic Violence", "Family", "Single Males", "Protection", "Asylum"]
 };
+const initial = null;
 
 class CategoriesForm extends StepFormComponent {
   state = { categories: [], tags: [] }
@@ -54,7 +57,7 @@ class CategoriesForm extends StepFormComponent {
                 return (
                   <TabPane tab={cat} key={index}>
                     <Form.Item>
-                      {getFieldDecorator(cat + "Tags")(
+                      {getFieldDecorator(cat + "Tags", {initialValue: initial})(
                         <CheckboxGroup options={tags[cat]} /> 
                       )}
                     </Form.Item>
