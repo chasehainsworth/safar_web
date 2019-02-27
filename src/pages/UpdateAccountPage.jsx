@@ -83,7 +83,6 @@ class UpdateAccountPage extends Component {
           const data = doc.data();
           const {
             language,
-            image,
             fileList,
             orgName,
             description,
@@ -91,6 +90,32 @@ class UpdateAccountPage extends Component {
             availabilityNote,
             ...rest
           } = data;
+
+          if (data.images && data.images.length > 0) {
+            formData.fileList = [];
+            data.images.forEach(img => {
+              this.props.firebase
+                .imageUploads()
+                .child(img)
+                .getDownloadURL()
+                .then(url => {
+                  //rc-upload-1551154525622-2
+                  let fileUid = img.slice(0, 25);
+                  let fileName = img.slice(26);
+                  let newFile = {
+                    uid: fileUid,
+                    name: fileName,
+                    status: "done",
+                    url: url
+                  };
+                  console.log(newFile);
+                  formData.fileList.push(newFile);
+                })
+                .catch(error => {
+                  // Handle any errors
+                });
+            });
+          }
 
           this.prepareForm(rest);
           this.breakTags();
