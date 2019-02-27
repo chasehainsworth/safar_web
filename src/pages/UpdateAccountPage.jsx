@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Row, Steps, Button } from "antd";
+import { Form, Row, Steps, Button, Spin } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
@@ -64,18 +64,17 @@ class UpdateAccountPage extends Component {
     }
   ];
 
-  constructor(props) {
-    super(props);
+  state = {
+    uid: this.props.match.params.id,
+    currentStep: 0,
+    isAnotherLang: false,
+    allSteps: this.steps,
+    isLoadingData: true,
+    isLoadingLang: true,
+    filledLanguages: null
+  };
 
-    this.state = {
-      uid: props.match.params.id,
-      currentStep: 0,
-      isAnotherLang: false,
-      allSteps: this.steps,
-      hasData: null,
-      isLoading: false
-    };
-
+  componentDidMount() {
     this.props.firebase
       .provider(this.state.uid)
       .get()
@@ -94,7 +93,18 @@ class UpdateAccountPage extends Component {
           } = data;
 
           this.prepareForm(rest);
+          this.setState({ isLoadingData: false });
         }
+      });
+
+    this.props.firebase
+      .provider(this.state.uid)
+      .collection("languages")
+      .get()
+      .then(snapshot => {
+        let langs = {};
+        snapshot.forEach(doc => (langs[doc.id] = doc.data()));
+        this.setState({ filledLanguages: langs, isLoadingLang: false });
       });
     /*
     1. Check firebase by uid
@@ -178,6 +188,11 @@ class UpdateAccountPage extends Component {
         this.prepareForm(values);
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
+        if (this.state.currentStep === 0) {
+          if (this.state.filledLanguages[formData.language]) {
+            this.prepareForm(this.state.filledLanguages[formData.language]);
+          }
+        }
         this.next();
       } else {
         if (!this.isAnotherLang) {
@@ -200,52 +215,55 @@ class UpdateAccountPage extends Component {
           if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
             return (
               <Form onSubmit={this.handleSubmit}>
-                <Row style={{ margin: 20 }}>
-                  <Steps current={current}>
-                    {this.state.allSteps.map(item => (
-                      <Step key={item.title} title={item.title} />
-                    ))}
-                  </Steps>
-                </Row>
-                <div className='steps-content'>
-                  {this.state.allSteps[current].content}
-                </div>
-                <div className='steps-action'>
-                  {// TODO: this will disable next button if any form data not valid.
-                  // change to each page.
-                  // TODO: button enabled on second language pass.
-                  current < this.state.allSteps.length - 1 && (
-                    <Button
-                      disabled={hasErrors(getFieldsError())}
-                      type='primary'
-                      htmlType='submit'
-                    >
-                      Next
-                    </Button>
-                  )}
-                  {current === this.state.allSteps.length - 1 && (
-                    <Button htmlType='submit' type='primary'>
-                      Done
-                    </Button>
-                  )}
-                  {current === this.state.allSteps.length - 1 && (
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => this.addLang()}
-                      type='primary'
-                    >
-                      Add another language
-                    </Button>
-                  )}
-                  {current > 0 && (
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => this.prev()}
-                    >
-                      Previous
-                    </Button>
-                  )}
-                </div>
+                <Spin
+                  spinning={
+                    this.state.isLoadingData || this.state.isLoadingLang
+                  }
+                >
+                  <Row style={{ margin: 20 }}>
+                    <Steps current={current}>
+                      {this.state.allSteps.map(item => (
+                        <Step key={item.title} title={item.title} />
+                      ))}
+                    </Steps>
+                  </Row>
+                  <div className='steps-content'>
+                    {this.state.allSteps[current].content}
+                  </div>
+                  <div className='steps-action'>
+                    {current < this.state.allSteps.length - 1 && (
+                      <Button
+                        disabled={hasErrors(getFieldsError())}
+                        type='primary'
+                        htmlType='submit'
+                      >
+                        Next
+                      </Button>
+                    )}
+                    {current === this.state.allSteps.length - 1 && (
+                      <Button htmlType='submit' type='primary'>
+                        Done
+                      </Button>
+                    )}
+                    {current === this.state.allSteps.length - 1 && (
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => this.addLang()}
+                        type='primary'
+                      >
+                        Add another language
+                      </Button>
+                    )}
+                    {current > 0 && (
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => this.prev()}
+                      >
+                        Previous
+                      </Button>
+                    )}
+                  </div>
+                </Spin>
               </Form>
             );
           } else {
