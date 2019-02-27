@@ -14,7 +14,7 @@ class LanguageForm extends StepFormComponent {
 
     const noLangError = isFieldTouched("language") && getFieldError("language");
     return (
-      <div style={{paddingTop: '60px'}}>
+      <div style={{ paddingTop: "60px" }}>
         <Form.Item
           validateStatus={noLangError ? "error" : ""}
           help={noLangError || ""}

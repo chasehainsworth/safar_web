@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { List, Card } from "antd";
+import { List, Card, Spin, Icon } from "antd";
 import { Link } from "react-router-dom";
 
 import { withAuthorization } from "../components/Firebase";
@@ -16,7 +16,8 @@ class ListAccountsPage extends Component {
     this.setState({ loading: true });
 
     this.unsubscribe = this.props.firebase.providers().onSnapshot(snapshot => {
-      let providersList = [];
+      let providersList = [{ isFirst: true }];
+      let idx = 0; // firebase snapshot.forEach does not give index
       snapshot.forEach(doc => {
         let languages = [];
         this.props.firebase
@@ -33,10 +34,13 @@ class ListAccountsPage extends Component {
               languages
             });
 
-            this.setState({
-              loading: false,
-              providers: providersList
-            });
+            if (idx === snapshot.size - 1) {
+              this.setState({
+                loading: false,
+                providers: providersList
+              });
+            }
+            idx++;
           })
           .catch(error => console.log(error));
       });
@@ -47,6 +51,7 @@ class ListAccountsPage extends Component {
     this.unsubscribe();
   }
 
+  // TODO: switch to a table
   render() {
     return (
       <List
@@ -59,24 +64,36 @@ class ListAccountsPage extends Component {
           xl: 6,
           xxl: 3
         }}
+        style={{ margin: 10 }}
         dataSource={this.state.providers}
-        loading={this.state.loading}
-        renderItem={item => (
-          <List.Item>
-            <Link to={"/UpdateAccount/" + item.uid}>
-              <Card title={item.email}>
-                <b>Languages:</b>
-                {item.languages.map(c => {
-                  return (
-                    <p key={c.orgName + c.language}>
-                      {c.language + " - " + c.orgName}
-                    </p>
-                  );
-                })}
-              </Card>
-            </Link>
-          </List.Item>
-        )}
+        loading={this.state.loading && <Spin centered />}
+        renderItem={item =>
+          item.isFirst ? (
+            <List.Item>
+              <Link to='/AddAccount'>
+                <Card style={{ textAlign: "center" }}>
+                  <Icon type='plus' style={{ fontSize: 30 }} />
+                  <p style={{ fontSize: 15 }}>Add Provider</p>
+                </Card>
+              </Link>
+            </List.Item>
+          ) : (
+            <List.Item>
+              <Link to={"/UpdateAccount/" + item.uid}>
+                <Card title={item.email}>
+                  <b>Languages:</b>
+                  {item.languages.map(c => {
+                    return (
+                      <p key={c.orgName + c.language}>
+                        {c.language + " - " + c.orgName}
+                      </p>
+                    );
+                  })}
+                </Card>
+              </Link>
+            </List.Item>
+          )
+        }
       />
     );
   }

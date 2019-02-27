@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Row, Steps, Button } from "antd";
+import { Form, Row, Steps, Button, Spin } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
@@ -65,10 +65,82 @@ class UpdateAccountPage extends Component {
   ];
 
   state = {
+    uid: this.props.match.params.id,
     currentStep: 0,
     isAnotherLang: false,
-    allSteps: this.steps
+    allSteps: this.steps,
+    isLoadingData: true,
+    isLoadingLang: true,
+    filledLanguages: null
   };
+
+  componentDidMount() {
+    this.props.firebase
+      .provider(this.state.uid)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const {
+            language,
+            fileList,
+            orgName,
+            description,
+            hours,
+            availabilityNote,
+            ...rest
+          } = data;
+
+          if (data.images && data.images.length > 0) {
+            formData.fileList = [];
+            data.images.forEach(img => {
+              this.props.firebase
+                .imageUploads()
+                .child(img)
+                .getDownloadURL()
+                .then(url => {
+                  //rc-upload-1551154525622-2
+                  let fileUid = img.slice(0, 25);
+                  let fileName = img.slice(26);
+                  let newFile = {
+                    uid: fileUid,
+                    name: fileName,
+                    status: "done",
+                    url: url
+                  };
+                  console.log(newFile);
+                  formData.fileList.push(newFile);
+                })
+                .catch(error => {
+                  // Handle any errors
+                });
+            });
+          }
+
+          this.prepareForm(rest);
+          this.breakTags();
+          console.log("form", formData);
+          this.setState({ isLoadingData: false });
+        }
+      });
+
+    this.props.firebase
+      .provider(this.state.uid)
+      .collection("languages")
+      .get()
+      .then(snapshot => {
+        let langs = {};
+        snapshot.forEach(doc => (langs[doc.id] = doc.data()));
+        this.setState({ filledLanguages: langs, isLoadingLang: false });
+      });
+    /*
+    1. Check firebase by uid
+    2. If document is not null, get data and langs
+    3. Put data into formData
+    4. Push langs as array in hasData
+    5. When user chooses language, if lang is in hasData, pull lang data from firebase
+    */
+  }
 
   next() {
     const current = this.state.currentStep + 1;
@@ -83,12 +155,19 @@ class UpdateAccountPage extends Component {
   consolidateTags = rest => {
     formData.tags = {};
     Object.keys(formData)
-      .filter(key => key.slice(-4) == "Tags")
-      .map(fullTag => {
+      .filter(key => key.slice(-4) === "Tags")
+      .forEach(fullTag => {
         delete rest[fullTag];
         let tag = fullTag.slice(0, -4);
         formData.tags[tag] = formData[fullTag];
       });
+  };
+
+  breakTags = () => {
+    Object.keys(formData.tags).forEach(cat => {
+      formData[cat + "Tags"] = [...formData.tags[cat]];
+    });
+    delete formData.tags;
   };
 
   // removeIndividual
@@ -105,16 +184,13 @@ class UpdateAccountPage extends Component {
     } = formData;
     this.consolidateTags(rest);
     this.props.firebase
-      .provider(this.props.firebase.auth.currentUser.uid)
+      .provider(this.state.uid)
       .set({ ...rest }, { merge: true });
   };
 
   submitCompletedLang = () => {
     this.props.firebase
-      .providerLanguage(
-        this.props.firebase.auth.currentUser.uid,
-        formData.language
-      )
+      .providerLanguage(this.state.uid, formData.language)
       .set({ ...currLanguage }, { merge: true });
   };
 
@@ -144,9 +220,13 @@ class UpdateAccountPage extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.prepareForm(values);
-        console.log(formData);
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
+        if (this.state.currentStep === 0) {
+          if (this.state.filledLanguages[formData.language]) {
+            this.prepareForm(this.state.filledLanguages[formData.language]);
+          }
+        }
         this.next();
       } else {
         if (!this.isAnotherLang) {
@@ -162,60 +242,62 @@ class UpdateAccountPage extends Component {
 
     const { getFieldsError } = this.props.form;
 
-    const uid = this.props.match.params.id;
-
     return (
       <AuthUserContext.Consumer>
         {authUser => {
+          const { uid } = this.state;
           if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
             return (
               <Form onSubmit={this.handleSubmit}>
-                <Row style={{ margin: 20 }}>
-                  <Steps current={current}>
-                    {this.state.allSteps.map(item => (
-                      <Step key={item.title} title={item.title} />
-                    ))}
-                  </Steps>
-                </Row>
-                <div className='steps-content'>
-                  {this.state.allSteps[current].content}
-                </div>
-                <div className='steps-action'>
-                  {// TODO: this will disable next button if any form data not valid.
-                  // change to each page.
-                  // TODO: button enabled on second language pass.
-                  current < this.state.allSteps.length - 1 && (
-                    <Button
-                      disabled={hasErrors(getFieldsError())}
-                      type='primary'
-                      htmlType='submit'
-                    >
-                      Next
-                    </Button>
-                  )}
-                  {current === this.state.allSteps.length - 1 && (
-                    <Button htmlType='submit' type='primary'>
-                      Done
-                    </Button>
-                  )}
-                  {current === this.state.allSteps.length - 1 && (
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => this.addLang()}
-                      type='primary'
-                    >
-                      Add another language
-                    </Button>
-                  )}
-                  {current > 0 && (
-                    <Button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => this.prev()}
-                    >
-                      Previous
-                    </Button>
-                  )}
-                </div>
+                <Spin
+                  spinning={
+                    this.state.isLoadingData || this.state.isLoadingLang
+                  }
+                >
+                  <Row style={{ margin: 20 }}>
+                    <Steps current={current}>
+                      {this.state.allSteps.map(item => (
+                        <Step key={item.title} title={item.title} />
+                      ))}
+                    </Steps>
+                  </Row>
+                  <div className='steps-content'>
+                    {this.state.allSteps[current].content}
+                  </div>
+                  <div className='steps-action'>
+                    {current < this.state.allSteps.length - 1 && (
+                      <Button
+                        disabled={hasErrors(getFieldsError())}
+                        type='primary'
+                        htmlType='submit'
+                      >
+                        Next
+                      </Button>
+                    )}
+                    {current === this.state.allSteps.length - 1 && (
+                      <Button htmlType='submit' type='primary'>
+                        Done
+                      </Button>
+                    )}
+                    {current === this.state.allSteps.length - 1 && (
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => this.addLang()}
+                        type='primary'
+                      >
+                        Add another language
+                      </Button>
+                    )}
+                    {current > 0 && (
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => this.prev()}
+                      >
+                        Previous
+                      </Button>
+                    )}
+                  </div>
+                </Spin>
               </Form>
             );
           } else {

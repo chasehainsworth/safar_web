@@ -7,7 +7,6 @@ import { withFirebase } from "./Firebase";
 const initial = "";
 
 class InfoForm extends StepFormComponent {
-
   state = {
     previewVisible: false,
     previewImage: "",
@@ -17,6 +16,7 @@ class InfoForm extends StepFormComponent {
   handleCancel = () => this.setState({ previewVisible: false });
 
   handlePreview = file => {
+    console.log("file", file);
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true
@@ -24,6 +24,7 @@ class InfoForm extends StepFormComponent {
   };
 
   handleChange = ({ fileList }) => {
+    console.log("filelist", fileList);
     this.props.formData.fileList = [...fileList];
     this.setState({ fileList: this.props.formData.fileList });
   };
@@ -92,6 +93,14 @@ class InfoForm extends StepFormComponent {
     callback();
   };
 
+  checkImages = (rule, value, callback) => {
+    if (this.props.formData.images.length < 1) {
+      callback("Please upload at least one image.");
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButton = (
@@ -107,73 +116,76 @@ class InfoForm extends StepFormComponent {
       isFieldTouched
     } = this.props.formObject;
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
-    const descError = isFieldTouched("description") && getFieldError("description");
+    const descError =
+      isFieldTouched("description") && getFieldError("description");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
     const emailError = isFieldTouched("email") && getFieldError("email");
-    const imageError = isFieldTouched("image") && getFieldError("image");
+    const imageError = this.props.formData.images.length > 0;
 
     const formItemLayout = {
-        labelCol: { offset: 5, span: 6 },
-        wrapperCol: { span: 6 },
-      };
-    
+      labelCol: { offset: 5, span: 6 },
+      wrapperCol: { span: 6 }
+    };
+
     return (
       <div>
-            <Form.Item
-              {...formItemLayout}
-              validateStatus={orgNameError ? "error" : ""}
-              help={orgNameError || ""}
-              label="Organization Name"
-            >
-              {getFieldDecorator("orgName", {
-                rules: [{ required: true, message: "Enter organization name" }]
-              })(<Input style={{ width: 240 }} />)}
-            </Form.Item>
-            <Form.Item
-              validateStatus={descError ? "error" : ""}
-              {...formItemLayout}
-              help={descError || ""}
-              label="Description"
-            >
-              {getFieldDecorator("description", {
-                rules: [
-                  { required: true, message: "Enter organization description" }
-                ]
-              })(
-                <TextArea
-                  autosize={{ minRows: 2, maxRows: 4 }}
-                  style={{ width: 240 }}
-                />
-              )}
-            </Form.Item>
-            <Form.Item
-              validateStatus={phoneError ? "error" : ""}
-              help={phoneError || ""}
-              label="Phone Number"
-              {...formItemLayout}
-            >
-              {getFieldDecorator("phone", {
-                initialValue: "+30",
-                rules: [
-                  { required: true, message: "Enter phone number" },
-                  { min: 9 },
-                  { validator: this.checkPhoneNumber }
-                ]
-              })(<Input style={{ width: 240 }} />)}
-            </Form.Item>
         <Form.Item
-        validateStatus={imageError ? "error" : ""}
-        help={imageError || ""}
-        {...formItemLayout}
-        label="Upload Images">
-            <div>
-                {getFieldDecorator("image", {
-                    rules: [
-                    { required: true, message: "Enter organization image" }
-                    ]
-                })(
-                <Upload
+          {...formItemLayout}
+          validateStatus={orgNameError ? "error" : ""}
+          help={orgNameError || ""}
+          label='Organization Name'
+        >
+          {getFieldDecorator("orgName", {
+            rules: [{ required: true, message: "Enter organization name" }]
+          })(<Input style={{ width: 240 }} />)}
+        </Form.Item>
+        <Form.Item
+          validateStatus={descError ? "error" : ""}
+          {...formItemLayout}
+          help={descError || ""}
+          label='Description'
+        >
+          {getFieldDecorator("description", {
+            rules: [
+              { required: true, message: "Enter organization description" }
+            ]
+          })(
+            <TextArea
+              autosize={{ minRows: 2, maxRows: 4 }}
+              style={{ width: 240 }}
+            />
+          )}
+        </Form.Item>
+        <Form.Item
+          validateStatus={phoneError ? "error" : ""}
+          help={phoneError || ""}
+          label='Phone Number'
+          {...formItemLayout}
+        >
+          {getFieldDecorator("phone", {
+            initialValue: "+30",
+            rules: [
+              { required: true, message: "Enter phone number" },
+              { min: 9 },
+              { validator: this.checkPhoneNumber }
+            ]
+          })(<Input style={{ width: 240 }} />)}
+        </Form.Item>
+        <Form.Item
+          validateStatus={imageError ? "error" : ""}
+          help={imageError || ""}
+          {...formItemLayout}
+          label='Upload Images'
+        >
+          <div>
+            {getFieldDecorator("image", {
+              rules: [
+                { required: true, message: "Enter organization image" },
+                { validator: this.checkImages }
+              ]
+            })(
+              <Upload
                 accept='image/*'
                 action=''
                 listType='picture-card'
@@ -182,47 +194,46 @@ class InfoForm extends StepFormComponent {
                 onChange={this.handleChange}
                 beforeUpload={this.firebaseUpload}
                 onRemove={this.handleRemove}
-                >
-                    {fileList.length >= 3 ? null : uploadButton}
-                </Upload>
-                )}
-                <Modal
-                visible={previewVisible}
-                footer={null}
-                onCancel={this.handleCancel}
-                >
-                <img alt='example' style={{ width: "100%" }} src={previewImage} />
-                </Modal>
-            </div>
-        </Form.Item>
-        <Form.Item
-            {...formItemLayout}
-            validateStatus = {emailError ? "error" : ""}
-            help = {emailError || ""}
-            label="Email">
-                {getFieldDecorator("email", {
-                rules: [{ required: true, message: "Enter email"}]
-                })(
-                <Input style={{width: 240}} />
-                )}
-        </Form.Item>
-        <Form.Item
-            {...formItemLayout}
-            validateStatus = {hoursError ? "error" : ""}
-            help = {hoursError || ""}
-            label="Hours">
-                {getFieldDecorator("hours", {
-                rules: [{ required: true, message: "Enter hours"}]
-                })(
-                <Input style={{width: 240}} />
-                )}
-        </Form.Item>
-        <Form.Item 
-        label="Any special notes regarding availability?" 
-        {...formItemLayout}>
-            {getFieldDecorator("availabilityNote", {initialValue : initial})(
-                <Input style={{ width: 240 }} />
+              >
+                {fileList.length >= 3 ? null : uploadButton}
+              </Upload>
             )}
+            <Modal
+              visible={previewVisible}
+              footer={null}
+              onCancel={this.handleCancel}
+            >
+              <img alt='example' style={{ width: "100%" }} src={previewImage} />
+            </Modal>
+          </div>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          validateStatus={emailError ? "error" : ""}
+          help={emailError || ""}
+          label='Email'
+        >
+          {getFieldDecorator("email", {
+            rules: [{ required: true, message: "Enter email" }]
+          })(<Input style={{ width: 240 }} />)}
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          validateStatus={hoursError ? "error" : ""}
+          help={hoursError || ""}
+          label='Hours'
+        >
+          {getFieldDecorator("hours", {
+            rules: [{ required: true, message: "Enter hours" }]
+          })(<Input style={{ width: 240 }} />)}
+        </Form.Item>
+        <Form.Item
+          label='Any special notes regarding availability?'
+          {...formItemLayout}
+        >
+          {getFieldDecorator("availabilityNote", { initialValue: initial })(
+            <Input style={{ width: 240 }} />
+          )}
         </Form.Item>
       </div>
     );
