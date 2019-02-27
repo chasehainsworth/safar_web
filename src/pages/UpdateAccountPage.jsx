@@ -93,6 +93,8 @@ class UpdateAccountPage extends Component {
           } = data;
 
           this.prepareForm(rest);
+          this.breakTags();
+          console.log("form", formData);
           this.setState({ isLoadingData: false });
         }
       });
@@ -134,6 +136,13 @@ class UpdateAccountPage extends Component {
         let tag = fullTag.slice(0, -4);
         formData.tags[tag] = formData[fullTag];
       });
+  };
+
+  breakTags = () => {
+    Object.keys(formData.tags).forEach(cat => {
+      formData[cat + "Tags"] = [...formData.tags[cat]];
+    });
+    delete formData.tags;
   };
 
   // removeIndividual

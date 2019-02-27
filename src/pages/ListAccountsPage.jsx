@@ -51,6 +51,7 @@ class ListAccountsPage extends Component {
     this.unsubscribe();
   }
 
+  // TODO: switch to a table
   render() {
     return (
       <List
