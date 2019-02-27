@@ -64,11 +64,46 @@ class UpdateAccountPage extends Component {
     }
   ];
 
-  state = {
-    currentStep: 0,
-    isAnotherLang: false,
-    allSteps: this.steps
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      uid: props.match.params.id,
+      currentStep: 0,
+      isAnotherLang: false,
+      allSteps: this.steps,
+      hasData: null,
+      isLoading: false
+    };
+
+    this.props.firebase
+      .provider(this.state.uid)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const {
+            language,
+            image,
+            fileList,
+            orgName,
+            description,
+            hours,
+            availabilityNote,
+            ...rest
+          } = data;
+
+          this.prepareForm(rest);
+        }
+      });
+    /*
+    1. Check firebase by uid
+    2. If document is not null, get data and langs
+    3. Put data into formData
+    4. Push langs as array in hasData
+    5. When user chooses language, if lang is in hasData, pull lang data from firebase
+    */
+  }
 
   next() {
     const current = this.state.currentStep + 1;
@@ -83,8 +118,8 @@ class UpdateAccountPage extends Component {
   consolidateTags = rest => {
     formData.tags = {};
     Object.keys(formData)
-      .filter(key => key.slice(-4) == "Tags")
-      .map(fullTag => {
+      .filter(key => key.slice(-4) === "Tags")
+      .forEach(fullTag => {
         delete rest[fullTag];
         let tag = fullTag.slice(0, -4);
         formData.tags[tag] = formData[fullTag];
@@ -105,16 +140,13 @@ class UpdateAccountPage extends Component {
     } = formData;
     this.consolidateTags(rest);
     this.props.firebase
-      .provider(this.props.firebase.auth.currentUser.uid)
+      .provider(this.state.uid)
       .set({ ...rest }, { merge: true });
   };
 
   submitCompletedLang = () => {
     this.props.firebase
-      .providerLanguage(
-        this.props.firebase.auth.currentUser.uid,
-        formData.language
-      )
+      .providerLanguage(this.state.uid, formData.language)
       .set({ ...currLanguage }, { merge: true });
   };
 
@@ -144,7 +176,6 @@ class UpdateAccountPage extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.prepareForm(values);
-        console.log(formData);
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
         this.next();
@@ -162,11 +193,10 @@ class UpdateAccountPage extends Component {
 
     const { getFieldsError } = this.props.form;
 
-    const uid = this.props.match.params.id;
-
     return (
       <AuthUserContext.Consumer>
         {authUser => {
+          const { uid } = this.state;
           if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
             return (
               <Form onSubmit={this.handleSubmit}>
