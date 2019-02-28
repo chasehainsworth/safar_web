@@ -64,15 +64,23 @@ class UpdateAccountPage extends Component {
     }
   ];
 
-  state = {
-    uid: this.props.match.params.id,
-    currentStep: 0,
-    isAnotherLang: false,
-    allSteps: this.steps,
-    isLoadingData: true,
-    isLoadingLang: true,
-    filledLanguages: null
-  };
+  constructor(props) {
+    super(props);
+
+    let uid = props.match.params.id
+      ? props.match.params.id
+      : props.firebase.auth.currentUser.uid;
+
+    this.state = {
+      uid,
+      currentStep: 0,
+      isAnotherLang: false,
+      allSteps: this.steps,
+      isLoadingData: true,
+      isLoadingLang: true,
+      filledLanguages: null
+    };
+  }
 
   componentDidMount() {
     this.props.firebase
