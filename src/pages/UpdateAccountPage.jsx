@@ -121,17 +121,19 @@ class UpdateAccountPage extends Component {
           this.breakTags();
           console.log("form", formData);
           this.setState({ isLoadingData: false });
-        }
-      });
 
-    this.props.firebase
-      .provider(this.state.uid)
-      .collection("languages")
-      .get()
-      .then(snapshot => {
-        let langs = {};
-        snapshot.forEach(doc => (langs[doc.id] = doc.data()));
-        this.setState({ filledLanguages: langs, isLoadingLang: false });
+          this.props.firebase
+            .provider(this.state.uid)
+            .collection("languages")
+            .get()
+            .then(snapshot => {
+              let langs = {};
+              snapshot.forEach(doc => (langs[doc.id] = doc.data()));
+              this.setState({ filledLanguages: langs, isLoadingLang: false });
+            });
+        } else {
+          this.setState({ isLoadingData: false, isLoadingLang: false });
+        }
       });
     /*
     1. Check firebase by uid
@@ -223,7 +225,10 @@ class UpdateAccountPage extends Component {
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
         if (this.state.currentStep === 0) {
-          if (this.state.filledLanguages[formData.language]) {
+          if (
+            this.state.filledLanguages &&
+            this.state.filledLanguages[formData.language]
+          ) {
             this.prepareForm(this.state.filledLanguages[formData.language]);
           }
         }
