@@ -12,7 +12,7 @@ import AccountPage from "./pages/AccountPage";
 import UpdateAccountPage from "./pages/UpdateAccountPage";
 import AddAccountPage from "./pages/AddAccountPage";
 import LoginPage from "./pages/LoginPage";
-import ResourcesPage from "./pages/ResourcesPage";
+import ServicesPage from "./pages/ServicesPage";
 import TopMenu from "./components/TopMenu";
 import ListAccountsPage from "./pages/ListAccountsPage";
 
@@ -34,7 +34,7 @@ class App extends Component {
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.ADD_ACC} component={AddAccountPage} />
             <Route path={ROUTES.LOGIN} component={LoginPage} />
-            <Route path={ROUTES.RESOURCES} component={ResourcesPage} />
+            <Route path={ROUTES.SERVICES} component={ServicesPage} />
             <Route path={ROUTES.LIST_ACC} component={ListAccountsPage} />
           </Switch>
         </Content>

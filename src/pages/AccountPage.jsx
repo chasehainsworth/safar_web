@@ -40,9 +40,16 @@ class AccountPage extends Component {
           </AuthUserContext.Consumer>
         </Row>
         <Row className='spaced'>
-          <Button type='default' size='large'>
-            Update Services
-          </Button>
+          <AuthUserContext.Consumer>
+            {authUser => {
+              return (
+              <Link to={ROUTES.SERVICES}>
+                <Button type='default' size='large'>
+                  Update Services
+                </Button>
+              </Link>
+            )}}
+          </AuthUserContext.Consumer>
         </Row>
         <Row>
           <SignOutButton />
