@@ -1,6 +1,6 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Form, Select, Tabs, Row } from "antd";
+import { Form, Select, Tabs } from "antd";
 import CheckboxGroup from "antd/lib/checkbox/Group";
 
 const TabPane = Tabs.TabPane;

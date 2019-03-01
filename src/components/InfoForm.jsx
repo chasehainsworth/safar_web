@@ -1,6 +1,6 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
+import { Upload, Icon, Modal, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 

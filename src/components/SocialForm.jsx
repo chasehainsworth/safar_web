@@ -1,6 +1,6 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Row, Col, Form, Input, Icon } from "antd";
+import { Form, Input, Icon } from "antd";
 
 const initial = "";
 const whatsapp = () => (
