@@ -67,9 +67,10 @@ class UpdateAccountPage extends Component {
   constructor(props) {
     super(props);
 
-    let uid = props.location.state.id
-      ? props.location.state.id
-      : props.firebase.auth.currentUser.uid;
+    let uid =
+      props.location.state && props.location.state.id
+        ? props.location.state.id
+        : props.firebase.auth.currentUser.uid;
 
     this.state = {
       uid,
@@ -116,11 +117,12 @@ class UpdateAccountPage extends Component {
                     status: "done",
                     url: url
                   };
-                  console.log(newFile);
                   formData.fileList.push(newFile);
                 })
                 .catch(error => {
-                  // Handle any errors
+                  // Broken link, remove the image from the list
+                  const index = data.images.indexOf(img);
+                  if (index !== -1) data.images.splice(index, 1);
                 });
             });
           }

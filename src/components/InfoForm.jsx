@@ -1,10 +1,14 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
+import { Upload, Icon, Modal, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 
 const initial = "";
+
+function errorMessage(title, content) {
+  Modal.error({ title, content, centered: true });
+}
 
 class InfoForm extends StepFormComponent {
   state = {
@@ -30,8 +34,11 @@ class InfoForm extends StepFormComponent {
   };
 
   handleRemove = file => {
+    if (file.originFileObj && file.originFileObj.status == "error") return true;
     const filename = file.uid + "-" + file.name;
-    this.props.formData.images.filter(image => image === filename);
+    this.props.formData.images = this.props.formData.images.filter(
+      image => image !== filename
+    );
     this.props.firebase
       .imageUploads()
       .child(filename)
@@ -40,12 +47,21 @@ class InfoForm extends StepFormComponent {
         return true;
       })
       .catch(function(error) {
+        errorMessage("Error Removing image:", error.message);
         return false;
       });
   };
 
   firebaseUpload = file => {
-    console.log(this);
+    if (file.size > 2000000) {
+      // Image > 2mb.
+      file.status = "error";
+      errorMessage(
+        "Image upload error:",
+        "Cannot upload an image over 2mb in size"
+      );
+      return false;
+    }
     const filename = file.uid + "-" + file.name;
     this.props.formData.images.push(filename);
     let uploadTask = this.props.firebase
@@ -72,6 +88,7 @@ class InfoForm extends StepFormComponent {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
           console.log("File available at", downloadURL);
+          file.url = downloadURL;
           file.status = "done";
         });
       }
@@ -94,6 +111,7 @@ class InfoForm extends StepFormComponent {
   };
 
   checkImages = (rule, value, callback) => {
+    console.log(this.props.formData.images);
     if (this.props.formData.images.length < 1) {
       callback("Please upload at least one image.");
     } else {
@@ -177,13 +195,11 @@ class InfoForm extends StepFormComponent {
           help={imageError || ""}
           {...formItemLayout}
           label='Upload Images'
+          required={true}
         >
-          <div>
+          <div className='clearfix'>
             {getFieldDecorator("image", {
-              rules: [
-                { required: true, message: "Enter organization image" },
-                { validator: this.checkImages }
-              ]
+              rules: [{ validator: this.checkImages }]
             })(
               <Upload
                 accept='image/*'
