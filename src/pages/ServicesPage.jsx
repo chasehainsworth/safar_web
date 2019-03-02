@@ -27,10 +27,9 @@ class ServicesPage extends Component {
             .services()
             .where("provider", "==", this.state.uid)
             .get()
-            .then(snapshot => {
-                snapshot.forEach(service => {
-                    const data = service.data();
-                    let curr = { image: data.image }
+            .then(collectionSnapshot => {
+                collectionSnapshot.forEach(docSnapshot => {
+                    let service = { image: docSnapshot.data().image, id: docSnapshot.id }
                     this.props.firebase
                         .service(service.id)
                         .collection("languages")
@@ -42,11 +41,11 @@ class ServicesPage extends Component {
                                 langData['language'] = lang.id;
                                 langs.push(langData);
                             });
-                            curr['langs'] = langs;
+                            service['langs'] = langs;
                         })
                         .then( () => {
-                            this.setState({ data: [...this.state.data, curr]});
-                            this.addFilled(curr);
+                            this.setState({ data: [...this.state.data, service]});
+                            this.addFilled(service);
                         })
                 })
             })

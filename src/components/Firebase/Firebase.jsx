@@ -103,6 +103,11 @@ class Firebase {
   service = uid => this.db.doc(`services/${uid}`);
 
   services = () => this.db.collection("services");
+  
+  serviceLanguage = (uid, language) => 
+    this.service(uid)
+      .collection("languages")
+      .doc(language)
 
   storageRef = () => this.storage.ref();
 
