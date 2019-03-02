@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Tabs } from "antd";
+import { Button, Tabs, Form } from "antd";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import ServiceForm from "../components/ServiceForm";
 
@@ -13,22 +13,22 @@ class ServicesPage extends Component {
         const panes = [];
         const data = [];
         const uid = props.firebase.auth.currentUser.uid;
-        console.log(uid);
         this.state = {
             activeKey: '-1',
             panes,
             data,
+            uid,
+            loadingLangs: true
         };
     }
 
-    componentDidMount = () => {
+    componentDidMount() {
         this.props.firebase
             .services()
-            .where("provider", "==", "Red Cross")
+            .where("provider", "==", this.state.uid)
             .get()
             .then(snapshot => {
                 snapshot.forEach(service => {
-                    console.log(service);
                     const data = service.data();
                     let curr = { image: data.image }
                     this.props.firebase
@@ -36,12 +36,18 @@ class ServicesPage extends Component {
                         .collection("languages")
                         .get()
                         .then(langSnapshot => {
-                            let langs = {};
-                            langSnapshot.forEach(lang => (langs[lang.id] = lang.data()));
+                            let langs = [];
+                            langSnapshot.forEach(lang => {
+                                let langData = lang.data();
+                                langData['language'] = lang.id;
+                                langs.push(langData);
+                            });
                             curr['langs'] = langs;
                         })
-                    this.setState({ data: [...this.state.data, curr]});
-                    this.addFilled(curr);
+                        .then( () => {
+                            this.setState({ data: [...this.state.data, curr]});
+                            this.addFilled(curr);
+                        })
                 })
             })
             .catch(error => {
@@ -97,6 +103,10 @@ class ServicesPage extends Component {
     }
 }
 
+const WrappedServicesPage = Form.create({ name: "services" })(
+    ServicesPage
+);
+
 const condition = authUser => !!authUser;
 
-export default withAuthorization(condition)(ServicesPage);
+export default withAuthorization(condition)(WrappedServicesPage);
