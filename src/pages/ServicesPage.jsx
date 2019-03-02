@@ -69,7 +69,6 @@ class ServicesPage extends Component {
         const panes = this.state.panes;
         const activeKey = `${this.tabIndex++}`;
         panes.push({ title: 'Resource', content: <ServiceForm service={service} />, key: activeKey});
-        console.log(panes);
         this.setState({panes, activeKey});
     }
 
