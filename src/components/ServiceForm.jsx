@@ -5,17 +5,18 @@ import WrappedServiceModalForm from "./ServiceModalForm";
 class ServiceForm extends Component {
     constructor(props) {
         super(props);
-        let dataSource = [];
-        let visible = [];
+        let dataSource = {};
+        let visible = {};
         props.service['langs'].forEach( (lang, index) => {
-            dataSource.push({ 
+            dataSource[lang.language] = {
                 key: index, 
                 language: lang.language,
                 name: lang.name,
                 description: lang.description,
                 hours: lang.hours 
-            })
-            visible.push(false);
+            }
+
+            visible[lang.language] = false;
         });
 
         const columns = [{
@@ -40,7 +41,7 @@ class ServiceForm extends Component {
             key: 'action',
             render: (text, record) => (
                 <div>
-                    <a onClick={() => this.setVisible(record.key, true) }>Edit {record.language}</a>
+                    <a onClick={() => this.setVisible(record.language, true) }>Edit {record.language}</a>
                 </div>
             )
         }]
@@ -56,35 +57,34 @@ class ServiceForm extends Component {
         this.setState({visible, dataSource});
     }
 
-    setVisible = (key, value) => {
-        let visible = [...this.state.visible];
-        visible[key] = value;
+    setVisible = (lang, value) => {
+        console.log(this.state.visible);
+        console.log(lang);
+        let visible = this.state.visible;
+        visible[lang] = value;
         this.setState({ visible });
+        console.log(this.state.visible)
     }
     
     render() {
         return (
             <div>
-                <Table columns={this.state.columns} dataSource={this.state.dataSource} /> 
+                <Table columns={this.state.columns} dataSource={Object.values(this.state.dataSource)} /> 
                 {
-                    this.state.visible.map( (visible, index) => {
+                    Object.keys(this.state.visible).map( (language, index) => {
                         return (
-                        // <Modal
-                        //     key={index}
-                        //     title={`Edit ${this.state.dataSource[index].language}`}
-                        //     visible={visible}
-                        //     onCancel={() => this.setVisible(index, false)}
-                        // >
-                        <WrappedServiceModalForm 
-                            index={index}
-                            title={`${this.state.dataSource[index].language}`}
-                            visible={this.state.visible}
-                            onCancel={this.setVisible}
-                            data={this.state.dataSource} 
-                            serviceUid={this.props.service.id}
-                            updateServiceTable={this.updateVisibleAndData} 
-                        />
-                        // </Modal>
+                            <div>
+                                <WrappedServiceModalForm 
+                                    index={index}
+                                    language={language}
+                                    title={language}
+                                    visible={this.state.visible}
+                                    onCancel={this.setVisible}
+                                    data={this.state.dataSource} 
+                                    serviceUid={this.props.service.id}
+                                    updateServiceTable={this.updateVisibleAndData} 
+                                />
+                            </div>
                         )
                     })
                 }  

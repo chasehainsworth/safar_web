@@ -10,24 +10,22 @@ class ServiceModalForm extends Component {
 
 
     componentDidMount() {
-        this.props.form.setFieldsValue({ ...this.props.data[this.props.index] });
-        // this.props.form.validateFields();
+        this.props.form.setFieldsValue({ ...this.props.data[this.props.language] });
     }
     
     onOk = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
                 this.props.firebase
-                .serviceLanguage(this.props.serviceUid, this.props.data[this.props.index].language)
+                .serviceLanguage(this.props.serviceUid, this.props.language)
                 .set({ ...values }, { merge: true })
                 .then( () => {
                     let visible = this.props.visible;
-                    visible[this.props.index] = false;
+                    visible[this.props.language] = false;
                     let langData = values;
-                    langData["language"] = this.props.data[this.props.index].language;
+                    langData["language"] = this.props.language;
                     let data = this.props.data;
-                    data[this.props.index] = langData;
+                    data[this.props.language] = langData;
                     this.props.updateServiceTable(visible, data);
                 }
                 )
@@ -41,16 +39,16 @@ class ServiceModalForm extends Component {
         const descError =
         isFieldTouched("description") && getFieldError("description");
         const hoursError = isFieldTouched("hours") && getFieldError("hours");
+
         console.log(this.props.visible);
-        console.log(this.props.index);
         return (
             <div>
                 <Modal
-                    index={this.props.index}
+                    key={this.props.index}
                     title={this.props.title}
-                    visible={this.props.visible[this.props.index]}
+                    visible={this.props.visible[this.props.language]}
                     onOk={this.onOk}
-                    onCancel={() => this.props.onCancel(this.props.index, false)}
+                    onCancel={() => this.props.onCancel(this.props.language, false)}
                 >
                 <Form>
                     <Form.Item
