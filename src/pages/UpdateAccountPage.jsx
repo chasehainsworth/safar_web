@@ -67,9 +67,10 @@ class UpdateAccountPage extends Component {
   constructor(props) {
     super(props);
 
-    let uid = props.match.params.id
-      ? props.match.params.id
-      : props.firebase.auth.currentUser.uid;
+    let uid =
+      props.location.state && props.location.state.id
+        ? props.location.state.id
+        : props.firebase.auth.currentUser.uid;
 
     this.state = {
       uid,
@@ -116,18 +117,19 @@ class UpdateAccountPage extends Component {
                     status: "done",
                     url: url
                   };
-                  console.log(newFile);
                   formData.fileList.push(newFile);
                 })
                 .catch(error => {
-                  // Handle any errors
+                  // Broken link, remove the image from the list
+                  const index = data.images.indexOf(img);
+                  if (index !== -1) data.images.splice(index, 1);
                 });
             });
           }
 
           this.prepareForm(rest);
           this.breakTags();
-          console.log("form", formData);
+          // console.log("form", formData);
           this.setState({ isLoadingData: false });
 
           this.props.firebase
@@ -143,13 +145,6 @@ class UpdateAccountPage extends Component {
           this.setState({ isLoadingData: false, isLoadingLang: false });
         }
       });
-    /*
-    1. Check firebase by uid
-    2. If document is not null, get data and langs
-    3. Put data into formData
-    4. Push langs as array in hasData
-    5. When user chooses language, if lang is in hasData, pull lang data from firebase
-    */
   }
 
   next() {

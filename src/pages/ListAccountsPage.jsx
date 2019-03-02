@@ -79,7 +79,9 @@ class ListAccountsPage extends Component {
             </List.Item>
           ) : (
             <List.Item>
-              <Link to={"/UpdateAccount/" + item.uid}>
+              <Link
+                to={{ pathname: "/UpdateAccount/", state: { id: item.uid } }}
+              >
                 <Card title={item.email}>
                   <b>Languages:</b>
                   {item.languages.map(c => {

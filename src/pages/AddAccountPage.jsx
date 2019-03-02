@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button } from "antd";
+import { Form, Icon, Input, Button, Modal } from "antd";
 import { withFirebase } from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
@@ -25,31 +25,35 @@ class SignUpPage extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
-      const { username, email, passOne } = values;
+      const { email, passOne } = values;
       const role = ROLES.PROVIDER;
       if (!fieldErr) {
         this.props.firebase
           .doCreateUserWithEmailAndPassword(email, passOne)
           .then(authUser => {
             // Create a user in your Firebase realtime database
-            return this.props.firebase.user(authUser.user.uid).set(
+            let r = this.props.firebase.user(authUser.user.uid).set(
               {
-                username,
                 email,
                 role
               },
               { merge: true }
             );
+            this.props.history.push(
+              ROUTES.UPDATE_ACC + "/" + authUser.user.uid
+            );
+            return r;
           })
           // .then(() => {
           //   return this.props.firebase.doSendEmailVerification();
           // })
-          .then(authUser => {
-            console.log("Success:", values.username);
-            this.props.history.push(ROUTES.HOME);
-          })
           .catch(firebaseErr => {
-            console.log("Failed:", firebaseErr);
+            console.log(firebaseErr);
+            Modal.error({
+              title: "Failed",
+              content: firebaseErr.message,
+              centered: true
+            });
           });
       }
     });
@@ -80,7 +84,6 @@ class SignUpPage extends Component {
       isFieldTouched
     } = this.props.form;
 
-    const noUserError = isFieldTouched("username") && getFieldError("username");
     const noEmailError = isFieldTouched("email") && getFieldError("email");
     const noPassOneError =
       isFieldTouched("passOne") && getFieldError("passOne");
@@ -89,19 +92,6 @@ class SignUpPage extends Component {
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Form.Item
-          validateStatus={noUserError ? "error" : ""}
-          help={noUserError || ""}
-        >
-          {getFieldDecorator("username", {
-            rules: [{ required: true, message: "Please input your username!" }]
-          })(
-            <Input
-              prefix={<Icon type='user' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Username'
-            />
-          )}
-        </Form.Item>
         <Form.Item
           validateStatus={noEmailError ? "error" : ""}
           help={noEmailError || ""}
@@ -163,4 +153,5 @@ class SignUpPage extends Component {
 
 const WrappedSignUpPage = Form.create({ name: "signup" })(SignUpPage);
 
+const condition = authUser => !!authUser && authUser.role === ROLES.ADMIN;
 export default withRouter(withFirebase(WrappedSignUpPage));

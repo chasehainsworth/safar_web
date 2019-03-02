@@ -1,6 +1,7 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Upload, Icon, Modal, Row, Col, Form, Input } from "antd";
+import { Modal, Form, Input } from "antd";
+import CustomUpload from "./CustomUpload";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 
@@ -9,74 +10,18 @@ const initial = "";
 class InfoForm extends StepFormComponent {
   state = {
     previewVisible: false,
-    previewImage: "",
-    fileList: this.props.formData.fileList ? this.props.formData.fileList : []
+    previewImage: ""
   };
 
   handleCancel = () => this.setState({ previewVisible: false });
 
   handlePreview = file => {
-    console.log("file", file);
+    // TODO: Remove thumburl and preview from URL
+    //  console.log("file", file);
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true
     });
-  };
-
-  handleChange = ({ fileList }) => {
-    console.log("filelist", fileList);
-    this.props.formData.fileList = [...fileList];
-    this.setState({ fileList: this.props.formData.fileList });
-  };
-
-  handleRemove = file => {
-    const filename = file.uid + "-" + file.name;
-    this.props.formData.images.filter(image => image === filename);
-    this.props.firebase
-      .imageUploads()
-      .child(filename)
-      .delete()
-      .then(function() {
-        return true;
-      })
-      .catch(function(error) {
-        return false;
-      });
-  };
-
-  firebaseUpload = file => {
-    console.log(this);
-    const filename = file.uid + "-" + file.name;
-    this.props.formData.images.push(filename);
-    let uploadTask = this.props.firebase
-      .imageUploads()
-      .child(filename)
-      .put(file);
-
-    uploadTask.on(
-      "state_changed",
-      snapshot => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        file.status = "uploading";
-      },
-      error => {
-        // Handle unsuccessful uploads
-        file.status = "error";
-        file.response = error;
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-          console.log("File available at", downloadURL);
-          file.status = "done";
-        });
-      }
-    );
-    return false;
   };
 
   checkPhoneNumber = (rule, value, callback) => {
@@ -94,6 +39,7 @@ class InfoForm extends StepFormComponent {
   };
 
   checkImages = (rule, value, callback) => {
+    // console.log(this.props.formData.images);
     if (this.props.formData.images.length < 1) {
       callback("Please upload at least one image.");
     } else {
@@ -102,13 +48,7 @@ class InfoForm extends StepFormComponent {
   };
 
   render() {
-    const { previewVisible, previewImage, fileList } = this.state;
-    const uploadButton = (
-      <div>
-        <Icon type='plus' />
-        <div className='ant-upload-text'>Upload</div>
-      </div>
-    );
+    const { previewVisible, previewImage } = this.state;
 
     const {
       getFieldDecorator,
@@ -177,27 +117,12 @@ class InfoForm extends StepFormComponent {
           help={imageError || ""}
           {...formItemLayout}
           label='Upload Images'
+          required={true}
         >
-          <div>
-            {getFieldDecorator("image", {
-              rules: [
-                { required: true, message: "Enter organization image" },
-                { validator: this.checkImages }
-              ]
-            })(
-              <Upload
-                accept='image/*'
-                action=''
-                listType='picture-card'
-                fileList={fileList}
-                onPreview={this.handlePreview}
-                onChange={this.handleChange}
-                beforeUpload={this.firebaseUpload}
-                onRemove={this.handleRemove}
-              >
-                {fileList.length >= 3 ? null : uploadButton}
-              </Upload>
-            )}
+          <div className='clearfix'>
+            {getFieldDecorator("images", {
+              rules: [{ validator: this.checkImages }]
+            })(<CustomUpload onPreview={this.handlePreview} {...this.props} />)}
             <Modal
               visible={previewVisible}
               footer={null}
