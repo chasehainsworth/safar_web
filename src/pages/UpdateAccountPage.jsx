@@ -129,7 +129,7 @@ class UpdateAccountPage extends Component {
 
           this.prepareForm(rest);
           this.breakTags();
-          console.log("form", formData);
+          // console.log("form", formData);
           this.setState({ isLoadingData: false });
 
           this.props.firebase
