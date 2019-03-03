@@ -30,7 +30,6 @@ class ServicesPage extends Component {
             .then(collectionSnapshot => {
                 collectionSnapshot.forEach(docSnapshot => {
                     let service = { images: docSnapshot.data().images, id: docSnapshot.id }
-                    console.log(service);
                     this.props.firebase
                         .service(service.id)
                         .collection("languages")
