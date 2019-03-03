@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Modal, Form, Button, Menu, Dropdown, Icon } from "antd";
+import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col } from "antd";
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext"
@@ -93,8 +93,10 @@ class ServiceTable extends Component {
             })
         }
         this.props.form.setFieldsValue({ ...formData });
+        this.props.form.validateFields();
     }
 
+    // Firebase Image Uploading
     handleCancel = () => this.setState({ previewVisible: false });
 
     handlePreview = file => {
@@ -106,16 +108,34 @@ class ServiceTable extends Component {
         });
     };
 
+    checkImages = (rule, value, callback) => {
+        if (formData.images.length < 1) {
+        callback("Please upload at least one image.");
+        } else {
+        callback();
+        }
+    };
+
+    handleSubmit = () => {
+        console.log(this.props.service.id);
+        this.props.firebase
+            .service(this.props.service.id)
+            .set({ images: formData.images }, { merge: true })
+            .catch(e => console.log(e));
+    }
+
     updateFromChild = (visible, dataSource) => {
         this.setState({visible, dataSource, newLanguage: ''});
     }
 
+    // Used in columns to pull up modal
     setVisible = (lang, value) => {
         let visible = this.state.visible;
         visible[lang] = value;
         this.setState({ visible });
     }
     
+    // Used by Add New Language dropdown to pull up modal
     handleMenuClick = e => {
        let newLanguage = e.key;
        let modalsVisible = this.state.modalsVisible;
@@ -135,10 +155,9 @@ class ServiceTable extends Component {
             }
             </Menu>
         )
-        
-        console.log(menu);
-
+        const imageError = formData.images.length > 0;
         const { previewVisible, previewImage } = this.state;
+        const { getFieldDecorator, getFieldError } = this.props.form;
         return (
             <div>
                 <Table columns={this.state.columns} dataSource={Object.values(this.state.dataSource)} /> 
@@ -147,10 +166,8 @@ class ServiceTable extends Component {
                         return (
                             <div>
                                 <WrappedServiceModal 
-                                    // index={index}
                                     language={language}
                                     modalsVisible={this.state.modalsVisible}
-                                    // onCancel={this.setVisible}
                                     data={this.state.dataSource} 
                                     serviceUid={this.props.service.id}
                                     updateParent={this.updateFromChild} 
@@ -159,39 +176,75 @@ class ServiceTable extends Component {
                         )
                     })
                 }  
-                <Form>
-                    <Form.Item
-                    label='Upload Image'
-                    >
-                    <div className='clearfix'>
-                        <CustomUpload 
-                        onPreview={this.handlePreview} 
-                        formData={formData}
-                        formObject={this.props.form}
-                        maxUploads={1} 
-                        />
-                        <Modal
-                        visible={previewVisible}
-                        footer={null}
-                        onCancel={this.handleCancel}
-                        >
-                        <img alt='example' style={{ width: "100%" }} src={previewImage} />
-                        </Modal>
-                    </div>
-                    </Form.Item>
-                </Form>
+                <Row>
+                    <Col offset={3} span={3}>
+                        <Form>
+                            <Form.Item
+                            validateStatus={imageError ? "error" : ""}
+                            help={imageError || ""}
+                            label='Upload Image'
+                            required={true}
+                            >
+                                <div className='clearfix'>
+                                    {getFieldDecorator("images", {
+                                    rules: [{ validator: this.checkImages }]
+                                    })(
+                                    <CustomUpload 
+                                        onPreview={this.handlePreview} 
+                                        maxUploads={1} 
+                                        formData={formData}
+                                        formObject={this.props.form}
+                                    />)}
+                                    <Modal
+                                        visible={previewVisible}
+                                        footer={null}
+                                        onCancel={this.handleCancel}
+                                    >
+                                    <img alt='example' style={{ width: "100%" }} src={previewImage} />
+                                    </Modal>
+                                </div>
+                            </Form.Item>
+                            {/* <Form.Item
+                            label='Upload Image'
+                            >
+                            <div className='clearfix'>
+                                <CustomUpload 
+                                onPreview={this.handlePreview} 
+                                formData={formData}
+                                formObject={this.props.form}
+                                maxUploads={1} 
+                                />
+                                <Modal
+                                visible={previewVisible}
+                                footer={null}
+                                onCancel={this.handleCancel}
+                                >
+                                <img alt='example' style={{ width: "100%" }} src={previewImage} />
+                                </Modal>
+                            </div>
+                            </Form.Item> */}
+                            <Button 
+                                onClick={this.handleSubmit}
+                                type='primary' 
+                                disabled={getFieldError("images")}>
+                                Submit Image
+                            </Button>
+                        </Form>
+                    </Col>
+                    <Col span={3}>
+                        <Dropdown overlay={menu}>
+                            <Button>
+                                Add New Language <Icon type="down" />
+                            </Button>
+                        </Dropdown>
+                    </Col>
+                </Row>
 
-                <Dropdown overlay={menu}>
-                    <Button>
-                        Add New Language <Icon type="down" />
-                    </Button>
-                </Dropdown>
                 
                 {this.state.newLanguage.length > 0 && (
                     <WrappedServiceModal 
                         language={this.state.newLanguage}
                         modalsVisible={this.state.modalsVisible}
-                        // onCancel={this.setVisible}
                         data={this.state.dataSource} 
                         serviceUid={this.props.service.id}
                         updateParent={this.updateFromChild} 

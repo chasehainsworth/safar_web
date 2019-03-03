@@ -81,7 +81,7 @@ class ServicesPage extends Component {
     render() {
         return (
             <div>
-                <div style={{ marginBottom: 16 }}>
+                <div style={{ margin: 16 }}>
                     <Button onClick={this.addBlank}>Add New Resource</Button> 
                 </div>
                 <Tabs
