@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Tabs, Form } from "antd";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
-import ServiceForm from "../components/ServiceForm";
+import ServiceTable from "../components/ServiceTable";
 
 const TabPane = Tabs.TabPane;
 
@@ -29,7 +29,8 @@ class ServicesPage extends Component {
             .get()
             .then(collectionSnapshot => {
                 collectionSnapshot.forEach(docSnapshot => {
-                    let service = { image: docSnapshot.data().image, id: docSnapshot.id }
+                    let service = { images: docSnapshot.data().images, id: docSnapshot.id }
+                    console.log(service);
                     this.props.firebase
                         .service(service.id)
                         .collection("languages")
@@ -59,16 +60,22 @@ class ServicesPage extends Component {
     }
 
     addBlank = () => {
-        const panes = this.state.panes;
-        const activeKey = `${this.tabIndex++}`;
-        panes.push({ title: 'New Resource', content: <ServiceForm service={''} />, key: activeKey});
-        this.setState({panes, activeKey});
+        this.props.firebase
+            .services()
+            .add({ provider: this.state.uid })
+            .then( doc => {
+                const panes = this.state.panes;
+                const activeKey = `${this.tabIndex++}`;
+                let service = {id: doc.id };
+                panes.push({ title: 'New Resource', content: <ServiceTable service={service} />, key: activeKey});
+                this.setState({panes, activeKey});
+            });
     }
 
     addFilled = service => {
         const panes = this.state.panes;
         const activeKey = `${this.tabIndex++}`;
-        panes.push({ title: 'Resource', content: <ServiceForm service={service} />, key: activeKey});
+        panes.push({ title: 'Resource', content: <ServiceTable service={service} />, key: activeKey});
         this.setState({panes, activeKey});
     }
 

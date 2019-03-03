@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Form, Input, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { withAuthorization } from "../components/Firebase";
+import { withAuthorization } from "./Firebase";
 
-class ServiceModalForm extends Component {
+class ServiceModal extends Component {
     constructor(props) {
         super(props);
     }
@@ -12,7 +12,13 @@ class ServiceModalForm extends Component {
     componentDidMount() {
         this.props.form.setFieldsValue({ ...this.props.data[this.props.language] });
     }
-    
+
+    onCancel = () => {
+        let modalsVisible = this.props.modalsVisible;
+        modalsVisible[this.props.language] = false;
+        this.props.updateParent(modalsVisible, this.props.data);
+    }
+
     onOk = () => {
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -20,13 +26,13 @@ class ServiceModalForm extends Component {
                 .serviceLanguage(this.props.serviceUid, this.props.language)
                 .set({ ...values }, { merge: true })
                 .then( () => {
-                    let visible = this.props.visible;
-                    visible[this.props.language] = false;
+                    let modalsVisible = this.props.modalsVisible;
+                    modalsVisible[this.props.language] = false;
                     let langData = values;
                     langData["language"] = this.props.language;
                     let data = this.props.data;
                     data[this.props.language] = langData;
-                    this.props.updateServiceTable(visible, data);
+                    this.props.updateParent(modalsVisible, data);
                 }
                 )
             }
@@ -40,15 +46,14 @@ class ServiceModalForm extends Component {
         isFieldTouched("description") && getFieldError("description");
         const hoursError = isFieldTouched("hours") && getFieldError("hours");
 
-        console.log(this.props.visible);
         return (
             <div>
                 <Modal
-                    key={this.props.index}
-                    title={this.props.title}
-                    visible={this.props.visible[this.props.language]}
+                    // key={this.props.index}
+                    title={this.props.language}
+                    visible={this.props.modalsVisible[this.props.language]}
                     onOk={this.onOk}
-                    onCancel={() => this.props.onCancel(this.props.language, false)}
+                    onCancel={this.onCancel}
                 >
                 <Form>
                     <Form.Item
@@ -92,7 +97,7 @@ class ServiceModalForm extends Component {
     }
 }
 
-const WrappedServiceModalForm = Form.create()(ServiceModalForm);
+const WrappedServiceModal = Form.create()(ServiceModal);
 
 const condition = authUser => !!authUser;
-export default withAuthorization(condition)(WrappedServiceModalForm);
+export default withAuthorization(condition)(WrappedServiceModal);
