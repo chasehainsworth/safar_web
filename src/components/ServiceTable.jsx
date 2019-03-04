@@ -61,7 +61,8 @@ class ServiceTable extends Component {
             columns,
             dataSource,
             modalsVisible,
-            newLanguage: ""
+            newLanguage: "",
+            isLoadingImage: true
         }
     }
 
@@ -86,19 +87,16 @@ class ServiceTable extends Component {
                     };
                     formData.fileList.push(newFile);
                     formData.images = [fileName];
+                    this.setState({ isLoadingImage: false });
+                })
+                .catch(error => {
+                    // Broken link, remove the image
+                    const index = images.indexOf(img);
+                    if (index !== -1) images.splice(index, 1);
+                    this.setState({ isLoadingImage: false });
+                });
             })
-            .catch(error => {
-                // Broken link, remove the image
-                const index = images.indexOf(img);
-                if (index !== -1) images.splice(index, 1);
-            });
-            })
-        }
-
-        // This does not work.
-        console.log(formData);
-        this.props.form.setFieldsValue({ ...formData });
-        console.log(this.props.form.getFieldValue("images"));
+        } else { this.setState({ isLoadingImage: false })}
     }
 
     // Firebase Image Uploading
@@ -182,8 +180,7 @@ class ServiceTable extends Component {
         )
         const imageError = formData.images.length > 0;
         const { getFieldDecorator } = this.props.form;
-        console.log(formData);
-        return (
+        return this.state.isLoadingImage ? null : (
             <div>
                 <Row type="flex" justify="end">
                     <Col>
@@ -200,8 +197,7 @@ class ServiceTable extends Component {
                                         formObject={this.props.form}
                                         text={true}
                                         serviceId={this.props.serviceKey}
-                                    />
-                                )}
+                                    />)}
                             </Form.Item>
                             <Form.Item>
                                 <Dropdown overlay={menu}>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Tabs, Form, Icon } from "antd";
-import { withAuthorization, AuthUserContext } from "../components/Firebase";
+import { withAuthorization } from "../components/Firebase";
 import ServiceTable from "../components/ServiceTable";
 
 const TabPane = Tabs.TabPane;
@@ -11,12 +11,10 @@ class ServicesPage extends Component {
         super(props);
         this.tabIndex = -1;
         const panes = [];
-        // const data = [];
         const uid = props.firebase.auth.currentUser.uid;
         this.state = {
             activeKey: '-1',
             panes,
-            // data,
             uid,
             loadingLangs: true
         };
@@ -44,7 +42,6 @@ class ServicesPage extends Component {
                             service['langs'] = langs;
                         })
                         .then( () => {
-                            // this.setState({ data: [...this.state.data, service]});
                             this.addFilled(service);
                         })
                 })
@@ -96,10 +93,26 @@ class ServicesPage extends Component {
             });
     }
 
+    findServiceName = service => {
+        console.log(service);
+        if(!service.langs || service.langs.length === 0) {
+            return 'Service';
+        }
+        else {
+            for(let lang in service.langs) {
+                if(lang.language === 'English') {
+                    return lang.name;
+                }
+            }
+        }
+        return service.langs[0].name;
+    }
+
     addFilled = service => {
         const panes = this.state.panes;
         const activeKey = service.id;
-        panes.push({ title: 'Service', content: <ServiceTable service={service} serviceKey={activeKey} remove={this.remove} />, key: activeKey});
+        const serviceName = this.findServiceName(service); 
+        panes.push({ title: serviceName, content: <ServiceTable service={service} serviceKey={activeKey} remove={this.remove} />, key: activeKey});
         this.setState({panes, activeKey});
     }
 
