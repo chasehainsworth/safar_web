@@ -4,6 +4,7 @@ import { Table, Divider, Button } from "antd";
 import { Link } from "react-router-dom";
 
 import * as ROLES from "../constants/roles";
+import * as ROUTES from "../constants/routes";
 
 const currentLanguage = "English";
 
@@ -64,11 +65,17 @@ const columns = [
     key: "actions",
     render: (text, record) => (
       <span>
-        <Link to={{ pathname: "/UpdateAccount/", state: { id: record.uid } }}>
+        <Link
+          to={{ pathname: ROUTES.UPDATE_ACC + "/", state: { id: record.uid } }}
+        >
           <Button icon='edit'>Edit Provider Info</Button>
         </Link>
         <Divider type='vertical' />
-        <Button icon='diff'>Edit Services</Button>
+        <Link
+          to={{ pathname: ROUTES.SERVICES + "/", state: { id: record.uid } }}
+        >
+          <Button icon='diff'>Edit Services</Button>
+        </Link>
       </span>
     )
   }
