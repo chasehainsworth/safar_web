@@ -122,7 +122,7 @@ class InfoForm extends StepFormComponent {
           <div className='clearfix'>
             {getFieldDecorator("images", {
               rules: [{ validator: this.checkImages }]
-            })(<CustomUpload onPreview={this.handlePreview} {...this.props} />)}
+            })(<CustomUpload onPreview={this.handlePreview} maxUploads={3} {...this.props} />)}
             <Modal
               visible={previewVisible}
               footer={null}

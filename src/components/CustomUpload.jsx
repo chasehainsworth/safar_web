@@ -143,7 +143,7 @@ class CustomUpload extends Upload {
         beforeUpload={this.firebaseUpload}
         onRemove={this.handleRemove}
       >
-        {fileList.length >= 3 ? null : uploadButton}
+        {fileList.length >= this.props.maxUploads ? null : uploadButton}
       </Upload>
     );
   }
