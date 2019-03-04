@@ -1,29 +1,15 @@
 import React, { Component } from "react";
+import { withAuthorization } from "../components/Firebase";
+
+import * as ROLES from "../constants/roles";
 
 class AdminPage extends Component {
   state = {};
   render() {
-    return (
-      <div className='text-center'>
-        <h1 className='subtitle'>Account</h1>
-        <Row className='spaced'>
-          <Link to={ROUTES.LIST_ACC}>
-            <Button type='default' size='large'>
-              List All Accounts
-            </Button>
-          </Link>
-        </Row>
-        <Row className='spaced'>
-          <Button type='default' size='large'>
-            List All Services
-          </Button>
-        </Row>
-        <Row>
-          <SignOutButton />
-        </Row>
-      </div>
-    );
+    return <div />;
   }
 }
 
-export default AdminPage;
+const condition = authUser => !!authUser && authUser.role === ROLES.ADMIN;
+
+export default withAuthorization(condition)(AdminPage);

@@ -14,7 +14,7 @@ import AddAccountPage from "./pages/AddAccountPage";
 import LoginPage from "./pages/LoginPage";
 import ServicesPage from "./pages/ServicesPage";
 import TopMenu from "./components/TopMenu";
-import ListAccountsPage from "./pages/ListAccountsPage";
+import AdminPage from "./pages/AdminPage";
 
 const { Content, Footer } = Layout;
 
@@ -26,16 +26,12 @@ class App extends Component {
         <Content>
           <Switch>
             <Route exact path='/' component={HomePage} />
-            <Route
-              path={ROUTES.UPDATE_ACC + "/:id"}
-              component={UpdateAccountPage}
-            />
+
             <Route path={ROUTES.UPDATE_ACC} component={UpdateAccountPage} />
-            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.ADD_ACC} component={AddAccountPage} />
             <Route path={ROUTES.LOGIN} component={LoginPage} />
             <Route path={ROUTES.SERVICES} component={ServicesPage} />
-            <Route path={ROUTES.LIST_ACC} component={ListAccountsPage} />
+            <Route path={ROUTES.ADMIN} component={AdminPage} />
           </Switch>
         </Content>
         <Footer style={{ textAlign: "right" }}>

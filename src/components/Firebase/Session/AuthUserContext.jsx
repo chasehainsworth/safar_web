@@ -1,5 +1,6 @@
 import React from "react";
 import { withFirebase } from "../";
+import { withRouter } from "react-router-dom";
 
 const AuthUserContext = React.createContext(null);
 
@@ -14,11 +15,14 @@ const withAuthentication = Component => {
     }
 
     componentDidMount() {
-      this.listener = this.props.firebase.onAuthUserListener(authUser => {
-        authUser
-          ? this.setState({ authUser })
-          : this.setState({ authUser: null });
-      });
+      this.listener = this.props.firebase.onAuthUserListener(
+        authUser => {
+          authUser
+            ? this.setState({ authUser })
+            : this.setState({ authUser: null });
+        },
+        () => this.setState({ authUser: null })
+      );
     }
 
     componentWillUnmount() {
@@ -34,7 +38,7 @@ const withAuthentication = Component => {
     }
   }
 
-  return withFirebase(WithAuthentication);
+  return withRouter(withFirebase(WithAuthentication));
 };
 
 export default AuthUserContext;
