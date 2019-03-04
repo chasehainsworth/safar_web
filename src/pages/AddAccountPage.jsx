@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
-import { withFirebase } from "../components/Firebase";
-import { withRouter } from "react-router-dom";
+import { withAuthorization } from "../components/Firebase";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
@@ -91,62 +90,73 @@ class SignUpPage extends Component {
       isFieldTouched("passTwo") && getFieldError("passTwo");
 
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Item
-          validateStatus={noEmailError ? "error" : ""}
-          help={noEmailError || ""}
-        >
-          {getFieldDecorator("email", {
-            rules: [{ required: true, message: "Please input your email!" }]
-          })(
-            <Input
-              prefix={<Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Email'
-            />
-          )}
-        </Form.Item>
-        <Form.Item
-          validateStatus={noPassOneError ? "error" : ""}
-          help={noPassOneError || ""}
-        >
-          {getFieldDecorator("passOne", {
-            rules: [
-              { required: true, message: "Please input a password!" },
-              { validator: this.validateToNextPassword }
-            ]
-          })(
-            <Input
-              prefix={<Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Password'
-              type='password'
-            />
-          )}
-        </Form.Item>
-        <Form.Item
-          validateStatus={noPassTwoError ? "error" : ""}
-          help={noPassTwoError || ""}
-        >
-          {getFieldDecorator("passTwo", {
-            rules: [
-              { required: true, message: "Please repeat your password!" },
-              { validator: this.compareToFirstPassword }
-            ]
-          })(
-            <Input
-              prefix={<Icon type='lock' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Re-enter your password'
-              type='password'
-            />
-          )}
-        </Form.Item>
-        <Button
-          htmlType='submit'
-          type='primary'
-          disabled={hasErrors(getFieldsError())}
-        >
-          Create Account
-        </Button>
-      </Form>
+      <div key='title' className='smallFormWrapper'>
+        <h1>Create Account</h1>
+        <div className='smallForm'>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Item
+              validateStatus={noEmailError ? "error" : ""}
+              help={noEmailError || ""}
+            >
+              {getFieldDecorator("email", {
+                rules: [{ required: true, message: "Please input your email!" }]
+              })(
+                <Input
+                  prefix={
+                    <Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  placeholder='Email'
+                />
+              )}
+            </Form.Item>
+            <Form.Item
+              validateStatus={noPassOneError ? "error" : ""}
+              help={noPassOneError || ""}
+            >
+              {getFieldDecorator("passOne", {
+                rules: [
+                  { required: true, message: "Please input a password!" },
+                  { validator: this.validateToNextPassword }
+                ]
+              })(
+                <Input
+                  prefix={
+                    <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  placeholder='Password'
+                  type='password'
+                />
+              )}
+            </Form.Item>
+            <Form.Item
+              validateStatus={noPassTwoError ? "error" : ""}
+              help={noPassTwoError || ""}
+            >
+              {getFieldDecorator("passTwo", {
+                rules: [
+                  { required: true, message: "Please repeat your password!" },
+                  { validator: this.compareToFirstPassword }
+                ]
+              })(
+                <Input
+                  prefix={
+                    <Icon type='lock' style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  placeholder='Re-enter the password'
+                  type='password'
+                />
+              )}
+            </Form.Item>
+            <Button
+              htmlType='submit'
+              type='primary'
+              disabled={hasErrors(getFieldsError())}
+            >
+              Create Account
+            </Button>
+          </Form>
+        </div>
+      </div>
     );
   }
 }
@@ -154,4 +164,4 @@ class SignUpPage extends Component {
 const WrappedSignUpPage = Form.create({ name: "signup" })(SignUpPage);
 
 const condition = authUser => !!authUser && authUser.role === ROLES.ADMIN;
-export default withRouter(withFirebase(WrappedSignUpPage));
+export default withAuthorization(condition)(WrappedSignUpPage);

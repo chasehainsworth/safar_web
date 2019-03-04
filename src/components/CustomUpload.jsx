@@ -16,7 +16,7 @@ class CustomUpload extends Upload {
   }
 
   onProgress = (e, file) => {
-    this.uploadRef.onProgress(e, file);
+    this.refs.uploadRef.onProgress(e, file);
   };
 
   handleChange = ({ e, fileList, file }) => {
@@ -104,7 +104,7 @@ class CustomUpload extends Upload {
         newFL[idx].status = "error";
         newFL[idx]["response"] = error.message;
 
-        this.uploadRef.onChange({ file: file, fileList: newFL });
+        this.refs.uploadRef.onChange({ file: file, fileList: newFL });
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -116,7 +116,7 @@ class CustomUpload extends Upload {
           const idx = newFL.findIndex(x => x.uid === file.uid);
           newFL[idx].status = "done";
 
-          this.uploadRef.onChange({ file: file, fileList: newFL });
+          this.refs.uploadRef.onChange({ file: file, fileList: newFL });
         });
       }
     );
@@ -153,7 +153,7 @@ class CustomUpload extends Upload {
 
     return (
       <Upload
-        wrappedComponentRef={inst => (this.uploadRef = inst)}
+        ref='uploadRef'
         accept='image/*'
         action=''
         listType={listType}

@@ -6,8 +6,7 @@ import { Link } from "react-router-dom";
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
 
-const currentLanguage = "English";
-
+//TODO: Move these into app.css
 const pStyle = {
   margin: 5,
   padding: 0
@@ -19,7 +18,7 @@ const oddRows = {
 
 const columns = [
   {
-    title: "Name",
+    title: "Provider Name",
     dataIndex: "names",
     key: "name",
     render: langs => (
@@ -34,7 +33,7 @@ const columns = [
     )
   },
   {
-    title: "Languages",
+    title: "Submitted Languages",
     dataIndex: "languages",
     key: "langs",
     render: langs => (
@@ -49,7 +48,7 @@ const columns = [
     )
   },
   {
-    title: "Services",
+    title: "# of Services",
     dataIndex: "services",
     key: "services"
     // render: servs =>
@@ -173,10 +172,6 @@ class AdminPage extends Component {
     });
   }
 
-  rowColor = (record, rowIndex) => {
-    if (rowIndex % 2 === 1) return { style: { oddRows } };
-  };
-
   componentWillUnmount() {
     this.unsubscribe();
   }
@@ -184,12 +179,21 @@ class AdminPage extends Component {
   render() {
     console.log(this.state.providers);
     return (
-      <Table
-        columns={columns}
-        dataSource={this.state.providers}
-        loading={this.state.loadingLangs && this.state.loadingServices}
-        onRow={(record, rowIndex) => rowIndex % 2 === 1 && { style: oddRows }}
-      />
+      <div style={{ padding: 50 }}>
+        <div style={{ textAlign: "right", marginBottom: 10 }}>
+          <Link to={ROUTES.ADD_ACC}>
+            <Button type='primary' icon='plus'>
+              Add New Provider Account
+            </Button>
+          </Link>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={this.state.providers}
+          loading={this.state.loadingLangs && this.state.loadingServices}
+          onRow={(record, rowIndex) => rowIndex % 2 === 1 && { style: oddRows }}
+        />
+      </div>
     );
   }
 }

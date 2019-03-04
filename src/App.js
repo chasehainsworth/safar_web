@@ -8,7 +8,6 @@ import { withAuthentication } from "./components/Firebase";
 import * as ROUTES from "./constants/routes";
 
 import HomePage from "./pages/HomePage";
-import AccountPage from "./pages/AccountPage";
 import UpdateAccountPage from "./pages/UpdateAccountPage";
 import AddAccountPage from "./pages/AddAccountPage";
 import LoginPage from "./pages/LoginPage";

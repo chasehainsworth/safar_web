@@ -51,6 +51,45 @@
   margin: 20px;
 }
 
+.smallFormWrapper {
+  max-width: 500px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.smallForm {
+  padding: 24px;
+  background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+}
+
+.buttonLink {
+  color: #1890ff;
+  background-color: transparent;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  border: none;
+  -webkit-text-decoration-skip: objects;
+}
+.buttonLink:focus {
+  /* text-decoration: underline; */
+  -webkit-text-decoration-skip: ink;
+  text-decoration-skip-ink: auto;
+}
+.buttonLink:hover {
+  color: #40a9ff;
+}
+.buttonLink:active {
+  color: #096dd9;
+}
+.buttonLink:active,
+.buttonLink:hover {
+  outline: 0;
+  text-decoration: none;
+}
+
 /* .ant-tabs-extra-content {
   line-height: 50px;
 } */
