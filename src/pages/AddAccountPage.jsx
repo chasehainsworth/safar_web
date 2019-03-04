@@ -144,7 +144,7 @@ class SignUpPage extends Component {
           type='primary'
           disabled={hasErrors(getFieldsError())}
         >
-          Sign Up
+          Create Account
         </Button>
       </Form>
     );
