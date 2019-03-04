@@ -63,7 +63,7 @@ class LoginPage extends Component {
         this.setState({ forgotPassword: false });
       })
       .catch(error => {
-        this.setState({ error });
+        errorMessage("Failed to send email", error.message);
       });
   };
 
@@ -80,54 +80,68 @@ class LoginPage extends Component {
       isFieldTouched("password") && getFieldError("password");
 
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Item
-          validateStatus={noEmailError ? "error" : ""}
-          help={noEmailError || ""}
-        >
-          {getFieldDecorator("email", {
-            rules: [{ required: true, message: "Please input your email!" }]
-          })(
-            <Input
-              prefix={<Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />}
-              placeholder='Email'
-            />
-          )}
-        </Form.Item>
-        {!this.state.forgotPassword && (
-          <Form.Item
-            validateStatus={noPassOneError ? "error" : ""}
-            help={noPassOneError || ""}
-          >
-            {getFieldDecorator("password", {
-              rules: [
-                { required: true, message: "Please input a password!" },
-                { validator: this.validateToNextPassword }
-              ]
-            })(
-              <Input
-                prefix={
-                  <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
-                }
-                placeholder='Password'
-                type='password'
-              />
+      <div className='smallFormWrapper'>
+        <h1>Login</h1>
+        <div className='smallForm'>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Item
+              validateStatus={noEmailError ? "error" : ""}
+              help={noEmailError || ""}
+            >
+              {getFieldDecorator("email", {
+                rules: [{ required: true, message: "Please input your email!" }]
+              })(
+                <Input
+                  prefix={
+                    <Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  placeholder='Email'
+                />
+              )}
+            </Form.Item>
+            {!this.state.forgotPassword && (
+              <Form.Item
+                validateStatus={noPassOneError ? "error" : ""}
+                help={noPassOneError || ""}
+              >
+                {getFieldDecorator("password", {
+                  rules: [
+                    { required: true, message: "Please input a password!" },
+                    { validator: this.validateToNextPassword }
+                  ]
+                })(
+                  <Input
+                    prefix={
+                      <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    placeholder='Password'
+                    type='password'
+                  />
+                )}
+              </Form.Item>
             )}
-          </Form.Item>
-        )}
-        <Button
-          htmlType='submit'
-          type='primary'
-          disabled={hasErrors(getFieldsError())}
-        >
-          {this.state.forgotPassword ? "Send reset password email" : "Login"}
-        </Button>
-        {!this.state.forgotPassword && (
-          <a onClick={() => this.setState({ forgotPassword: true })}>
-            Forgot Password?
-          </a>
-        )}
-      </Form>
+            <Button
+              htmlType='submit'
+              type='primary'
+              disabled={hasErrors(getFieldsError())}
+            >
+              {this.state.forgotPassword
+                ? "Send reset password email"
+                : "Login"}
+            </Button>
+
+            <button
+              onClick={() =>
+                this.setState({ forgotPassword: !this.state.forgotPassword })
+              }
+              style={{ marginLeft: 10 }}
+              className='buttonLink'
+            >
+              {!this.state.forgotPassword ? "Forgot Password?" : "Go back"}
+            </button>
+          </Form>
+        </div>
+      </div>
     );
   }
 }
