@@ -16,7 +16,7 @@ class CustomUpload extends Upload {
   }
 
   onProgress = (e, file) => {
-    this.refs.up.onProgress(e, file);
+    this.uploadRef.onProgress(e, file);
   };
 
   handleChange = ({ e, fileList, file }) => {
@@ -104,7 +104,7 @@ class CustomUpload extends Upload {
         newFL[idx].status = "error";
         newFL[idx]["response"] = error.message;
 
-        this.refs.up.onChange({ file: file, fileList: newFL });
+        this.uploadRef.onChange({ file: file, fileList: newFL });
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -116,17 +116,17 @@ class CustomUpload extends Upload {
           const idx = newFL.findIndex(x => x.uid === file.uid);
           newFL[idx].status = "done";
 
-          this.refs.up.onChange({ file: file, fileList: newFL });
+          this.uploadRef.onChange({ file: file, fileList: newFL });
         });
       }
     );
 
     // For updating image filename without Submit button
-    if(this.props.text) {
-        this.props.firebase
-            .service(this.props.serviceId)
-            .set({ images: [filename] }, { merge: true })
-            .catch(e => console.log(e));
+    if (this.props.text) {
+      this.props.firebase
+        .service(this.props.serviceId)
+        .set({ images: [filename] }, { merge: true })
+        .catch(e => console.log(e));
     }
 
     return false;
@@ -137,10 +137,10 @@ class CustomUpload extends Upload {
     const textUploadButton = (
       <div>
         <Button>
-            <Icon type="upload" /> Upload Image
+          <Icon type='upload' /> Upload Image
         </Button>
       </div>
-    )
+    );
     const picUploadButton = (
       <div>
         <Icon type='plus' />
@@ -149,11 +149,11 @@ class CustomUpload extends Upload {
     );
 
     let uploadButton = this.props.text ? textUploadButton : picUploadButton;
-    let listType = this.props.text ? 'text' : 'picture-card';
+    let listType = this.props.text ? "text" : "picture-card";
 
     return (
       <Upload
-        ref='up'
+        wrappedComponentRef={inst => (this.uploadRef = inst)}
         accept='image/*'
         action=''
         listType={listType}
