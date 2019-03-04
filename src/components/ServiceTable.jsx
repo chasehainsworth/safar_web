@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col, Divider, Spin } from "antd";
+import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col, Divider } from "antd";
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext"

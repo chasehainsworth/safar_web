@@ -151,7 +151,6 @@ class CustomUpload extends Upload {
     let uploadButton = this.props.text ? textUploadButton : picUploadButton;
     let listType = this.props.text ? 'text' : 'picture-card';
 
-    {console.log(fileList.length)}
     return (
       <Upload
         ref='up'
