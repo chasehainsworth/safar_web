@@ -49,7 +49,6 @@ class ServiceModal extends Component {
         return (
             <div>
                 <Modal
-                    // key={this.props.index}
                     title={this.props.language}
                     visible={this.props.modalsVisible[this.props.language]}
                     onOk={this.onOk}

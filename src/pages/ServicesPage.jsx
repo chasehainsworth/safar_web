@@ -11,12 +11,12 @@ class ServicesPage extends Component {
         super(props);
         this.tabIndex = -1;
         const panes = [];
-        const data = [];
+        // const data = [];
         const uid = props.firebase.auth.currentUser.uid;
         this.state = {
             activeKey: '-1',
             panes,
-            data,
+            // data,
             uid,
             loadingLangs: true
         };
@@ -44,7 +44,7 @@ class ServicesPage extends Component {
                             service['langs'] = langs;
                         })
                         .then( () => {
-                            this.setState({ data: [...this.state.data, service]});
+                            // this.setState({ data: [...this.state.data, service]});
                             this.addFilled(service);
                         })
                 })

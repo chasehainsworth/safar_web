@@ -120,33 +120,43 @@ class CustomUpload extends Upload {
         });
       }
     );
+
+    // For updating image filename without Submit button
+    if(this.props.text) {
+        this.props.firebase
+            .service(this.props.serviceId)
+            .set({ images: [filename] }, { merge: true })
+            .catch(e => console.log(e));
+    }
+
     return false;
   };
 
   render() {
     const { fileList } = this.state;
-    const minUploadButton = (
+    const textUploadButton = (
       <div>
         <Button>
             <Icon type="upload" /> Upload Image
         </Button>
       </div>
     )
-    const maxUploadButton = (
+    const picUploadButton = (
       <div>
         <Icon type='plus' />
         <div className='ant-upload-text'>Upload</div>
       </div>
     );
 
-    let uploadButton = this.props.min ? minUploadButton : maxUploadButton;
+    let uploadButton = this.props.text ? textUploadButton : picUploadButton;
+    let listType = this.props.text ? 'text' : 'picture-card';
 
     return (
       <Upload
         ref='up'
         accept='image/*'
         action=''
-        // listType='picture-card'
+        listType={listType}
         fileList={fileList}
         onPreview={this.props.onPreview}
         onChange={this.handleChange}

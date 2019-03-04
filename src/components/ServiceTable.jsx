@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col, Upload } from "antd";
+import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col, Divider } from "antd";
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext"
@@ -45,11 +45,13 @@ class ServiceTable extends Component {
             dataIndex: 'hours',
             key: 'hours'
         }, {
-            title: 'Action',
-            key: 'action',
+            title: 'Actions',
+            key: 'actions',
             render: (text, record) => (
                 <div>
-                    <a onClick={() => this.setVisible(record.language, true) }>Edit {record.language}</a>
+                    <a onClick={() => this.setVisible(record.language, true) }>Edit</a>
+                    <Divider type="vertical" />
+                    <a onClick={() => this.deleteLanguageConfirm(record.language)}>Delete</a>
                 </div>
             )
         }]
@@ -59,8 +61,6 @@ class ServiceTable extends Component {
             columns,
             dataSource,
             modalsVisible,
-            previewVisible: false,
-            previewImage: "",
             newLanguage: ""
         }
     }
@@ -85,6 +85,7 @@ class ServiceTable extends Component {
                     url: url
                     };
                     formData.fileList.push(newFile);
+                    formData.images = [fileName];
             })
             .catch(error => {
                 // Broken link, remove the image
@@ -93,8 +94,11 @@ class ServiceTable extends Component {
             });
             })
         }
+
+        // This does not work.
+        console.log(formData);
         this.props.form.setFieldsValue({ ...formData });
-        this.props.form.validateFields();
+        console.log(this.props.form.getFieldValue("images"));
     }
 
     // Firebase Image Uploading
@@ -117,15 +121,6 @@ class ServiceTable extends Component {
         }
     };
 
-    // TODO: move into custom upload
-    handleSubmit = () => {
-        console.log(this.props.service.id);
-        this.props.firebase
-            .service(this.props.service.id)
-            .set({ images: formData.images }, { merge: true })
-            .catch(e => console.log(e));
-    }
-
     updateFromChild = (modalsVisible, dataSource) => {
         this.setState({modalsVisible, dataSource, newLanguage: ''});
     }
@@ -145,16 +140,31 @@ class ServiceTable extends Component {
        this.setState({ newLanguage, modalsVisible });
     }
 
-    onDeleteService = () => {
-
-    }
-
     deleteServiceConfirm = () => {
         confirm({
             title: 'Are you sure you want to delete this service?',
             okText: 'Yes',
             okType: 'danger',
             onOk: this.props.remove(this.props.serviceKey)
+        });
+    }
+
+    deleteLanguageRecord = language => {
+        this.props.firebase
+        .serviceLanguage(this.props.service.id, language)
+        .delete()
+
+        let dataSource = this.state.dataSource;
+        delete dataSource[language];
+        this.setState({dataSource});
+    }
+
+    deleteLanguageConfirm = language => {
+        confirm({
+            title: `Are you sure you want to delete the ${language} record?`,
+            okText: 'Yes',
+            okType: 'danger',
+            onOk: () => this.deleteLanguageRecord(language)
         });
     }
 
@@ -171,8 +181,8 @@ class ServiceTable extends Component {
             </Menu>
         )
         const imageError = formData.images.length > 0;
-        const { previewVisible, previewImage } = this.state;
-        const { getFieldDecorator, getFieldError } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
+        console.log(formData);
         return (
             <div>
                 <Row type="flex" justify="end">
@@ -182,20 +192,16 @@ class ServiceTable extends Component {
                             validateStatus={imageError ? "error" : ""}
                             help={imageError || ""}
                             >
+                                {getFieldDecorator("images")(
                                     <CustomUpload 
                                         onPreview={this.handlePreview} 
                                         maxUploads={1} 
                                         formData={formData}
                                         formObject={this.props.form}
-                                        min={true}
+                                        text={true}
+                                        serviceId={this.props.serviceKey}
                                     />
-                                    <Modal
-                                        visible={previewVisible}
-                                        footer={null}
-                                        onCancel={this.handleCancel}
-                                    >
-                                    <img alt='example' style={{ width: "100%" }} src={previewImage} />
-                                    </Modal>
+                                )}
                             </Form.Item>
                             <Form.Item>
                                 <Dropdown overlay={menu}>
