@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Tabs, Form } from "antd";
+import { Button, Tabs, Form, Icon } from "antd";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import ServiceTable from "../components/ServiceTable";
 
@@ -58,35 +58,63 @@ class ServicesPage extends Component {
         this.setState({ activeKey });
     }
 
+    remove = targetKey => {
+        let activeKey = this.state.activeKey;
+        let lastIndex;
+        this.state.panes.forEach((pane, i) => {
+          if (pane.key === targetKey) {
+            lastIndex = i - 1;
+            this.props.firebase
+                .service(pane.key)
+                .delete()
+          }
+        });
+        const panes = this.state.panes.filter(pane => pane.key !== targetKey);
+        if (panes.length && activeKey === targetKey) {
+          if (lastIndex >= 0) {
+            activeKey = panes[lastIndex].key;
+          } else {
+            activeKey = panes[0].key;
+          }
+        }
+        this.setState({ panes, activeKey });
+    }
+
     addBlank = () => {
         this.props.firebase
             .services()
             .add({ provider: this.state.uid })
             .then( doc => {
                 const panes = this.state.panes;
-                const activeKey = `${this.tabIndex++}`;
+                const activeKey = doc.id;
                 let service = {id: doc.id };
-                panes.push({ title: 'New Resource', content: <ServiceTable service={service} />, key: activeKey});
+                panes.push({ 
+                    title: 'New Service', 
+                    content: <ServiceTable service={service} serviceKey={activeKey} remove={this.remove} />, 
+                    key: activeKey});
                 this.setState({panes, activeKey});
             });
     }
 
     addFilled = service => {
         const panes = this.state.panes;
-        const activeKey = `${this.tabIndex++}`;
-        panes.push({ title: 'Resource', content: <ServiceTable service={service} />, key: activeKey});
+        const activeKey = service.id;
+        panes.push({ title: 'Service', content: <ServiceTable service={service} serviceKey={activeKey} remove={this.remove} />, key: activeKey});
         this.setState({panes, activeKey});
     }
 
     render() {
+        const newServiceButton = (
+            <div style={{marginRight: 33}}>
+                <Button type="primary" onClick={this.addBlank}><Icon type="plus" />Add New Service</Button>
+            </div> )
+
         return (
-            <div>
-                <div style={{ margin: 16 }}>
-                    <Button onClick={this.addBlank}>Add New Resource</Button> 
-                </div>
+            <div className="card-container">
                 <Tabs
                     onChange={this.onChange}
                     activeKey={this.state.activeKey}
+                    tabBarExtraContent={newServiceButton}
                     type="card"
                 >
                     {
