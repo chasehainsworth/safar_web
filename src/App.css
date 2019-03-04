@@ -50,3 +50,36 @@
 .steps-action {
   margin: 20px;
 }
+
+/* .ant-tabs-extra-content {
+  line-height: 50px;
+} */
+
+.card-container > .ant-tabs-card > .ant-tabs-bar > .ant-tabs-extra-content {
+  line-height: 0px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-content {
+  /* height: 120px; */
+  margin-top: -16px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+  background: #fff;
+  padding: 8px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar {
+  border-color: #fff;
+  margin-top: 10px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+  border-color: transparent;
+  background: transparent;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+  border-color: #fff;
+  background: #fff;
+}

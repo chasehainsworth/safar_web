@@ -49,7 +49,6 @@ class ServiceModal extends Component {
         return (
             <div>
                 <Modal
-                    // key={this.props.index}
                     title={this.props.language}
                     visible={this.props.modalsVisible[this.props.language]}
                     onOk={this.onOk}
@@ -63,7 +62,7 @@ class ServiceModal extends Component {
                     >
                     {getFieldDecorator("name", {
                         rules: [{ required: true, message: "Enter organization name" }]
-                    })(<Input style={{ width: 240 }} />)}
+                    })(<Input />)}
                     </Form.Item>
                     <Form.Item
                     validateStatus={descError ? "error" : ""}
@@ -76,8 +75,8 @@ class ServiceModal extends Component {
                         ]
                     })(
                         <TextArea
-                        autosize={{ minRows: 2, maxRows: 4 }}
-                        style={{ width: 240 }}
+                        autosize={{ minRows: 2, maxRows: 6 }}
+                        
                         />
                     )}
                     </Form.Item>
@@ -88,7 +87,7 @@ class ServiceModal extends Component {
                     >
                     {getFieldDecorator("hours", {
                         rules: [{ required: true, message: "Enter hours" }]
-                    })(<Input style={{ width: 240 }} />)}
+                    })(<Input />)}
                     </Form.Item>
                 </Form>
                 </Modal>

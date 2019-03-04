@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col } from "antd";
+import { Table, Modal, Form, Button, Menu, Dropdown, Icon, Row, Col, Divider } from "antd";
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext"
 
 let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
+const confirm = Modal.confirm;
 
 class ServiceTable extends Component {
     constructor(props) {
@@ -44,11 +45,13 @@ class ServiceTable extends Component {
             dataIndex: 'hours',
             key: 'hours'
         }, {
-            title: 'Action',
-            key: 'action',
+            title: 'Actions',
+            key: 'actions',
             render: (text, record) => (
                 <div>
-                    <a onClick={() => this.setVisible(record.language, true) }>Edit {record.language}</a>
+                    <a onClick={() => this.setVisible(record.language, true) }>Edit</a>
+                    <Divider type="vertical" />
+                    <a onClick={() => this.deleteLanguageConfirm(record.language)}>Delete</a>
                 </div>
             )
         }]
@@ -58,8 +61,6 @@ class ServiceTable extends Component {
             columns,
             dataSource,
             modalsVisible,
-            previewVisible: false,
-            previewImage: "",
             newLanguage: ""
         }
     }
@@ -84,6 +85,7 @@ class ServiceTable extends Component {
                     url: url
                     };
                     formData.fileList.push(newFile);
+                    formData.images = [fileName];
             })
             .catch(error => {
                 // Broken link, remove the image
@@ -92,8 +94,11 @@ class ServiceTable extends Component {
             });
             })
         }
+
+        // This does not work.
+        console.log(formData);
         this.props.form.setFieldsValue({ ...formData });
-        this.props.form.validateFields();
+        console.log(this.props.form.getFieldValue("images"));
     }
 
     // Firebase Image Uploading
@@ -116,23 +121,15 @@ class ServiceTable extends Component {
         }
     };
 
-    handleSubmit = () => {
-        console.log(this.props.service.id);
-        this.props.firebase
-            .service(this.props.service.id)
-            .set({ images: formData.images }, { merge: true })
-            .catch(e => console.log(e));
-    }
-
-    updateFromChild = (visible, dataSource) => {
-        this.setState({visible, dataSource, newLanguage: ''});
+    updateFromChild = (modalsVisible, dataSource) => {
+        this.setState({modalsVisible, dataSource, newLanguage: ''});
     }
 
     // Used in columns to pull up modal
     setVisible = (lang, value) => {
-        let visible = this.state.visible;
-        visible[lang] = value;
-        this.setState({ visible });
+        let modalsVisible = this.state.modalsVisible;
+        modalsVisible[lang] = value;
+        this.setState({ modalsVisible });
     }
     
     // Used by Add New Language dropdown to pull up modal
@@ -141,6 +138,34 @@ class ServiceTable extends Component {
        let modalsVisible = this.state.modalsVisible;
        modalsVisible[newLanguage] = true;
        this.setState({ newLanguage, modalsVisible });
+    }
+
+    deleteServiceConfirm = () => {
+        confirm({
+            title: 'Are you sure you want to delete this service?',
+            okText: 'Yes',
+            okType: 'danger',
+            onOk: this.props.remove(this.props.serviceKey)
+        });
+    }
+
+    deleteLanguageRecord = language => {
+        this.props.firebase
+        .serviceLanguage(this.props.service.id, language)
+        .delete()
+
+        let dataSource = this.state.dataSource;
+        delete dataSource[language];
+        this.setState({dataSource});
+    }
+
+    deleteLanguageConfirm = language => {
+        confirm({
+            title: `Are you sure you want to delete the ${language} record?`,
+            okText: 'Yes',
+            okType: 'danger',
+            onOk: () => this.deleteLanguageRecord(language)
+        });
     }
 
     render() {
@@ -156,13 +181,44 @@ class ServiceTable extends Component {
             </Menu>
         )
         const imageError = formData.images.length > 0;
-        const { previewVisible, previewImage } = this.state;
-        const { getFieldDecorator, getFieldError } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
+        console.log(formData);
         return (
             <div>
-                <Table columns={this.state.columns} dataSource={Object.values(this.state.dataSource)} /> 
+                <Row type="flex" justify="end">
+                    <Col>
+                        <Form layout="inline" style={{margin: 10}}>
+                            <Form.Item
+                            validateStatus={imageError ? "error" : ""}
+                            help={imageError || ""}
+                            >
+                                {getFieldDecorator("images")(
+                                    <CustomUpload 
+                                        onPreview={this.handlePreview} 
+                                        maxUploads={1} 
+                                        formData={formData}
+                                        formObject={this.props.form}
+                                        text={true}
+                                        serviceId={this.props.serviceKey}
+                                    />
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                                <Dropdown overlay={menu}>
+                                    <Button>
+                                        Add New Language <Icon type="down" />
+                                    </Button>
+                                </Dropdown>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="danger" onClick={this.deleteServiceConfirm}>Delete Service</Button>
+                            </Form.Item>
+                            </Form>
+                    </Col>
+                </Row>
+                <Table columns={this.state.columns} dataSource={Object.values(this.state.dataSource)} pagination={false} /> 
                 {
-                    Object.keys(this.state.modalsVisible).map( (language, index) => {
+                    Object.keys(this.state.modalsVisible).map( language => {
                         return (
                             <div>
                                 <WrappedServiceModal 
@@ -176,71 +232,7 @@ class ServiceTable extends Component {
                         )
                     })
                 }  
-                <Row>
-                    <Col offset={3} span={3}>
-                        <Form>
-                            <Form.Item
-                            validateStatus={imageError ? "error" : ""}
-                            help={imageError || ""}
-                            label='Upload Image'
-                            required={true}
-                            >
-                                <div className='clearfix'>
-                                    {getFieldDecorator("images", {
-                                    rules: [{ validator: this.checkImages }]
-                                    })(
-                                    <CustomUpload 
-                                        onPreview={this.handlePreview} 
-                                        maxUploads={1} 
-                                        formData={formData}
-                                        formObject={this.props.form}
-                                    />)}
-                                    <Modal
-                                        visible={previewVisible}
-                                        footer={null}
-                                        onCancel={this.handleCancel}
-                                    >
-                                    <img alt='example' style={{ width: "100%" }} src={previewImage} />
-                                    </Modal>
-                                </div>
-                            </Form.Item>
-                            {/* <Form.Item
-                            label='Upload Image'
-                            >
-                            <div className='clearfix'>
-                                <CustomUpload 
-                                onPreview={this.handlePreview} 
-                                formData={formData}
-                                formObject={this.props.form}
-                                maxUploads={1} 
-                                />
-                                <Modal
-                                visible={previewVisible}
-                                footer={null}
-                                onCancel={this.handleCancel}
-                                >
-                                <img alt='example' style={{ width: "100%" }} src={previewImage} />
-                                </Modal>
-                            </div>
-                            </Form.Item> */}
-                            <Button 
-                                onClick={this.handleSubmit}
-                                type='primary' 
-                                disabled={getFieldError("images")}>
-                                Submit Image
-                            </Button>
-                        </Form>
-                    </Col>
-                    <Col span={3}>
-                        <Dropdown overlay={menu}>
-                            <Button>
-                                Add New Language <Icon type="down" />
-                            </Button>
-                        </Dropdown>
-                    </Col>
-                </Row>
 
-                
                 {this.state.newLanguage.length > 0 && (
                     <WrappedServiceModal 
                         language={this.state.newLanguage}
