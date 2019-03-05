@@ -4,6 +4,7 @@ import { withFirebase } from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
 import * as ROUTES from "../constants/routes";
+import strings from "../constants/localization";
 
 function hasErrors(fieldsError) {
   // console.log(
@@ -81,7 +82,7 @@ class LoginPage extends Component {
 
     return (
       <div className='smallFormWrapper'>
-        <h1>Login</h1>
+        <h1>{strings.LOGIN}</h1>
         <div className='smallForm'>
           <Form onSubmit={this.handleSubmit}>
             <Form.Item
@@ -95,7 +96,7 @@ class LoginPage extends Component {
                   prefix={
                     <Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />
                   }
-                  placeholder='Email'
+                  placeholder={strings.EMAIL}
                 />
               )}
             </Form.Item>
@@ -114,7 +115,7 @@ class LoginPage extends Component {
                     prefix={
                       <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
                     }
-                    placeholder='Password'
+                    placeholder={strings.PASSWORD}
                     type='password'
                   />
                 )}
@@ -126,8 +127,8 @@ class LoginPage extends Component {
               disabled={hasErrors(getFieldsError())}
             >
               {this.state.forgotPassword
-                ? "Send reset password email"
-                : "Login"}
+                ? strings.SEND_RESET_PASSWORD_EMAIL
+                : strings.LOGIN}
             </Button>
 
             <button
@@ -137,7 +138,9 @@ class LoginPage extends Component {
               style={{ marginLeft: 10 }}
               className='buttonLink'
             >
-              {!this.state.forgotPassword ? "Forgot Password?" : "Go back"}
+              {!this.state.forgotPassword
+                ? strings.FORGOT_PASSWORD
+                : strings.GO_BACK}
             </button>
           </Form>
         </div>

@@ -6,6 +6,7 @@ import { Switch, Route } from "react-router-dom";
 import { withAuthentication } from "./components/Firebase";
 
 import * as ROUTES from "./constants/routes";
+import strings from "./constants/localization";
 
 import HomePage from "./pages/HomePage";
 import UpdateAccountPage from "./pages/UpdateAccountPage";
@@ -34,7 +35,7 @@ class App extends Component {
           </Switch>
         </Content>
         <Footer style={{ textAlign: "right" }}>
-          Copyright &copy; 2019 Safar Team
+          {strings.COPYRIGHT} &copy; 2019 Safar Team
         </Footer>
       </Layout>
     );

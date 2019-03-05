@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Input, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withAuthorization } from "./Firebase";
+import strings from "../constants/localization";
 
 class ServiceModal extends Component {
   componentDidMount() {
@@ -56,7 +57,7 @@ class ServiceModal extends Component {
             <Form.Item
               validateStatus={nameError ? "error" : ""}
               help={nameError || ""}
-              label='Name'
+              label={strings.NAME}
             >
               {getFieldDecorator("name", {
                 rules: [{ required: true, message: "Enter organization name" }]
@@ -65,7 +66,7 @@ class ServiceModal extends Component {
             <Form.Item
               validateStatus={descError ? "error" : ""}
               help={descError || ""}
-              label='Description'
+              label={strings.DESCRIPTION}
             >
               {getFieldDecorator("description", {
                 rules: [
@@ -76,7 +77,7 @@ class ServiceModal extends Component {
             <Form.Item
               validateStatus={hoursError ? "error" : ""}
               help={hoursError || ""}
-              label='Hours'
+              label={strings.HOURS}
             >
               {getFieldDecorator("hours", {
                 rules: [{ required: true, message: "Enter hours" }]

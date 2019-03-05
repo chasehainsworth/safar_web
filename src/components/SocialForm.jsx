@@ -2,6 +2,8 @@ import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Form, Input, Icon } from "antd";
 
+import strings from "../constants/localization";
+
 const initial = "";
 const whatsapp = () => (
   <svg
@@ -37,43 +39,50 @@ class SocialForm extends StepFormComponent {
     const orgSiteError = isFieldTouched("orgSite") && getFieldError("orgSite");
 
     const formItemLayout = {
-        labelCol: { span: 6, offset: 5 },
-        wrapperCol: { span: 6 },
+      labelCol: { span: 6, offset: 5 },
+      wrapperCol: { span: 6 }
     };
 
     return (
       <div>
         <Form.Item
-            validateStatus={orgSiteError ? "error" : ""}
-            help={orgSiteError || ""}
-            {...formItemLayout}
-            label="Organization Website"
+          validateStatus={orgSiteError ? "error" : ""}
+          help={orgSiteError || ""}
+          {...formItemLayout}
+          label={strings.ORGANIZATION_WEBSITE}
         >
-            {getFieldDecorator("orgSite", {
-            rules: [
-                { required: true, message: "Enter organization website" }
-            ]
-            })(<Input 
-            style={{ width: 300 }}
-            prefix={<Icon type='link' />}
-            />)}
+          {getFieldDecorator("orgSite", {
+            rules: [{ required: true, message: "Enter organization website" }]
+          })(<Input style={{ width: 300 }} prefix={<Icon type='link' />} />)}
         </Form.Item>
-        <Form.Item {...formItemLayout} label="Facebook">
-            {getFieldDecorator("facebook", { initialValue: initial })(
-            <Input 
-            prefix={<Icon type='facebook' theme='filled' style={{color: "#0e1f56"}}/>}
+        <Form.Item {...formItemLayout} label={strings.FACEBOOK}>
+          {getFieldDecorator("facebook", { initialValue: initial })(
+            <Input
+              prefix={
+                <Icon
+                  type='facebook'
+                  theme='filled'
+                  style={{ color: "#0e1f56" }}
+                />
+              }
             />
-            )}
+          )}
         </Form.Item>
-        <Form.Item {...formItemLayout} label="WhatsApp">
-            {getFieldDecorator("whatsapp", { initialValue: initial })(
-            <Input prefix={<Icon component={whatsapp} style={{color: "#25D366"}} />} />
-            )}
+        <Form.Item {...formItemLayout} label={strings.WHATSAPP}>
+          {getFieldDecorator("whatsapp", { initialValue: initial })(
+            <Input
+              prefix={
+                <Icon component={whatsapp} style={{ color: "#25D366" }} />
+              }
+            />
+          )}
         </Form.Item>
-        <Form.Item {...formItemLayout} label="Twitter">
-            {getFieldDecorator("twitter", { initialValue: initial })(
-            <Input prefix={<Icon type="twitter" style={{color: "#00aced"}}/>} />
-            )}
+        <Form.Item {...formItemLayout} label={strings.TWITTER}>
+          {getFieldDecorator("twitter", { initialValue: initial })(
+            <Input
+              prefix={<Icon type='twitter' style={{ color: "#00aced" }} />}
+            />
+          )}
         </Form.Item>
       </div>
     );

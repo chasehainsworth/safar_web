@@ -3,6 +3,8 @@ import { Button, Tabs, Form, Icon } from "antd";
 import { withAuthorization } from "../components/Firebase";
 import ServiceTable from "../components/ServiceTable";
 
+import strings from "../constants/localization";
+
 const TabPane = Tabs.TabPane;
 
 class ServicesPage extends Component {
@@ -89,7 +91,7 @@ class ServicesPage extends Component {
         const activeKey = doc.id;
         let service = { id: doc.id };
         panes.push({
-          title: "New Service",
+          title: strings.NEW_SERVICES,
           content: (
             <ServiceTable
               service={service}
@@ -106,9 +108,10 @@ class ServicesPage extends Component {
   findServiceName = service => {
     console.log(service);
     if (!service.langs || service.langs.length === 0) {
-      return "Service";
+      return strings.SERVICE;
     } else {
       for (let lang in service.langs) {
+        // TODO: Make default be localized language
         if (lang.language === "English") {
           return lang.name;
         }
@@ -140,7 +143,7 @@ class ServicesPage extends Component {
       <div style={{ marginRight: 33 }}>
         <Button type='primary' onClick={this.addBlank}>
           <Icon type='plus' />
-          Add New Service
+          {strings.ADD_NEW_SERVICE}
         </Button>
       </div>
     );

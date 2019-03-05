@@ -8,6 +8,7 @@ import CategoriesForm from "../components/CategoriesForm";
 
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
+import strings from "../constants/localization";
 
 const Step = Steps.Step;
 
@@ -31,33 +32,32 @@ let formData = { images: [] };
 class UpdateAccountPage extends Component {
   steps = [
     {
-      title: "Language",
+      title: strings.LANGUAGE,
       content: (
         <LanguageForm formData={formData} formObject={this.props.form} />
       ), // contents will be components with the forms
       newLang: true // if this page is necessary for setting 2nd language
     },
     {
-      title: "Info",
+      title: strings.INFO,
       content: <InfoForm formData={formData} formObject={this.props.form} />,
       newLang: true
     },
     {
-      title: "Socials",
+      title: strings.SOCIAL,
       content: <SocialForm formData={formData} formObject={this.props.form} />
     },
     {
-      title: "Categories",
+      title: strings.CATEGORIES,
       content: (
         <CategoriesForm formData={formData} formObject={this.props.form} />
       )
     },
     {
-      title: "Finished",
+      title: strings.FINISHED,
       content: (
         <div style={{ paddingTop: "60px" }}>
-          You're all done. Please try to fill out your information in as many
-          languages as possible.
+          {strings.UPDATE_ACCOUNT_FINISHED_MESSAGE}
         </div>
       ),
       newLang: true
@@ -279,12 +279,12 @@ class UpdateAccountPage extends Component {
                         type='primary'
                         htmlType='submit'
                       >
-                        Next
+                        {strings.NEXT}
                       </Button>
                     )}
                     {current === this.state.allSteps.length - 1 && (
                       <Button htmlType='submit' type='primary'>
-                        Done
+                        {strings.DONE}
                       </Button>
                     )}
                     {current === this.state.allSteps.length - 1 && (
@@ -293,7 +293,7 @@ class UpdateAccountPage extends Component {
                         onClick={() => this.addLang()}
                         type='primary'
                       >
-                        Add another language
+                        {strings.ADD_ANOTHER_LANGUAGE}
                       </Button>
                     )}
                     {current > 0 && (
@@ -301,7 +301,7 @@ class UpdateAccountPage extends Component {
                         style={{ marginLeft: 8 }}
                         onClick={() => this.prev()}
                       >
-                        Previous
+                        {strings.PREVIOUS}
                       </Button>
                     )}
                   </div>
