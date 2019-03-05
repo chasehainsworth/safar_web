@@ -24,7 +24,7 @@ class ServiceTable extends Component {
   constructor(props) {
     super(props);
     let dataSource = {};
-    let modalsVisible = {};
+    let modalsVisible = { "New Language": false };
     if (props.service["langs"]) {
       props.service["langs"].forEach((lang, index) => {
         dataSource[lang.language] = {
@@ -67,7 +67,7 @@ class ServiceTable extends Component {
           <div>
             <button
               className='buttonLink'
-              onClick={() => this.setVisible(record.language, true)}
+              onClick={() => this.setEditLanguageVisible(record.language, true)}
             >
               {strings.EDIT}
             </button>
@@ -87,7 +87,7 @@ class ServiceTable extends Component {
       columns,
       dataSource,
       modalsVisible,
-      newLanguage: "",
+      newLanguage: null,
       isLoadingImage: true
     };
   }
@@ -152,17 +152,17 @@ class ServiceTable extends Component {
   };
 
   // Used in columns to pull up modal
-  setVisible = (lang, value) => {
+  setEditLanguageVisible = (lang, value) => {
     let modalsVisible = this.state.modalsVisible;
     modalsVisible[lang] = value;
     this.setState({ modalsVisible });
   };
 
   // Used by Add New Language dropdown to pull up modal
-  handleMenuClick = e => {
+  setNewLanguageVisible = e => {
     let newLanguage = e.key;
     let modalsVisible = this.state.modalsVisible;
-    modalsVisible[newLanguage] = true;
+    modalsVisible["New Language"] = true;
     this.setState({ newLanguage, modalsVisible });
   };
 
@@ -196,7 +196,7 @@ class ServiceTable extends Component {
 
   render() {
     let menu = (
-      <Menu onClick={this.handleMenuClick}>
+      <Menu onClick={this.setNewLanguageVisible}>
         {languages
           .filter(lang => !Object.keys(this.state.dataSource).includes(lang))
           .map(lang => {
@@ -260,15 +260,16 @@ class ServiceTable extends Component {
           );
         })}
 
-        {this.state.newLanguage.length > 0 && (
+        {this.state.newLanguage ? (
           <WrappedServiceModal
-            language={this.state.newLanguage}
+            language="New Language"
             modalsVisible={this.state.modalsVisible}
             data={this.state.dataSource}
             serviceUid={this.props.service.id}
             updateParent={this.updateFromChild}
+            newLanguage={this.state.newLanguage}
           />
-        )}
+        ) : null }
       </div>
     );
   }

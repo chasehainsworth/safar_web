@@ -5,13 +5,25 @@ import { withAuthorization } from "./Firebase";
 import strings from "../constants/localization";
 
 class ServiceModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      language: (this.props.language === "New Language") ? this.props.newLanguage : this.props.language
+    }
+  }
+
   componentDidMount() {
-    this.props.form.setFieldsValue({ ...this.props.data[this.props.language] });
+    this.props.form.setFieldsValue({ ...this.props.data[this.state.language] });
   }
 
   onCancel = () => {
     let modalsVisible = this.props.modalsVisible;
-    modalsVisible[this.props.language] = false;
+    if(this.props.newLanguage) {
+      modalsVisible["New Language"] = false;
+    }
+    else {
+      modalsVisible[this.state.language] = false;
+    }
     this.props.updateParent(modalsVisible, this.props.data);
   };
 
@@ -19,15 +31,20 @@ class ServiceModal extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.props.firebase
-          .serviceLanguage(this.props.serviceUid, this.props.language)
+          .serviceLanguage(this.props.serviceUid, this.state.language)
           .set({ ...values }, { merge: true })
           .then(() => {
             let modalsVisible = this.props.modalsVisible;
-            modalsVisible[this.props.language] = false;
+            if(this.props.newLanguage) {
+              modalsVisible["New Language"] = false;
+            }
+            else {
+              modalsVisible[this.state.language] = false;
+            }
             let langData = values;
-            langData["language"] = this.props.language;
+            langData["language"] = this.state.language;
             let data = this.props.data;
-            data[this.props.language] = langData;
+            data[this.state.language] = langData;
             this.props.updateParent(modalsVisible, data);
           });
       }
@@ -45,11 +62,13 @@ class ServiceModal extends Component {
       isFieldTouched("description") && getFieldError("description");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
 
+    let modalName = (this.props.language === "New Language") ? "New Language" : this.state.language;
+
     return (
       <div>
         <Modal
-          title={this.props.language}
-          visible={this.props.modalsVisible[this.props.language]}
+          title={this.state.language}
+          visible={this.props.modalsVisible[modalName]}
           onOk={this.onOk}
           onCancel={this.onCancel}
         >
