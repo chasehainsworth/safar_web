@@ -148,6 +148,7 @@ class ServiceTable extends Component {
 
   updateFromChild = (modalsVisible, dataSource) => {
     this.setState({ modalsVisible, dataSource, newLanguage: "" });
+    this.props.updateTitle(this.props.serviceKey, Object.values(this.state.dataSource));
   };
 
   // Used in columns to pull up modal

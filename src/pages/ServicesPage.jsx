@@ -60,6 +60,16 @@ class ServicesPage extends Component {
     this.setState({ activeKey });
   };
 
+  updateTitle = (targetKey, langs) => {
+    const panes = this.state.panes;
+    panes.forEach((pane, i) => {
+      if (pane.key === targetKey) {
+        pane.title = this.findServiceName(langs);
+      }
+    });
+    this.setState({panes});
+  }
+
   remove = targetKey => {
     let activeKey = this.state.activeKey;
     let lastIndex;
@@ -95,6 +105,7 @@ class ServicesPage extends Component {
               service={service}
               serviceKey={activeKey}
               remove={this.remove}
+              updateTitle={this.updateTitle}
             />
           ),
           key: activeKey
@@ -103,24 +114,24 @@ class ServicesPage extends Component {
       });
   };
 
-  findServiceName = service => {
-    console.log(service);
-    if (!service.langs || service.langs.length === 0) {
+  findServiceName = langs => {
+    console.log(langs);
+    if (!langs || langs.length === 0) {
       return "Service";
     } else {
-      for (let lang in service.langs) {
+      for (let lang in langs) {
         if (lang.language === "English") {
           return lang.name;
         }
       }
     }
-    return service.langs[0].name;
+    return langs[0].name;
   };
 
   addFilled = service => {
     const panes = this.state.panes;
     const activeKey = service.id;
-    const serviceName = this.findServiceName(service);
+    const serviceName = this.findServiceName(service.langs);
     panes.push({
       title: serviceName,
       content: (
@@ -128,6 +139,7 @@ class ServicesPage extends Component {
           service={service}
           serviceKey={activeKey}
           remove={this.remove}
+          updateTitle={this.updateTitle}
         />
       ),
       key: activeKey
