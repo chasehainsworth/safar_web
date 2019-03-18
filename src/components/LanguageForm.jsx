@@ -1,12 +1,19 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Form, Select } from "antd";
+import { Form, Select, Icon } from "antd";
 
 import strings from "../constants/localization";
 
 const languages = ["English", "Farsi", "Arabic", "French"];
 
 class LanguageForm extends StepFormComponent {
+  state = {
+    filledLanguages: null
+  }
+
+  updateFilledLanguages = () => {
+    this.setState({filledLanguages: this.props.getFilledLanguages()});
+  }
   render() {
     const {
       getFieldDecorator,
@@ -27,10 +34,15 @@ class LanguageForm extends StepFormComponent {
             <Select
               placeholder={!this.props.formData["Language"] && strings.LANGUAGE}
               style={{ width: 120 }}
+              onFocus={this.updateFilledLanguages}
             >
               {languages.map(l => (
                 <Select.Option key={l} value={l}>
-                  {l}
+                  {
+                    this.state.filledLanguages &&
+                    this.state.filledLanguages[l] && 
+                    <Icon type="check" />
+                  } {l}
                 </Select.Option>
               ))}
             </Select>
