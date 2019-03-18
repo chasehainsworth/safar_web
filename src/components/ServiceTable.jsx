@@ -14,6 +14,7 @@ import {
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext";
+import strings from "../constants/localization";
 
 let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
@@ -40,27 +41,27 @@ class ServiceTable extends Component {
 
     const columns = [
       {
-        title: "Language",
+        title: strings.LANGUAGE,
         dataIndex: "language",
         key: "language"
       },
       {
-        title: "Name",
+        title: strings.NAME,
         dataIndex: "name",
         key: "name"
       },
       {
-        title: "Description",
+        title: strings.DESCRIPTION,
         dataIndex: "description",
         key: "description"
       },
       {
-        title: "Hours",
+        title: strings.HOURS,
         dataIndex: "hours",
         key: "hours"
       },
       {
-        title: "Actions",
+        title: strings.ACTIONS,
         key: "actions",
         render: (text, record) => (
           <div>
@@ -68,14 +69,14 @@ class ServiceTable extends Component {
               className='buttonLink'
               onClick={() => this.setEditLanguageVisible(record.language, true)}
             >
-              Edit
+              {strings.EDIT}
             </button>
             <Divider type='vertical' />
             <button
               className='buttonLink'
               onClick={() => this.deleteLanguageConfirm(record.language)}
             >
-              Delete
+              {strings.DELETE}
             </button>
           </div>
         )
@@ -229,13 +230,13 @@ class ServiceTable extends Component {
               <Form.Item>
                 <Dropdown overlay={menu}>
                   <Button>
-                    Add New Language <Icon type='down' />
+                    {strings.ADD_NEW_LANGUAGE} <Icon type='down' />
                   </Button>
                 </Dropdown>
               </Form.Item>
               <Form.Item>
                 <Button type='danger' onClick={this.deleteServiceConfirm}>
-                  Delete Service
+                  {strings.DELETE_SERVICE}
                 </Button>
               </Form.Item>
             </Form>

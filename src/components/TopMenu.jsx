@@ -7,6 +7,7 @@ import { Link, withRouter } from "react-router-dom";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
+import strings from "../constants/localization";
 
 const { Header } = Layout;
 
@@ -17,33 +18,25 @@ class TopMenu extends Component {
       this.props.firebase.doSignOut();
       break;
 
-      // case "English":
-      // {
-      //   strings.setLanguage('en');
-      //   this.setState({});
-      // }
-      // break;
+      case "English":
+        this.props.setLanguage('en')
+        this.setState({});
+      break;
 
-      // case "French":
-      // {
-      //   strings.setLanguage('fr');
-      //   this.setState({});
-      // }
-      // break;
+      case "French":
+        this.props.setLanguage('fr');
+        this.setState({});
+      break;
 
-      // case "Farsi":
-      // {
-      //   strings.setLanguage('fa');
-      //   this.setState({});
-      // }
-      // break;
+      case "Farsi":
+        this.props.setLanguage('fa');
+        this.setState({});
+      break;
 
-      // case "Arabic":
-      // {
-      //   strings.setLanguage('ar');
-      //   this.setState({});
-      // }
-      // break;
+      case "Arabic":
+        this.props.setLanguage('ar');
+        this.setState({});
+      break;
 
       default:
       break;
@@ -82,17 +75,19 @@ class TopMenu extends Component {
 
               {!!authUser && authUser.role === ROLES.PROVIDER && (
                 <Menu.Item key={ROUTES.HOURS} style={menuItemProps}>
-                  <Link to={ROUTES.HOURS}>Update Hours</Link>
+                  <Link to={ROUTES.HOURS}>{strings.UPDATE_HOURS}</Link>
                 </Menu.Item>
               )}
               {!!authUser && authUser.role === ROLES.PROVIDER && (
                 <Menu.Item key={ROUTES.UPDATE_ACC} style={menuItemProps}>
-                  <Link to={ROUTES.UPDATE_ACC}>Update Account Info</Link>
+                  <Link to={ROUTES.UPDATE_ACC}>
+                    {strings.UPDATE_ACCOUNT_INFO}
+                  </Link>
                 </Menu.Item>
               )}
               {!!authUser && authUser.role === ROLES.PROVIDER && (
                 <Menu.Item key={ROUTES.SERVICES} style={menuItemProps}>
-                  <Link to={ROUTES.SERVICES}>Update Services</Link>
+                  <Link to={ROUTES.SERVICES}>{strings.UPDATE_SERVICES}</Link>
                 </Menu.Item>
               )}
 
@@ -100,7 +95,7 @@ class TopMenu extends Component {
 
               {!!authUser && authUser.role === ROLES.ADMIN && (
                 <Menu.Item key={ROUTES.ADMIN} style={menuItemProps}>
-                  <Link to={ROUTES.ADMIN}>Admin Page</Link>
+                  <Link to={ROUTES.ADMIN}>{strings.ADMIN_PAGE}</Link>
                 </Menu.Item>
               )}
 
@@ -108,7 +103,7 @@ class TopMenu extends Component {
 
               {!authUser && (
                 <Menu.Item key={ROUTES.LOGIN} style={menuItemProps}>
-                  <Link to={ROUTES.LOGIN}>Login</Link>
+                  <Link to={ROUTES.LOGIN}>{strings.LOGIN}</Link>
                 </Menu.Item>
               )}
 
@@ -116,7 +111,7 @@ class TopMenu extends Component {
 
               {!!authUser && (
                 <Menu.Item key='SignOut' style={menuItemProps}>
-                  Sign Out
+                  {strings.SIGN_OUT}
                 </Menu.Item>
               )}
               

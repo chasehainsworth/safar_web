@@ -2,6 +2,8 @@ import React from "react";
 import StepFormComponent from "./StepFormComponent";
 import { Form, Select, Icon } from "antd";
 
+import strings from "../constants/localization";
+
 const languages = ["English", "Farsi", "Arabic", "French"];
 
 class LanguageForm extends StepFormComponent {
@@ -30,7 +32,7 @@ class LanguageForm extends StepFormComponent {
             rules: [{ required: true }]
           })(
             <Select
-              placeholder={!this.props.formData["Language"] && "Language"}
+              placeholder={!this.props.formData["Language"] && strings.LANGUAGE}
               style={{ width: 120 }}
               onFocus={this.updateFilledLanguages}
             >

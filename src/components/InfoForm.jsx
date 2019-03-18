@@ -4,6 +4,7 @@ import { Modal, Form, Input } from "antd";
 import CustomUpload from "./CustomUpload";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
+import strings from "../constants/localization";
 
 const initial = "";
 
@@ -74,7 +75,7 @@ class InfoForm extends StepFormComponent {
           {...formItemLayout}
           validateStatus={orgNameError ? "error" : ""}
           help={orgNameError || ""}
-          label='Organization Name'
+          label={strings.ORGANIZATION_NAME}
         >
           {getFieldDecorator("orgName", {
             rules: [{ required: true, message: "Enter organization name" }]
@@ -84,7 +85,7 @@ class InfoForm extends StepFormComponent {
           validateStatus={descError ? "error" : ""}
           {...formItemLayout}
           help={descError || ""}
-          label='Description'
+          label={strings.DESCRIPTION}
         >
           {getFieldDecorator("description", {
             rules: [
@@ -100,7 +101,7 @@ class InfoForm extends StepFormComponent {
         <Form.Item
           validateStatus={phoneError ? "error" : ""}
           help={phoneError || ""}
-          label='Phone Number'
+          label={strings.PHONE_NUMBER}
           {...formItemLayout}
         >
           {getFieldDecorator("phone", {
@@ -116,13 +117,19 @@ class InfoForm extends StepFormComponent {
           validateStatus={imageError ? "error" : ""}
           help={imageError || ""}
           {...formItemLayout}
-          label='Upload Images'
+          label={strings.UPLOAD_IMAGES}
           required={true}
         >
           <div className='clearfix'>
             {getFieldDecorator("images", {
               rules: [{ validator: this.checkImages }]
-            })(<CustomUpload onPreview={this.handlePreview} maxUploads={3} {...this.props} />)}
+            })(
+              <CustomUpload
+                onPreview={this.handlePreview}
+                maxUploads={3}
+                {...this.props}
+              />
+            )}
             <Modal
               visible={previewVisible}
               footer={null}
@@ -136,7 +143,7 @@ class InfoForm extends StepFormComponent {
           {...formItemLayout}
           validateStatus={emailError ? "error" : ""}
           help={emailError || ""}
-          label='Email'
+          label={strings.EMAIL}
         >
           {getFieldDecorator("email", {
             rules: [{ required: true, message: "Enter email" }]
@@ -146,16 +153,13 @@ class InfoForm extends StepFormComponent {
           {...formItemLayout}
           validateStatus={hoursError ? "error" : ""}
           help={hoursError || ""}
-          label='Hours'
+          label={strings.HOURS}
         >
           {getFieldDecorator("hours", {
             rules: [{ required: true, message: "Enter hours" }]
           })(<Input style={{ width: 240 }} />)}
         </Form.Item>
-        <Form.Item
-          label='Any special notes regarding availability?'
-          {...formItemLayout}
-        >
+        <Form.Item label={strings.SPECIAL_NOTE} {...formItemLayout}>
           {getFieldDecorator("availabilityNote", { initialValue: initial })(
             <Input style={{ width: 240 }} />
           )}

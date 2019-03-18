@@ -4,6 +4,7 @@ import { withAuthorization } from "../components/Firebase";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
+import strings from "../constants/localization";
 
 function hasErrors(fieldsError) {
   // console.log(
@@ -91,7 +92,7 @@ class SignUpPage extends Component {
 
     return (
       <div key='title' className='smallFormWrapper'>
-        <h1>Create Account</h1>
+        <h1>{strings.CREATE_ACCOUNT}</h1>
         <div className='smallForm'>
           <Form onSubmit={this.handleSubmit}>
             <Form.Item
@@ -105,7 +106,7 @@ class SignUpPage extends Component {
                   prefix={
                     <Icon type='mail' style={{ color: "rgba(0,0,0,.25)" }} />
                   }
-                  placeholder='Email'
+                  placeholder={strings.EMAIL}
                 />
               )}
             </Form.Item>
@@ -123,7 +124,7 @@ class SignUpPage extends Component {
                   prefix={
                     <Icon type='key' style={{ color: "rgba(0,0,0,.25)" }} />
                   }
-                  placeholder='Password'
+                  placeholder={strings.PASSWORD}
                   type='password'
                 />
               )}
@@ -142,7 +143,7 @@ class SignUpPage extends Component {
                   prefix={
                     <Icon type='lock' style={{ color: "rgba(0,0,0,.25)" }} />
                   }
-                  placeholder='Re-enter the password'
+                  placeholder={strings.REENTER_PASSWORD}
                   type='password'
                 />
               )}
@@ -152,7 +153,7 @@ class SignUpPage extends Component {
               type='primary'
               disabled={hasErrors(getFieldsError())}
             >
-              Create Account
+              {strings.CREATE_ACCOUNT}
             </Button>
           </Form>
         </div>

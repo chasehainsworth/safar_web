@@ -2,6 +2,8 @@ import React from "react";
 import { Upload, Modal, Icon, Button } from "antd";
 import { withFirebase } from "./Firebase";
 
+import strings from "../constants/localization";
+
 function errorMessage(title, content) {
   Modal.error({ title, content, centered: true });
 }
@@ -137,7 +139,7 @@ class CustomUpload extends Upload {
     const textUploadButton = (
       <div>
         <Button>
-          <Icon type='upload' /> Upload Image
+          <Icon type='upload' /> {strings.UPLOAD_IMAGE}
         </Button>
       </div>
     );

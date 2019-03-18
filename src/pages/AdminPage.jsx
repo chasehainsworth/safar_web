@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
+import strings from "../constants/localization";
 
 //TODO: Move these into app.css
 const pStyle = {
@@ -18,7 +19,7 @@ const oddRows = {
 
 const columns = [
   {
-    title: "Provider Name",
+    title: strings.PROVIDER_NAME,
     dataIndex: "names",
     key: "name",
     render: langs => (
@@ -33,7 +34,7 @@ const columns = [
     )
   },
   {
-    title: "Submitted Languages",
+    title: strings.SUBMITTED_LANGUAGES,
     dataIndex: "languages",
     key: "langs",
     render: langs => (
@@ -48,7 +49,7 @@ const columns = [
     )
   },
   {
-    title: "# of Services",
+    title: strings.NUM_OF_SERVICES,
     dataIndex: "services",
     key: "services"
     // render: servs =>
@@ -60,20 +61,20 @@ const columns = [
     //   ))
   },
   {
-    title: "Actions",
+    title: strings.ACTIONS,
     key: "actions",
     render: (text, record) => (
       <span>
         <Link
           to={{ pathname: ROUTES.UPDATE_ACC + "/", state: { id: record.uid } }}
         >
-          <Button icon='edit'>Edit Provider Info</Button>
+          <Button icon='edit'>{strings.EDIT_PROVIDER_INFO}</Button>
         </Link>
         <Divider type='vertical' />
         <Link
           to={{ pathname: ROUTES.SERVICES + "/", state: { id: record.uid } }}
         >
-          <Button icon='diff'>Edit Services</Button>
+          <Button icon='diff'>{strings.EDIT_SERVICES}</Button>
         </Link>
       </span>
     )
@@ -183,7 +184,7 @@ class AdminPage extends Component {
         <div style={{ textAlign: "right", marginBottom: 10 }}>
           <Link to={ROUTES.ADD_ACC}>
             <Button type='primary' icon='plus'>
-              Add New Provider Account
+              {strings.ADD_NEW_PROVIDER_ACCOUNT}
             </Button>
           </Link>
         </div>

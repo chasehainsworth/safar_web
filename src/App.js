@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import "./App.css";
 import "antd/dist/antd.css";
 import Layout from "antd/lib/layout";
+import message from "antd/lib/message";
 import { Switch, Route } from "react-router-dom";
 import { withAuthentication } from "./components/Firebase";
 
 import * as ROUTES from "./constants/routes";
+import strings from "./constants/localization";
 
 import HomePage from "./pages/HomePage";
 import UpdateAccountPage from "./pages/UpdateAccountPage";
@@ -18,10 +20,15 @@ import AdminPage from "./pages/AdminPage";
 const { Content, Footer } = Layout;
 
 class App extends Component {
+  setLanguage = (language) => {
+    strings.setLanguage(language);
+    this.setState({});
+    message.info(strings.LANGUAGE_SET);
+  }
   render() {
     return (
       <Layout className='layout'>
-        <TopMenu />
+        <TopMenu setLanguage={this.setLanguage} />
         <Content>
           <Switch>
             <Route exact path='/' component={HomePage} />
@@ -34,7 +41,7 @@ class App extends Component {
           </Switch>
         </Content>
         <Footer style={{ textAlign: "right" }}>
-          Copyright &copy; 2019 Safar Team
+          {strings.COPYRIGHT} &copy; 2019 Safar Team
         </Footer>
       </Layout>
     );
