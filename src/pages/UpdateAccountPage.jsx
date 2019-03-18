@@ -19,6 +19,8 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+
+
 const languageFields = new Set([
   "orgName",
   "description",
@@ -29,11 +31,17 @@ let currLanguage = {};
 let formData = { images: [] };
 
 class UpdateAccountPage extends Component {
+
+  getFilledLanguages = () => {
+    return this.state.filledLanguages;
+  }
+
+
   steps = [
     {
       title: "Language",
       content: (
-        <LanguageForm formData={formData} formObject={this.props.form} />
+        <LanguageForm formData={formData} formObject={this.props.form} getFilledLanguages={this.getFilledLanguages} />
       ), // contents will be components with the forms
       newLang: true // if this page is necessary for setting 2nd language
     },

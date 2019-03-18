@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Layout from "antd/lib/layout";
 import Menu from "antd/lib/menu";
+import Icon from "antd/lib/icon";
 import { withFirebase, AuthUserContext } from "../components/Firebase";
 import { Link, withRouter } from "react-router-dom";
 
@@ -11,8 +12,41 @@ const { Header } = Layout;
 
 class TopMenu extends Component {
   handleClick = e => {
-    if (e.key === "SignOut") {
+    switch (e.key) {
+      case "SignOut":
       this.props.firebase.doSignOut();
+      break;
+
+      // case "English":
+      // {
+      //   strings.setLanguage('en');
+      //   this.setState({});
+      // }
+      // break;
+
+      // case "French":
+      // {
+      //   strings.setLanguage('fr');
+      //   this.setState({});
+      // }
+      // break;
+
+      // case "Farsi":
+      // {
+      //   strings.setLanguage('fa');
+      //   this.setState({});
+      // }
+      // break;
+
+      // case "Arabic":
+      // {
+      //   strings.setLanguage('ar');
+      //   this.setState({});
+      // }
+      // break;
+
+      default:
+      break;
     }
   };
 
@@ -85,6 +119,14 @@ class TopMenu extends Component {
                   Sign Out
                 </Menu.Item>
               )}
+              
+              {/* Language Selection (All Users) */}
+              <Menu.SubMenu title={<span className="submenu-title-wrapper"><Icon type="global" />English</span>} style={{...menuItemProps, float: "right"} }>
+                <Menu.Item key="English">English</Menu.Item>
+                <Menu.Item key="French">French</Menu.Item>
+                <Menu.Item key="Farsi">Farsi</Menu.Item>
+                <Menu.Item key="Arabic">Arabic</Menu.Item>
+              </Menu.SubMenu>
             </Menu>
           )}
         </AuthUserContext.Consumer>
