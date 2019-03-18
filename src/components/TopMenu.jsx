@@ -18,33 +18,25 @@ class TopMenu extends Component {
       this.props.firebase.doSignOut();
       break;
 
-      // case "English":
-      // {
-      //   strings.setLanguage('en');
-      //   this.setState({});
-      // }
-      // break;
+      case "English":
+        this.props.setLanguage('en')
+        this.setState({});
+      break;
 
-      // case "French":
-      // {
-      //   strings.setLanguage('fr');
-      //   this.setState({});
-      // }
-      // break;
+      case "French":
+        this.props.setLanguage('fr');
+        this.setState({});
+      break;
 
-      // case "Farsi":
-      // {
-      //   strings.setLanguage('fa');
-      //   this.setState({});
-      // }
-      // break;
+      case "Farsi":
+        this.props.setLanguage('fa');
+        this.setState({});
+      break;
 
-      // case "Arabic":
-      // {
-      //   strings.setLanguage('ar');
-      //   this.setState({});
-      // }
-      // break;
+      case "Arabic":
+        this.props.setLanguage('ar');
+        this.setState({});
+      break;
 
       default:
       break;

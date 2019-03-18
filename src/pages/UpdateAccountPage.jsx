@@ -52,7 +52,7 @@ class UpdateAccountPage extends Component {
       newLang: true
     },
     {
-      title: strings.SOCIAL,
+      title: strings.SOCIALS,
       content: <SocialForm formData={formData} formObject={this.props.form} />
     },
     {
