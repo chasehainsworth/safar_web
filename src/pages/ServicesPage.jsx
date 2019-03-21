@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { Button, Tabs, Form, Icon } from "antd";
-import { withAuthorization } from "../components/Firebase";
+import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import ServiceTable from "../components/ServiceTable";
 
 import strings from "../constants/localization";
+import * as ROLES from "../constants/roles";
+import * as ROUTES from "../constants/routes";
 
 const TabPane = Tabs.TabPane;
 
@@ -160,22 +162,34 @@ class ServicesPage extends Component {
     );
 
     return (
-      <div className='card-container'>
-        <Tabs
-          onChange={this.onChange}
-          activeKey={this.state.activeKey}
-          tabBarExtraContent={newServiceButton}
-          type='card'
-        >
-          {this.state.panes.map(pane => {
+      <AuthUserContext.Consumer>
+        {authUser => {
+          const { uid } = this.state;
+          if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
             return (
-              <TabPane tab={pane.title} key={pane.key}>
-                {pane.content}
-              </TabPane>
+              <div className='card-container'>
+                <Tabs
+                  onChange={this.onChange}
+                  activeKey={this.state.activeKey}
+                  tabBarExtraContent={newServiceButton}
+                  type='card'
+                >
+                  {this.state.panes.map(pane => {
+                    return (
+                      <TabPane tab={pane.title} key={pane.key}>
+                        {pane.content}
+                      </TabPane>
+                    );
+                  })}
+                </Tabs>
+              </div>
             );
-          })}
-        </Tabs>
-      </div>
+          } else {
+              this.props.history.push(ROUTES.SERVICES);
+          }
+        }
+      }
+    </AuthUserContext.Consumer>
     );
   }
 }
