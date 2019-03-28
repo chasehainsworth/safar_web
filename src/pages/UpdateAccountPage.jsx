@@ -238,8 +238,7 @@ class UpdateAccountPage extends Component {
     }
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  handleSubmit = role => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.prepareForm(values);
@@ -259,6 +258,11 @@ class UpdateAccountPage extends Component {
           this.submitCompletedNonLang();
         }
         this.submitCompletedLang();
+        if(role == ROLES.ADMIN) {
+          this.props.history.push(ROUTES.ADMIN);
+        } else {
+          this.props.history.push(ROUTES.HOME);
+        }
       }
     });
   };
@@ -295,13 +299,15 @@ class UpdateAccountPage extends Component {
                       <Button
                         disabled={hasErrors(getFieldsError())}
                         type='primary'
-                        htmlType='submit'
+                        onClick={() => this.handleSubmit(authUser.role)}
                       >
                         {strings.NEXT}
                       </Button>
                     )}
                     {current === this.state.allSteps.length - 1 && (
-                      <Button htmlType='submit' type='primary'>
+                      <Button 
+                        type='primary'
+                        onClick={() => this.handleSubmit(authUser.role)}>
                         {strings.DONE}
                       </Button>
                     )}
