@@ -12,7 +12,7 @@ class HomePage extends Component {
     return (
       <div className='text-center'>
         <h1 className='title'>Safar</h1>
-        <h2 style={{ marginBottom: 10 }}>{strings.PROVIDER_PORTAL}</h2>
+        <h2 style={{ marginBottom: 10 }}>{strings.ORGANIZATION_PORTAL}</h2>
         <Row type='flex' justify='center' gutter={8}>
           <Col xs={24} sm={6} md={4} lg={3} xl={2}>
             <AuthUserContext.Consumer>

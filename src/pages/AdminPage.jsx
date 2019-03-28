@@ -78,7 +78,7 @@ class AdminPage extends Component {
           <Link
             to={{ pathname: ROUTES.UPDATE_ACC + "/", state: { id: record.uid } }}
           >
-            <Button icon='edit'>{strings.EDIT_PROVIDER_INFO}</Button>
+            <Button icon='edit'>{strings.EDIT_ORGANIZATION_INFO}</Button>
           </Link>
           <Divider type='vertical' />
           <Link
@@ -239,7 +239,7 @@ class AdminPage extends Component {
         <div style={{ textAlign: "right", marginBottom: 10 }}>
           <Link to={ROUTES.ADD_ACC}>
             <Button type='primary' icon='plus'>
-              {strings.ADD_NEW_PROVIDER_ACCOUNT}
+              {strings.ADD_NEW_ORGANIZATION_ACCOUNT}
             </Button>
           </Link>
         </div>
