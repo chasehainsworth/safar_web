@@ -152,6 +152,7 @@ class UpdateAccountPage extends Component {
         } else {
           this.setState({ isLoadingData: false, isLoadingLang: false });
         }
+        this.autofillEmailField();
       });
   }
 
@@ -217,6 +218,12 @@ class UpdateAccountPage extends Component {
       isAnotherLang: true,
       allSteps: this.steps.filter(s => s.newLang)
     });
+  }
+
+  autofillEmailField = () => {
+    if(!formData.hasOwnProperty('email')) {
+      formData["email"] = this.props.firebase.auth.currentUser.email;
+    }
   }
 
   prepareForm = values => {

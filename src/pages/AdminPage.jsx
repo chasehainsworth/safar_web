@@ -19,7 +19,7 @@ const oddRows = {
 
 const columns = [
   {
-    title: strings.PROVIDER_NAME,
+    title: strings.ORGANIZATION_NAME,
     dataIndex: "names",
     key: "name",
     render: langs => (

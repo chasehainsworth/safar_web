@@ -16,7 +16,6 @@ const strings = new LocalizedStrings({
     LANGUAGE_SET: "Language set, it may take a moment.",
 
     // Admin Page
-    PROVIDER_NAME: "Provider Name",
     SUBMITTED_LANGUAGES: "Submitted Languages",
     NUM_OF_SERVICES: "# of Services",
     ACTIONS: "Actions",
@@ -94,7 +93,6 @@ const strings = new LocalizedStrings({
     LANGUAGE_SET: "French",
 
     // Admin Page
-    PROVIDER_NAME: "French",
     SUBMITTED_LANGUAGES: "French",
     NUM_OF_SERVICES: "French",
     ACTIONS: "French",
