@@ -25,6 +25,7 @@ function hasErrors(fieldsError) {
 const languageFields = new Set([
   "orgName",
   "description",
+  "countryOfOrigin",
   "hours",
   "availabilityNote"
 ]);
@@ -103,6 +104,7 @@ class UpdateAccountPage extends Component {
             fileList,
             orgName,
             description,
+            countryOfOrigin,
             hours,
             availabilityNote,
             ...rest
@@ -192,6 +194,7 @@ class UpdateAccountPage extends Component {
       fileList,
       orgName,
       description,
+      countryOfOrigin,
       hours,
       availabilityNote,
       ...rest
