@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Row, Steps, Button, Spin } from "antd";
+import { Form, Row, Steps, Button, Spin, Modal } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
@@ -20,6 +20,14 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+function errorMessage(title, content) {
+  Modal.error({
+    title,
+    content,
+    centered: true
+  });
+}
+
 const languageFields = new Set([
   "orgName",
   "description",
@@ -28,7 +36,8 @@ const languageFields = new Set([
   "availabilityNote"
 ]);
 let currLanguage = {};
-let formData = { images: [], tags: [] };
+const emptyFormData = { images: [], tags: [] };
+let formData = { ...emptyFormData };
 
 class UpdateAccountPage extends Component {
   getFilledLanguages = () => {
@@ -93,6 +102,9 @@ class UpdateAccountPage extends Component {
   }
 
   componentDidMount() {
+    this.props.form.resetFields();
+    formData = {};
+    formData = { ...emptyFormData };
     this.props.firebase
       .provider(this.state.uid)
       .get()
