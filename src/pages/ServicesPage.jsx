@@ -12,6 +12,7 @@ const TabPane = Tabs.TabPane;
 class ServicesPage extends Component {
   constructor(props) {
     super(props);
+    this.org = {};
     this.tabIndex = -1;
     const panes = [];
     const uid =
@@ -28,24 +29,42 @@ class ServicesPage extends Component {
 
   componentDidMount() {
     this.props.firebase
+      .provider(this.state.uid)
+      .get()
+      .then(doc => {
+        doc.ref
+          .collection("languages")
+          .get()
+          .then(orgLangSnapshot => {
+            let langs = {};
+            orgLangSnapshot.forEach(orgLangDoc => {
+              let langData = orgLangDoc.data();
+              // langData["language"] = orgLangDoc.id;
+              langs[orgLangDoc.id] = langData;
+            });
+            this.org["langs"] = langs;
+          })
+        });
+        console.log(this.org);
+    this.props.firebase
       .services()
       .where("provider", "==", this.state.uid)
       .get()
-      .then(collectionSnapshot => {
-        collectionSnapshot.forEach(docSnapshot => {
+      .then(snapshot => {
+        snapshot.forEach(doc => {
           let service = {
-            images: docSnapshot.data().images,
-            id: docSnapshot.id
+            images: doc.data().images,
+            id: doc.id
           };
           this.props.firebase
             .service(service.id)
             .collection("languages")
             .get()
-            .then(langSnapshot => {
+            .then(serviceLangSnapshot => {
               let langs = [];
-              langSnapshot.forEach(lang => {
-                let langData = lang.data();
-                langData["language"] = lang.id;
+              serviceLangSnapshot.forEach(serviceLangDoc => {
+                let langData = serviceLangDoc.data();
+                langData["language"] = serviceLangDoc.id;
                 langs.push(langData);
               });
               service["langs"] = langs;
@@ -53,7 +72,7 @@ class ServicesPage extends Component {
             .then(() => {
               this.addFilled(service);
             });
-        });
+        })
       })
       .catch(error => {
         console.log(error);
@@ -107,6 +126,7 @@ class ServicesPage extends Component {
           content: (
             <ServiceTable
               service={service}
+              org={this.org}
               serviceKey={activeKey}
               remove={this.remove}
               updateTitle={this.updateTitle}
@@ -141,6 +161,7 @@ class ServicesPage extends Component {
       content: (
         <ServiceTable
           service={service}
+          org={this.org}
           serviceKey={activeKey}
           remove={this.remove}
           updateTitle={this.updateTitle}
