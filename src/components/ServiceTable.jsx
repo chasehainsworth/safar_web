@@ -23,6 +23,7 @@ const confirm = Modal.confirm;
 class ServiceTable extends Component {
   constructor(props) {
     super(props);
+    this.org = {};
     let dataSource = {};
     let modalsVisible = { "New Language": false };
     if (props.service["langs"]) {
@@ -34,7 +35,6 @@ class ServiceTable extends Component {
           description: lang.description,
           hours: lang.hours
         };
-
         modalsVisible[lang.language] = false;
       });
     }
@@ -261,11 +261,13 @@ class ServiceTable extends Component {
           );
         })}
 
-        {this.state.newLanguage ? (
+        { 
+          this.state.newLanguage ? (
           <WrappedServiceModal
             language="New Language"
             modalsVisible={this.state.modalsVisible}
             data={this.state.dataSource}
+            org={this.props.org}
             serviceUid={this.props.service.id}
             updateParent={this.updateFromChild}
             newLanguage={this.state.newLanguage}

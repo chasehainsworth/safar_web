@@ -11,16 +11,18 @@ const tags = {
     "Dental",
     "Emergency",
     "Shots/Vaccines",
-    "Hospitals",
+    "Hospitals/Clinics",
     "General",
-    "Specialized"
+    "Specialized",
+    "Hygiene"
   ],
   Education: [
     "Computer",
     "Language",
     "Child Education",
     "Adult Education",
-    "Writing"
+    "Writing",
+    "Health"
   ],
   Entertainment: ["Sports", "Art", "Community Center", "Cooking", "Music"],
   Legal: [
@@ -68,7 +70,7 @@ class CategoriesForm extends StepFormComponent {
           help={noCatError || ""}
         >
           {getFieldDecorator("categories", {
-            rules: [{ required: true }]
+            rules: [{ required: true, message: "Select 1 or more categories" }]
           })(
             <Select
               mode='multiple'

@@ -59,6 +59,7 @@ class InfoForm extends StepFormComponent {
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
     const descError =
       isFieldTouched("description") && getFieldError("description");
+    const countryError = isFieldTouched("countryOfOrigin") && getFieldError("countryOfOrigin");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
     const emailError = isFieldTouched("email") && getFieldError("email");
@@ -97,6 +98,16 @@ class InfoForm extends StepFormComponent {
               style={{ width: 240 }}
             />
           )}
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          validateStatus={countryError ? "error" : ""}
+          help={countryError || ""}
+          label={strings.COUNTRY_OF_ORIGIN}
+        >
+          {getFieldDecorator("countryOfOrigin", {
+            rules: [{ required: true, message: "Enter country of origin" }]
+          })(<Input style={{ width: 240 }} />)}
         </Form.Item>
         <Form.Item
           validateStatus={phoneError ? "error" : ""}

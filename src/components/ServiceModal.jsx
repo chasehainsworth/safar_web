@@ -13,7 +13,14 @@ class ServiceModal extends Component {
   }
 
   componentDidMount() {
-    this.props.form.setFieldsValue({ ...this.props.data[this.state.language] });
+    // autofill email field from org
+    // create deep copy of data to avoid it being added to table if user cancels
+    let data = JSON.parse(JSON.stringify(this.props.data));
+    if(this.props.org && this.props.org["langs"] && this.props.org["langs"][this.state.language]) {
+      data[this.state.language] = {};
+      data[this.state.language]["hours"] = this.props.org["langs"][this.state.language]["hours"];
+    }
+    this.props.form.setFieldsValue({ ...data[this.state.language] });
   }
 
   onCancel = () => {

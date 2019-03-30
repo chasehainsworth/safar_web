@@ -3,7 +3,7 @@ import LocalizedStrings from "react-localization";
 const strings = new LocalizedStrings({
   en: {
     // Home Page
-    PROVIDER_PORTAL: "Provider Portal",
+    ORGANIZATION_PORTAL: "Organization Portal",
     LOGIN: "Login",
     REQUEST_ACCESS: "Request Access",
 
@@ -16,12 +16,11 @@ const strings = new LocalizedStrings({
     LANGUAGE_SET: "Language set, it may take a moment.",
 
     // Admin Page
-    PROVIDER_NAME: "Provider Name",
     SUBMITTED_LANGUAGES: "Submitted Languages",
     NUM_OF_SERVICES: "# of Services",
     ACTIONS: "Actions",
-    ADD_NEW_PROVIDER_ACCOUNT: "Add New Provider Account",
-    EDIT_PROVIDER_INFO: "Edit Provider Info",
+    ADD_NEW_ORGANIZATION_ACCOUNT: "Add New Organization Account",
+    EDIT_ORGANIZATION_INFO: "Edit Organization Info",
     EDIT_SERVICES: "Edit Services",
 
     // Add Account Page
@@ -44,6 +43,7 @@ const strings = new LocalizedStrings({
     FINISHED: "Finished",
     ORGANIZATION_NAME: "Organization Name",
     DESCRIPTION: "Description",
+    COUNTRY_OF_ORIGIN: "Country of Origin",
     PHONE_NUMBER: "Phone Number",
     UPLOAD_IMAGES: "Upload Images",
     UPLOAD: "Upload",
@@ -81,7 +81,7 @@ const strings = new LocalizedStrings({
   // French
   fr: {
     // Home Page
-    PROVIDER_PORTAL: "French",
+    ORGANIZATION_PORTAL: "French",
     LOGIN: "French",
     REQUEST_ACCESS: "French",
 
@@ -94,12 +94,11 @@ const strings = new LocalizedStrings({
     LANGUAGE_SET: "French",
 
     // Admin Page
-    PROVIDER_NAME: "French",
     SUBMITTED_LANGUAGES: "French",
     NUM_OF_SERVICES: "French",
     ACTIONS: "French",
-    ADD_NEW_PROVIDER_ACCOUNT: "French",
-    EDIT_PROVIDER_INFO: "French",
+    ADD_NEW_ORGANIZATION_ACCOUNT: "French",
+    EDIT_ORGANIZATION_INFO: "French",
     EDIT_SERVICES: "French",
 
     // Add Account Page
@@ -122,6 +121,7 @@ const strings = new LocalizedStrings({
     FINISHED: "French",
     ORGANIZATION_NAME: "French",
     DESCRIPTION: "French",
+    COUNTRY_OF_ORIGIN: "French",
     PHONE_NUMBER: "French",
     UPLOAD_IMAGES: "French",
     UPLOAD: "French",

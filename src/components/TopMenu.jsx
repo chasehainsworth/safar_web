@@ -64,7 +64,7 @@ class TopMenu extends Component {
                 key={ROUTES.HOME}
                 style={{ backgroundColor: "inherit", ...menuItemProps }}
               >
-                {/* Everyone */}
+                {/* Everyone */ console.log(authUser)}
 
                 <Link to={ROUTES.HOME} className="logo">
                   S A F A R
@@ -73,11 +73,6 @@ class TopMenu extends Component {
 
               {/* Services providers */}
 
-              {!!authUser && authUser.role === ROLES.PROVIDER && (
-                <Menu.Item key={ROUTES.HOURS} style={menuItemProps}>
-                  <Link to={ROUTES.HOURS}>{strings.UPDATE_HOURS}</Link>
-                </Menu.Item>
-              )}
               {!!authUser && authUser.role === ROLES.PROVIDER && (
                 <Menu.Item key={ROUTES.UPDATE_ACC} style={menuItemProps}>
                   <Link to={ROUTES.UPDATE_ACC}>
