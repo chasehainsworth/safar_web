@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Row, Steps, Button, Spin } from "antd";
+import { Form, Row, Steps, Button, Spin, Modal } from "antd";
 import LanguageForm from "../components/LanguageForm";
 import InfoForm from "../components/InfoForm";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
@@ -14,13 +14,19 @@ const Step = Steps.Step;
 
 function hasErrors(fieldsError) {
   // console.log(
-  //   "Errors: ",
+  //   'Errors: ',
   //   Object.eys(fieldsError).some(field => fieldsError[field])
   // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-
+function errorMessage(title, content) {
+  Modal.error({
+    title,
+    content,
+    centered: true
+  });
+}
 
 const languageFields = new Set([
   "orgName",
@@ -30,20 +36,23 @@ const languageFields = new Set([
   "availabilityNote"
 ]);
 let currLanguage = {};
-let formData = { images: [] };
+const emptyFormData = { images: [], tags: [] };
+let formData = { ...emptyFormData };
 
 class UpdateAccountPage extends Component {
-
   getFilledLanguages = () => {
     return this.state.filledLanguages;
-  }
-
+  };
 
   steps = [
     {
       title: strings.LANGUAGE,
       content: (
-        <LanguageForm formData={formData} formObject={this.props.form} getFilledLanguages={this.getFilledLanguages} />
+        <LanguageForm
+          formData={formData}
+          formObject={this.props.form}
+          getFilledLanguages={this.getFilledLanguages}
+        />
       ), // contents will be components with the forms
       newLang: true // if this page is necessary for setting 2nd language
     },
@@ -93,6 +102,9 @@ class UpdateAccountPage extends Component {
   }
 
   componentDidMount() {
+    this.props.form.resetFields();
+    formData = {};
+    formData = { ...emptyFormData };
     this.props.firebase
       .provider(this.state.uid)
       .get()
@@ -139,7 +151,7 @@ class UpdateAccountPage extends Component {
 
           this.prepareForm(rest);
           this.breakTags();
-          // console.log("form", formData);
+          // console.log('form', formData);
           this.setState({ isLoadingData: false });
 
           this.props.firebase
@@ -155,6 +167,12 @@ class UpdateAccountPage extends Component {
           this.setState({ isLoadingData: false, isLoadingLang: false });
         }
         this.autofillEmailField();
+      })
+      .catch(err => {
+        errorMessage(
+          "Error Loading Data",
+          "There was an error loading your data. Please contact the system administrator."
+        );
       });
   }
 
@@ -181,7 +199,9 @@ class UpdateAccountPage extends Component {
 
   breakTags = () => {
     Object.keys(formData.tags).forEach(cat => {
-      formData[cat + "Tags"] = [...formData.tags[cat]];
+      if (formData.tags[cat] != null) {
+        formData[cat + "Tags"] = [...formData.tags[cat]];
+      }
     });
     delete formData.tags;
   };
@@ -224,10 +244,10 @@ class UpdateAccountPage extends Component {
   }
 
   autofillEmailField = () => {
-    if(!formData.hasOwnProperty('email')) {
+    if (!formData.hasOwnProperty("email")) {
       formData["email"] = this.props.firebase.auth.currentUser.email;
     }
-  }
+  };
 
   prepareForm = values => {
     for (let v in values) {
@@ -258,7 +278,7 @@ class UpdateAccountPage extends Component {
           this.submitCompletedNonLang();
         }
         this.submitCompletedLang();
-        if(role === ROLES.ADMIN) {
+        if (role === ROLES.ADMIN) {
           this.props.history.push(ROUTES.ADMIN);
         } else {
           this.props.history.push(ROUTES.HOME);
@@ -305,9 +325,10 @@ class UpdateAccountPage extends Component {
                       </Button>
                     )}
                     {current === this.state.allSteps.length - 1 && (
-                      <Button 
+                      <Button
                         type='primary'
-                        onClick={() => this.handleSubmit(authUser.role)}>
+                        onClick={() => this.handleSubmit(authUser.role)}
+                      >
                         {strings.DONE}
                       </Button>
                     )}

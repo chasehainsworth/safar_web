@@ -9,11 +9,11 @@ const languages = ["English", "Farsi", "Arabic", "French"];
 class LanguageForm extends StepFormComponent {
   state = {
     filledLanguages: null
-  }
+  };
 
   updateFilledLanguages = () => {
-    this.setState({filledLanguages: this.props.getFilledLanguages()});
-  }
+    this.setState({ filledLanguages: this.props.getFilledLanguages() });
+  };
   render() {
     const {
       getFieldDecorator,
@@ -38,11 +38,9 @@ class LanguageForm extends StepFormComponent {
             >
               {languages.map(l => (
                 <Select.Option key={l} value={l}>
-                  {
-                    this.state.filledLanguages &&
-                    this.state.filledLanguages[l] && 
-                    <Icon type="check" />
-                  } {l}
+                  {this.state.filledLanguages &&
+                    this.state.filledLanguages[l] && <Icon type='check' />}{" "}
+                  {l}
                 </Select.Option>
               ))}
             </Select>

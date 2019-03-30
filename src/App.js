@@ -23,6 +23,7 @@ class App extends Component {
   setLanguage = (language) => {
     strings.setLanguage(language);
     this.setState({});
+    message.config({top: 50});
     message.info(strings.LANGUAGE_SET);
   }
   render() {
