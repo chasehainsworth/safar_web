@@ -137,9 +137,8 @@ class AdminPage extends Component {
         provider.delete();
       });
 
-    this.props.firebase
-      .user(org.uid)
-      .delete();
+    // Don't delete users from the user table - they will still be able to login,
+    // but it will crash.
   };
 
   componentDidMount() {
