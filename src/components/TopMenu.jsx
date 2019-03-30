@@ -7,7 +7,7 @@ import { Link, withRouter } from "react-router-dom";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
-import strings from "../constants/localization";
+import strings, { getCurrentLanguageAsString } from "../constants/localization";
 
 const { Header } = Layout;
 
@@ -15,31 +15,31 @@ class TopMenu extends Component {
   handleClick = e => {
     switch (e.key) {
       case "SignOut":
-      this.props.firebase.doSignOut();
-      break;
+        this.props.firebase.doSignOut();
+        break;
 
       case "English":
-        this.props.setLanguage('en')
+        this.props.setLanguage("en");
         this.setState({});
-      break;
+        break;
 
       case "French":
-        this.props.setLanguage('fr');
+        this.props.setLanguage("fr");
         this.setState({});
-      break;
+        break;
 
       case "Farsi":
-        this.props.setLanguage('fa');
+        this.props.setLanguage("fa");
         this.setState({});
-      break;
+        break;
 
       case "Arabic":
-        this.props.setLanguage('ar');
+        this.props.setLanguage("ar");
         this.setState({});
-      break;
+        break;
 
       default:
-      break;
+        break;
     }
   };
 
@@ -54,8 +54,8 @@ class TopMenu extends Component {
         <AuthUserContext.Consumer>
           {authUser => (
             <Menu
-              theme='dark'
-              mode='horizontal'
+              theme="dark"
+              mode="horizontal"
               selectedKeys={[this.props.location.pathname]}
               onClick={this.handleClick}
               style={{ height: "100%" }}
@@ -66,7 +66,7 @@ class TopMenu extends Component {
               >
                 {/* Everyone */}
 
-                <Link to={ROUTES.HOME} className='logo'>
+                <Link to={ROUTES.HOME} className="logo">
                   S A F A R
                 </Link>
               </Menu.Item>
@@ -110,17 +110,25 @@ class TopMenu extends Component {
               {/* All Logged In */}
 
               {!!authUser && (
-                <Menu.Item key='SignOut' style={menuItemProps}>
+                <Menu.Item key="SignOut" style={menuItemProps}>
                   {strings.SIGN_OUT}
                 </Menu.Item>
               )}
-              
+
               {/* Language Selection (All Users) */}
-              <Menu.SubMenu title={<span className="submenu-title-wrapper"><Icon type="global" />English</span>} style={{...menuItemProps, float: "right"} }>
+              <Menu.SubMenu
+                title={
+                  <span className="submenu-title-wrapper">
+                    <Icon type="global" />
+                    {getCurrentLanguageAsString()}
+                  </span>
+                }
+                style={{ ...menuItemProps, float: "right" }}
+              >
                 <Menu.Item key="English">English</Menu.Item>
-                <Menu.Item key="French">French</Menu.Item>
-                <Menu.Item key="Farsi">Farsi</Menu.Item>
-                <Menu.Item key="Arabic">Arabic</Menu.Item>
+                <Menu.Item key="French">français</Menu.Item>
+                <Menu.Item key="Farsi">فارسی</Menu.Item>
+                <Menu.Item key="Arabic">العربية</Menu.Item>
               </Menu.SubMenu>
             </Menu>
           )}

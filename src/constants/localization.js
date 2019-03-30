@@ -162,4 +162,20 @@ const strings = new LocalizedStrings({
   fa: {}
   // https://www.loc.gov/standards/iso639-2/php/code_list.php
 });
+
+export function getCurrentLanguageAsString() {
+  switch (strings.getLanguage()) {
+    case "en":
+      return "English";
+    case "fr": 
+      return "français";
+    case "ar":
+      return "العربية";
+    case "fa":
+      return "فارسی";
+    default:
+      return "English";
+  }
+}
+
 export default strings;

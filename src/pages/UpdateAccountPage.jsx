@@ -14,13 +14,11 @@ const Step = Steps.Step;
 
 function hasErrors(fieldsError) {
   // console.log(
-  //   "Errors: ",
+  //   'Errors: ',
   //   Object.eys(fieldsError).some(field => fieldsError[field])
   // );
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
-
-
 
 const languageFields = new Set([
   "orgName",
@@ -29,20 +27,22 @@ const languageFields = new Set([
   "availabilityNote"
 ]);
 let currLanguage = {};
-let formData = { images: [] };
+let formData = { images: [], tags: [] };
 
 class UpdateAccountPage extends Component {
-
   getFilledLanguages = () => {
     return this.state.filledLanguages;
-  }
-
+  };
 
   steps = [
     {
       title: strings.LANGUAGE,
       content: (
-        <LanguageForm formData={formData} formObject={this.props.form} getFilledLanguages={this.getFilledLanguages} />
+        <LanguageForm
+          formData={formData}
+          formObject={this.props.form}
+          getFilledLanguages={this.getFilledLanguages}
+        />
       ), // contents will be components with the forms
       newLang: true // if this page is necessary for setting 2nd language
     },
@@ -137,7 +137,7 @@ class UpdateAccountPage extends Component {
 
           this.prepareForm(rest);
           this.breakTags();
-          // console.log("form", formData);
+          // console.log('form', formData);
           this.setState({ isLoadingData: false });
 
           this.props.firebase
@@ -152,7 +152,8 @@ class UpdateAccountPage extends Component {
         } else {
           this.setState({ isLoadingData: false, isLoadingLang: false });
         }
-      });
+      })
+      .catch(err => console.log(err));
   }
 
   next() {
@@ -178,7 +179,9 @@ class UpdateAccountPage extends Component {
 
   breakTags = () => {
     Object.keys(formData.tags).forEach(cat => {
-      formData[cat + "Tags"] = [...formData.tags[cat]];
+      if (formData.tags[cat] != null) {
+        formData[cat + "Tags"] = [...formData.tags[cat]];
+      }
     });
     delete formData.tags;
   };
