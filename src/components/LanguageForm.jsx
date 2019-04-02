@@ -35,7 +35,7 @@ class LanguageForm extends StepFormComponent {
               placeholder={!this.props.formData["Language"] && strings.LANGUAGE}
               style={{ width: 120 }}
               onFocus={this.updateFilledLanguages}
-            >
+           >
               {languages.map(l => (
                 <Select.Option key={l} value={l}>
                   {this.state.filledLanguages &&

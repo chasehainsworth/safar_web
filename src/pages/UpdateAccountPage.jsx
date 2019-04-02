@@ -37,50 +37,13 @@ const languageFields = new Set([
 ]);
 let currLanguage = {};
 const emptyFormData = { images: [], tags: [] };
-let formData = { ...emptyFormData };
+// let formData = { ...emptyFormData };
 
 class UpdateAccountPage extends Component {
   getFilledLanguages = () => {
     return this.state.filledLanguages;
   };
 
-  steps = [
-    {
-      title: strings.LANGUAGE,
-      content: (
-        <LanguageForm
-          formData={formData}
-          formObject={this.props.form}
-          getFilledLanguages={this.getFilledLanguages}
-        />
-      ), // contents will be components with the forms
-      newLang: true // if this page is necessary for setting 2nd language
-    },
-    {
-      title: strings.INFO,
-      content: <InfoForm formData={formData} formObject={this.props.form} />,
-      newLang: true
-    },
-    {
-      title: strings.SOCIALS,
-      content: <SocialForm formData={formData} formObject={this.props.form} />
-    },
-    {
-      title: strings.CATEGORIES,
-      content: (
-        <CategoriesForm formData={formData} formObject={this.props.form} />
-      )
-    },
-    {
-      title: strings.FINISHED,
-      content: (
-        <div style={{ paddingTop: "60px" }}>
-          {strings.UPDATE_ACCOUNT_FINISHED_MESSAGE}
-        </div>
-      ),
-      newLang: true
-    }
-  ];
 
   constructor(props) {
     super(props);
@@ -94,17 +57,57 @@ class UpdateAccountPage extends Component {
       uid,
       currentStep: 0,
       isAnotherLang: false,
-      allSteps: this.steps,
+      allSteps: [],
       isLoadingData: true,
       isLoadingLang: true,
-      filledLanguages: null
+      filledLanguages: null,
+      formData: {...emptyFormData},
+      // steps: steps
     };
   }
 
   componentDidMount() {
     this.props.form.resetFields();
-    formData = {};
-    formData = { ...emptyFormData };
+    let allSteps = [
+      {
+        title: strings.LANGUAGE,
+        content: (
+          <LanguageForm
+            formData={this.state.formData}
+            formObject={this.props.form}
+            getFilledLanguages={this.getFilledLanguages}
+          />
+        ), // contents will be components with the forms
+        newLang: true // if this page is necessary for setting 2nd language
+      },
+      {
+        title: strings.INFO,
+        content: <InfoForm formData={this.state.formData} formObject={this.props.form} />,
+        newLang: true
+      },
+      {
+        title: strings.SOCIALS,
+        content: <SocialForm formData={this.state.formData} formObject={this.props.form} />
+      },
+      {
+        title: strings.CATEGORIES,
+        content: (
+          <CategoriesForm formData={this.state.formData} formObject={this.props.form} />
+        )
+      },
+      {
+        title: strings.FINISHED,
+        content: (
+          <div style={{ paddingTop: "60px" }}>
+            {strings.UPDATE_ACCOUNT_FINISHED_MESSAGE}
+          </div>
+        ),
+        newLang: true
+      }
+    ];
+    this.setState({ allSteps });
+    // formData = {};
+    // formData = { ...emptyFormData };
     this.props.firebase
       .provider(this.state.uid)
       .get()
@@ -123,6 +126,7 @@ class UpdateAccountPage extends Component {
           } = data;
 
           if (data.images && data.images.length > 0) {
+            let formData = this.state.formData;
             formData.fileList = [];
             data.images.forEach(img => {
               this.props.firebase
@@ -139,7 +143,10 @@ class UpdateAccountPage extends Component {
                     status: "done",
                     url: url
                   };
+                  // formData = this.state.formData;
                   formData.fileList.push(newFile);
+                  this.setState({formData});
+                  // formData.fileList.push(newFile);
                 })
                 .catch(error => {
                   // Broken link, remove the image from the list
@@ -150,6 +157,7 @@ class UpdateAccountPage extends Component {
           }
 
           this.prepareForm(rest);
+          this.autofillEmailField();
           this.breakTags();
           // console.log('form', formData);
           this.setState({ isLoadingData: false });
@@ -161,12 +169,11 @@ class UpdateAccountPage extends Component {
             .then(snapshot => {
               let langs = {};
               snapshot.forEach(doc => (langs[doc.id] = doc.data()));
-              this.setState({ filledLanguages: langs, isLoadingLang: false });
+              this.setState({filledLanguages: langs, isLoadingLang: false });
             });
         } else {
           this.setState({ isLoadingData: false, isLoadingLang: false });
         }
-        this.autofillEmailField();
       })
       .catch(err => {
         errorMessage(
@@ -187,6 +194,7 @@ class UpdateAccountPage extends Component {
   }
 
   consolidateTags = rest => {
+    let formData = this.state.formData;
     formData.tags = {};
     Object.keys(formData)
       .filter(key => key.slice(-4) === "Tags")
@@ -195,15 +203,18 @@ class UpdateAccountPage extends Component {
         let tag = fullTag.slice(0, -4);
         formData.tags[tag] = formData[fullTag];
       });
+      this.setState({formData});
   };
 
   breakTags = () => {
+    let formData = this.state.formData;
     Object.keys(formData.tags).forEach(cat => {
       if (formData.tags[cat] != null) {
         formData[cat + "Tags"] = [...formData.tags[cat]];
       }
     });
     delete formData.tags;
+    this.setState({formData});
   };
 
   // removeIndividual
@@ -218,7 +229,7 @@ class UpdateAccountPage extends Component {
       hours,
       availabilityNote,
       ...rest
-    } = formData;
+    } = this.state.formData;
     this.consolidateTags(rest);
     this.props.firebase
       .provider(this.state.uid)
@@ -227,7 +238,7 @@ class UpdateAccountPage extends Component {
 
   submitCompletedLang = () => {
     this.props.firebase
-      .providerLanguage(this.state.uid, formData.language)
+      .providerLanguage(this.state.uid, this.state.formData.language)
       .set({ ...currLanguage }, { merge: true });
   };
 
@@ -244,18 +255,22 @@ class UpdateAccountPage extends Component {
   }
 
   autofillEmailField = () => {
+    let formData = this.state.formData;
     if (!formData.hasOwnProperty("email")) {
       formData["email"] = this.props.firebase.auth.currentUser.email;
+      this.setState({formData});
     }
   };
 
   prepareForm = values => {
+    let formData = this.state.formData;
     for (let v in values) {
       if (languageFields.has(v)) {
         currLanguage[v] = values[v];
       }
       formData[v] = values[v];
     }
+    this.setState({formData});
   };
 
   handleSubmit = role => {
@@ -267,9 +282,9 @@ class UpdateAccountPage extends Component {
         if (this.state.currentStep === 0) {
           if (
             this.state.filledLanguages &&
-            this.state.filledLanguages[formData.language]
+            this.state.filledLanguages[this.state.formData.language]
           ) {
-            this.prepareForm(this.state.filledLanguages[formData.language]);
+            this.prepareForm(this.state.filledLanguages[this.state.formData.language]);
           }
         }
         this.next();
@@ -289,7 +304,6 @@ class UpdateAccountPage extends Component {
 
   render() {
     const { currentStep: current } = this.state;
-
     const { getFieldsError } = this.props.form;
 
     return (
@@ -312,7 +326,7 @@ class UpdateAccountPage extends Component {
                     </Steps>
                   </Row>
                   <div className='steps-content'>
-                    {this.state.allSteps[current].content}
+                    {!this.state.isLoadingData && !this.state.isLoadingLang && this.state.allSteps[current].content}
                   </div>
                   <div className='steps-action'>
                     {current < this.state.allSteps.length - 1 && (
