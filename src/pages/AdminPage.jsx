@@ -142,12 +142,15 @@ class AdminPage extends Component {
   };
 
   componentDidMount() {
-    this.setState({ loadingLangs: true, loadingServices: true });
+    this.setState({ loadingLangs: false, loadingServices: false});
 
     this.unsubscribe = this.props.firebase.providers().onSnapshot(snapshot => {
       let providersList = [];
 
       let idx = 0;
+      if(snapshot.size === 0) {
+        this.setState({loadingLangs: false, loadingServices: false});
+      }
       snapshot.forEach(doc => {
         let names = [];
         let languages = [];
@@ -156,12 +159,14 @@ class AdminPage extends Component {
 
         let gotLangs = false,
           gotServices = false;
-
         this.props.firebase
           .provider(doc.id)
           .collection("languages")
           .get()
           .then(langSnapshot => {
+            if(langSnapshot.size === 0) {
+              this.setState({loadingLangs: false});
+            }
             langSnapshot.forEach(langDoc => {
               names.push(langDoc.data().orgName);
               languages.push({ language: langDoc.id, ...langDoc.data() });
@@ -200,7 +205,9 @@ class AdminPage extends Component {
             //   services.push(servDoc.id);
             // });
             services = servsSnapshot.size;
-
+            if(services === 0) {
+              this.setState({loadingServices: false});
+            }
             if (gotLangs) {
               providersList.push({
                 key: idx,
