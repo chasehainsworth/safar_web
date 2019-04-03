@@ -122,7 +122,7 @@ class ServicesPage extends Component {
         const activeKey = doc.id;
         let service = { id: doc.id };
         panes.push({
-          title: strings.NEW_SERVICES,
+          title: strings.NEW_SERVICE,
           content: (
             <ServiceTable
               service={service}
