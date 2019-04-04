@@ -31,7 +31,6 @@ function errorMessage(title, content) {
 const languageFields = new Set([
   "orgName",
   "description",
-  "countryOfOrigin",
   "hours",
   "availabilityNote"
 ]);
@@ -119,7 +118,6 @@ class UpdateAccountPage extends Component {
             fileList,
             orgName,
             description,
-            countryOfOrigin,
             hours,
             availabilityNote,
             ...rest
@@ -225,7 +223,6 @@ class UpdateAccountPage extends Component {
       fileList,
       orgName,
       description,
-      countryOfOrigin,
       hours,
       availabilityNote,
       ...rest
@@ -329,6 +326,14 @@ class UpdateAccountPage extends Component {
                     {!this.state.isLoadingData && !this.state.isLoadingLang && this.state.allSteps[current].content}
                   </div>
                   <div className='steps-action'>
+                    {current > 0 && (
+                      <Button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => this.prev()}
+                      >
+                        {strings.PREVIOUS}
+                      </Button>
+                    )}
                     {current < this.state.allSteps.length - 1 && (
                       <Button
                         disabled={hasErrors(getFieldsError())}
@@ -353,14 +358,6 @@ class UpdateAccountPage extends Component {
                         type='primary'
                       >
                         {strings.ADD_ANOTHER_LANGUAGE}
-                      </Button>
-                    )}
-                    {current > 0 && (
-                      <Button
-                        style={{ marginLeft: 8 }}
-                        onClick={() => this.prev()}
-                      >
-                        {strings.PREVIOUS}
                       </Button>
                     )}
                   </div>

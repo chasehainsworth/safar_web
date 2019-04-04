@@ -1,18 +1,30 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Modal, Form, Input } from "antd";
+import { Modal, Form, Input, Select } from "antd";
 import CustomUpload from "./CustomUpload";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 import strings from "../constants/localization";
+import * as i18nIsoCountries from 'i18n-iso-countries';
 
 const initial = "";
+const Option = Select.Option;
 
 class InfoForm extends StepFormComponent {
-  state = {
-    previewVisible: false,
-    previewImage: ""
-  };
+
+  constructor(props) {
+    super(props);
+
+    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/en.json"));
+    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/fr.json"));
+    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/fa.json"));
+    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/ar.json"));
+
+    this.state = {
+      previewVisible: false,
+      previewImage: ""
+    };
+  }
 
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -70,6 +82,9 @@ class InfoForm extends StepFormComponent {
       wrapperCol: { span: 6 }
     };
 
+    let countries = i18nIsoCountries.getNames(strings.getLanguage());
+    console.log(strings.getLanguage());
+    console.log(countries);
     return (
       <div>
         <Form.Item
@@ -94,7 +109,6 @@ class InfoForm extends StepFormComponent {
             ]
           })(
             <TextArea
-              autosize={{ minRows: 2, maxRows: 4 }}
               style={{ width: 240 }}
             />
           )}
@@ -107,7 +121,15 @@ class InfoForm extends StepFormComponent {
         >
           {getFieldDecorator("countryOfOrigin", {
             rules: [{ required: true, message: "Enter country of origin" }]
-          })(<Input style={{ width: 240 }} />)}
+          })(
+            <Select style={{ width: 240 }}>
+              { 
+                Object.keys(countries).map(countryCode => {
+                  return (<Option value={countryCode}>{countries[countryCode]}</Option>)
+                })
+              }
+            </Select>
+          )}
         </Form.Item>
         <Form.Item
           validateStatus={phoneError ? "error" : ""}
