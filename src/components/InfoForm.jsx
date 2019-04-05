@@ -138,7 +138,7 @@ class InfoForm extends StepFormComponent {
           {getFieldDecorator("phone", {
             initialValue: "+30",
             rules: [
-              { required: true, message: "Enter phone number" },
+              { message: "Enter phone number" },
               { min: 9 },
               { validator: this.checkPhoneNumber }
             ]

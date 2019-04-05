@@ -53,6 +53,7 @@ const strings = new LocalizedStrings({
     PREVIOUS: "Previous",
     ORGANIZATION_WEBSITE: "Organization Website",
     FACEBOOK: "Facebook",
+    INSTAGRAM: "Instagram",
     WHATSAPP: "WhatsApp",
     TWITTER: "Twitter",
     // TODO: Categories and tags
@@ -131,6 +132,7 @@ const strings = new LocalizedStrings({
     PREVIOUS: "French",
     ORGANIZATION_WEBSITE: "French",
     FACEBOOK: "French",
+    INSTAGRAM: "French",
     WHATSAPP: "French",
     TWITTER: "French",
     // TODO: Categories and tags
