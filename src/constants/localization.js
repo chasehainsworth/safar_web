@@ -38,7 +38,7 @@ const strings = new LocalizedStrings({
     // Update Account Info page
     LANGUAGE: "Language",
     INFO: "Info",
-    SOCIALS: "Socials",
+    SOCIALS: "Online Presence",
     CATEGORIES: "Categories",
     FINISHED: "Finished",
     ORGANIZATION_NAME: "Organization Name",

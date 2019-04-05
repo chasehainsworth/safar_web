@@ -172,7 +172,7 @@ class ServiceTable extends Component {
       title: "Are you sure you want to delete this service?",
       okText: "Yes",
       okType: "danger",
-      onOk: this.props.remove(this.props.serviceKey)
+      onOk: () => this.props.remove(this.props.serviceKey)
     });
   };
 
