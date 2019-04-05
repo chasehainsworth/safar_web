@@ -83,8 +83,6 @@ class InfoForm extends StepFormComponent {
     };
 
     let countries = i18nIsoCountries.getNames(strings.getLanguage());
-    console.log(strings.getLanguage());
-    console.log(countries);
     return (
       <div>
         <Form.Item
