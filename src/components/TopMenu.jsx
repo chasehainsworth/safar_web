@@ -105,7 +105,8 @@ class TopMenu extends Component {
               {/* All Logged In */}
 
               {!!authUser && (
-                <Menu.Item key="SignOut" style={menuItemProps}>
+                <Menu.Item key="SignOut" style={{...menuItemProps, float: "right"}}>
+                  <Icon type="logout" />
                   {strings.SIGN_OUT}
                 </Menu.Item>
               )}
