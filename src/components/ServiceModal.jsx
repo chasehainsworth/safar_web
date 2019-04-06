@@ -83,30 +83,30 @@ class ServiceModal extends Component {
             <Form.Item
               validateStatus={nameError ? "error" : ""}
               help={nameError || ""}
-              label={strings.NAME}
+              label={strings.SERVICE_NAME}
             >
               {getFieldDecorator("name", {
-                rules: [{ required: true, message: "Enter organization name" }]
+                rules: [{ required: true, message: "Enter service name" }]
               })(<Input />)}
             </Form.Item>
             <Form.Item
               validateStatus={descError ? "error" : ""}
               help={descError || ""}
-              label={strings.DESCRIPTION}
+              label={strings.SERVICE_DESCRIPTION}
             >
               {getFieldDecorator("description", {
                 rules: [
-                  { required: true, message: "Enter organization description" }
+                  { required: true, message: "Enter service description" }
                 ]
               })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
             </Form.Item>
             <Form.Item
               validateStatus={hoursError ? "error" : ""}
               help={hoursError || ""}
-              label={strings.HOURS}
+              label={strings.SERVICE_HOURS}
             >
               {getFieldDecorator("hours", {
-                rules: [{ required: true, message: "Enter hours" }]
+                rules: [{ required: true, message: "Enter service hours" }]
               })(<Input />)}
             </Form.Item>
           </Form>
