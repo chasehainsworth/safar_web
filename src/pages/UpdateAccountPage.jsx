@@ -244,10 +244,11 @@ class UpdateAccountPage extends Component {
       this.submitCompletedNonLang();
     }
     this.submitCompletedLang();
+    this.props.form.resetFields();
     this.setState({
       currentStep: 0,
       isAnotherLang: true,
-      allSteps: this.steps.filter(s => s.newLang)
+      allSteps: this.state.allSteps.filter(s => s.newLang)
     });
   }
 
@@ -269,7 +270,15 @@ class UpdateAccountPage extends Component {
     }
     this.setState({formData});
   };
-
+  
+  setTranslatableFieldsBlank = () => {
+    let formData = this.state.formData;
+    languageFields.forEach(field => {
+      formData[field] = '';
+    });
+    this.setState({formData});
+  }
+  
   handleSubmit = role => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -277,11 +286,16 @@ class UpdateAccountPage extends Component {
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
         if (this.state.currentStep === 0) {
+          // Old language data needs to be cleaned out here for new languages
           if (
             this.state.filledLanguages &&
             this.state.filledLanguages[this.state.formData.language]
-          ) {
-            this.prepareForm(this.state.filledLanguages[this.state.formData.language]);
+          ) 
+            {
+              this.prepareForm(this.state.filledLanguages[this.state.formData.language]);
+            }
+          else {
+            this.setTranslatableFieldsBlank();
           }
         }
         this.next();
@@ -345,19 +359,19 @@ class UpdateAccountPage extends Component {
                     )}
                     {current === this.state.allSteps.length - 1 && (
                       <Button
-                        type='primary'
-                        onClick={() => this.handleSubmit(authUser.role)}
-                      >
-                        {strings.DONE}
-                      </Button>
-                    )}
-                    {current === this.state.allSteps.length - 1 && (
-                      <Button
                         style={{ marginLeft: 8 }}
                         onClick={() => this.addLang()}
                         type='primary'
                       >
                         {strings.ADD_ANOTHER_LANGUAGE}
+                      </Button>
+                    )}
+                    {current === this.state.allSteps.length - 1 && (
+                      <Button
+                        type='primary'
+                        onClick={() => this.handleSubmit(authUser.role)}
+                      >
+                        {strings.DONE}
                       </Button>
                     )}
                   </div>

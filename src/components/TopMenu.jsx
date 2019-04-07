@@ -122,7 +122,7 @@ class TopMenu extends Component {
                 style={{ ...menuItemProps, float: "right" }}
               >
                 <Menu.Item key="English">English</Menu.Item>
-                <Menu.Item key="French">français</Menu.Item>
+                <Menu.Item key="French">Français</Menu.Item>
                 <Menu.Item key="Farsi">فارسی</Menu.Item>
                 <Menu.Item key="Arabic">العربية</Menu.Item>
               </Menu.SubMenu>

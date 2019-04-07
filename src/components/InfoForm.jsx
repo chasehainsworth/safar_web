@@ -78,15 +78,13 @@ class InfoForm extends StepFormComponent {
     const imageError = this.props.formData.images.length > 0;
 
     const formItemLayout = {
-      labelCol: { offset: 5, span: 6 },
-      wrapperCol: { span: 6 }
+      labelCol: { offset: 5, span: 5},
+      wrapperCol: { offset: 1, span: 10 }
     };
 
     let countries = i18nIsoCountries.getNames(strings.getLanguage());
-    console.log(strings.getLanguage());
-    console.log(countries);
     return (
-      <div>
+      <div style={{textAlign: "left"}}>
         <Form.Item
           {...formItemLayout}
           validateStatus={orgNameError ? "error" : ""}
@@ -95,7 +93,7 @@ class InfoForm extends StepFormComponent {
         >
           {getFieldDecorator("orgName", {
             rules: [{ required: true, message: "Enter organization name" }]
-          })(<Input style={{ width: 240 }} />)}
+          })(<Input />)}
         </Form.Item>
         <Form.Item
           validateStatus={descError ? "error" : ""}
@@ -108,9 +106,7 @@ class InfoForm extends StepFormComponent {
               { required: true, message: "Enter organization description" }
             ]
           })(
-            <TextArea
-              style={{ width: 240 }}
-            />
+            <TextArea/>
           )}
         </Form.Item>
         <Form.Item
@@ -122,7 +118,7 @@ class InfoForm extends StepFormComponent {
           {getFieldDecorator("countryOfOrigin", {
             rules: [{ required: true, message: "Enter country of origin" }]
           })(
-            <Select style={{ width: 240 }}>
+            <Select>
               { 
                 Object.keys(countries).map(countryCode => {
                   return (<Option value={countryCode}>{countries[countryCode]}</Option>)
@@ -140,11 +136,11 @@ class InfoForm extends StepFormComponent {
           {getFieldDecorator("phone", {
             initialValue: "+30",
             rules: [
-              { required: true, message: "Enter phone number" },
+              { message: "Enter phone number" },
               { min: 9 },
               { validator: this.checkPhoneNumber }
             ]
-          })(<Input style={{ width: 240 }} />)}
+          })(<Input />)}
         </Form.Item>
         <Form.Item
           validateStatus={imageError ? "error" : ""}
@@ -180,21 +176,21 @@ class InfoForm extends StepFormComponent {
         >
           {getFieldDecorator("email", {
             rules: [{ required: true, message: "Enter email" }]
-          })(<Input style={{ width: 240 }} />)}
+          })(<Input />)}
         </Form.Item>
         <Form.Item
           {...formItemLayout}
           validateStatus={hoursError ? "error" : ""}
           help={hoursError || ""}
-          label={strings.HOURS}
+          label={strings.OPERATING_HOURS}
         >
           {getFieldDecorator("hours", {
             rules: [{ required: true, message: "Enter hours" }]
-          })(<Input style={{ width: 240 }} />)}
+          })(<Input />)}
         </Form.Item>
         <Form.Item label={strings.SPECIAL_NOTE} {...formItemLayout}>
           {getFieldDecorator("availabilityNote", { initialValue: initial })(
-            <Input style={{ width: 240 }} />
+            <Input />
           )}
         </Form.Item>
       </div>

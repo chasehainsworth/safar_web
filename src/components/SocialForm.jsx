@@ -52,8 +52,8 @@ class SocialForm extends StepFormComponent {
           label={strings.ORGANIZATION_WEBSITE}
         >
           {getFieldDecorator("orgSite", {
-            rules: [{ required: true, message: "Enter organization website" }]
-          })(<Input style={{ width: 300 }} prefix={<Icon type='link' />} />)}
+            rules: [{ message: "Enter organization website" }]
+          })(<Input prefix={<Icon type='link' />} />)}
         </Form.Item>
         <Form.Item {...formItemLayout} label={strings.FACEBOOK}>
           {getFieldDecorator("facebook", { initialValue: initial })(
@@ -63,6 +63,19 @@ class SocialForm extends StepFormComponent {
                   type='facebook'
                   theme='filled'
                   style={{ color: "#0e1f56" }}
+                />
+              }
+            />
+          )}
+        </Form.Item>
+        <Form.Item {...formItemLayout} label={strings.INSTAGRAM}>
+          {getFieldDecorator("instagram", { initialValue: initial })(
+            <Input
+              prefix={
+                <Icon
+                  type='instagram'
+                  theme='filled'
+                  style={{ color: "#bc2a8d" }}
                 />
               }
             />

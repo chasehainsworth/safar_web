@@ -47,12 +47,13 @@ const strings = new LocalizedStrings({
     PHONE_NUMBER: "Phone Number",
     UPLOAD_IMAGES: "Upload Images",
     UPLOAD: "Upload",
-    HOURS: "Hours",
+    OPERATING_HOURS: "Hours",
     SPECIAL_NOTE: "Any special notes regarding availability?",
     NEXT: "Next",
     PREVIOUS: "Previous",
     ORGANIZATION_WEBSITE: "Organization Website",
     FACEBOOK: "Facebook",
+    INSTAGRAM: "Instagram",
     WHATSAPP: "WhatsApp",
     TWITTER: "Twitter",
     // TODO: Categories and tags
@@ -65,7 +66,9 @@ const strings = new LocalizedStrings({
     // Services Page
     SERVICE: "Service",
     NEW_SERVICE: "New Service",
-    NAME: "Name",
+    SERVICE_NAME: "Service Name",
+    SERVICE_DESCRIPTION: "Service Description",
+    SERVICE_HOURS: "Service Hours",
     EDIT: "Edit",
     DELETE: "Delete",
     UPLOAD_IMAGE: "Upload Image",
@@ -131,6 +134,7 @@ const strings = new LocalizedStrings({
     PREVIOUS: "French",
     ORGANIZATION_WEBSITE: "French",
     FACEBOOK: "French",
+    INSTAGRAM: "French",
     WHATSAPP: "French",
     TWITTER: "French",
     // TODO: Categories and tags
