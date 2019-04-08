@@ -32,11 +32,9 @@ class App extends Component {
         <TopMenu setLanguage={this.setLanguage} />
         <Content>
           <Switch>
-            <Route exact path='/' component={HomePage} />
-
+            <Route exact path='/' component={LoginPage} />
             <Route path={ROUTES.UPDATE_ACC} component={UpdateAccountPage} />
             <Route path={ROUTES.ADD_ACC} component={AddAccountPage} />
-            <Route path={ROUTES.LOGIN} component={LoginPage} />
             <Route path={ROUTES.SERVICES} component={ServicesPage} />
             <Route path={ROUTES.ADMIN} component={AdminPage} />
           </Switch>

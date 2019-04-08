@@ -307,7 +307,7 @@ class UpdateAccountPage extends Component {
         if (role === ROLES.ADMIN) {
           this.props.history.push(ROUTES.ADMIN);
         } else {
-          this.props.history.push(ROUTES.HOME);
+          this.props.history.push(ROUTES.LOGIN);
         }
       }
     });

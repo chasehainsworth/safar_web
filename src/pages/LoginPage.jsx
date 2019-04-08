@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
-import { withFirebase } from "../components/Firebase";
+import { withFirebase, AuthUserContext } from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
+import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
 import strings from "../constants/localization";
 
@@ -50,7 +51,7 @@ class LoginPage extends Component {
       .doSignInWithEmailAndPassword(values.email, values.password)
       .then(() => {
         console.log("Success:", values.email);
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.LOGIN);
       })
       .catch(firebaseErr => {
         errorMessage("Failed to Login.", firebaseErr.message);
@@ -82,6 +83,13 @@ class LoginPage extends Component {
 
     return (
       <div className='smallFormWrapper'>
+        <AuthUserContext.Consumer>
+          {authUser => {
+            console.log(authUser);
+            authUser && authUser.role === ROLES.ADMIN && (this.props.history.push(ROUTES.ADMIN));
+            authUser && authUser.role === ROLES.ORGANIZATION && (this.props.history.push(ROUTES.UPDATE_ACC));
+          }} 
+        </AuthUserContext.Consumer>
         <h1>{strings.LOGIN}</h1>
         <div className='smallForm'>
           <Form onSubmit={this.handleSubmit}>

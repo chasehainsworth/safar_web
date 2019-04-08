@@ -26,7 +26,7 @@ class SignUpPage extends Component {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
       const { email, passOne } = values;
-      const role = ROLES.PROVIDER;
+      const role = ROLES.ORGANIZATION;
       if (!fieldErr) {
         this.props.firebase
           .doCreateUserWithEmailAndPassword(email, passOne)
