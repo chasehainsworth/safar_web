@@ -105,8 +105,6 @@ class UpdateAccountPage extends Component {
       }
     ];
     this.setState({ allSteps });
-    // formData = {};
-    // formData = { ...emptyFormData };
     this.props.firebase
       .provider(this.state.uid)
       .get()
@@ -141,10 +139,8 @@ class UpdateAccountPage extends Component {
                     status: "done",
                     url: url
                   };
-                  // formData = this.state.formData;
                   formData.fileList.push(newFile);
                   this.setState({formData});
-                  // formData.fileList.push(newFile);
                 })
                 .catch(error => {
                   // Broken link, remove the image from the list
@@ -157,7 +153,6 @@ class UpdateAccountPage extends Component {
           this.prepareForm(rest);
           this.autofillEmailField();
           this.breakTags();
-          // console.log('form', formData);
           this.setState({ isLoadingData: false });
 
           this.props.firebase
@@ -286,7 +281,6 @@ class UpdateAccountPage extends Component {
       }
       if (this.state.currentStep < this.state.allSteps.length - 1) {
         if (this.state.currentStep === 0) {
-          // Old language data needs to be cleaned out here for new languages
           if (
             this.state.filledLanguages &&
             this.state.filledLanguages[this.state.formData.language]
@@ -295,20 +289,23 @@ class UpdateAccountPage extends Component {
               this.prepareForm(this.state.filledLanguages[this.state.formData.language]);
             }
           else {
+            // Old language data needs to be cleaned out here for new languages
             this.setTranslatableFieldsBlank();
           }
         }
+        else if(this.state.currentStep === this.state.allSteps.length - 2) {
+          if (!this.isAnotherLang) {
+            this.submitCompletedNonLang();
+          }
+          this.submitCompletedLang();
+        }
         this.next();
       } else {
-        if (!this.isAnotherLang) {
-          this.submitCompletedNonLang();
-        }
-        this.submitCompletedLang();
-        if (role === ROLES.ADMIN) {
-          this.props.history.push(ROUTES.ADMIN);
-        } else {
-          this.props.history.push(ROUTES.LOGIN);
-        }
+          this.setState({
+            currentStep: 0,
+            isAnotherLang: true,
+            allSteps: this.state.allSteps.filter(s => s.newLang)
+          });
       }
     });
   };
@@ -355,15 +352,6 @@ class UpdateAccountPage extends Component {
                         onClick={() => this.handleSubmit(authUser.role)}
                       >
                         {strings.NEXT}
-                      </Button>
-                    )}
-                    {current === this.state.allSteps.length - 1 && (
-                      <Button
-                        style={{ marginLeft: 8 }}
-                        onClick={() => this.addLang()}
-                        type='primary'
-                      >
-                        {strings.ADD_ANOTHER_LANGUAGE}
                       </Button>
                     )}
                     {current === this.state.allSteps.length - 1 && (
