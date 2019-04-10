@@ -61,6 +61,7 @@ class UpdateAccountPage extends Component {
       isLoadingLang: true,
       filledLanguages: null,
       formData: {...emptyFormData},
+      disabledNext: false
       // steps: steps
     };
   }
@@ -81,7 +82,7 @@ class UpdateAccountPage extends Component {
       },
       {
         title: strings.INFO,
-        content: <InfoForm formData={this.state.formData} formObject={this.props.form} />,
+        content: <InfoForm formData={this.state.formData} formObject={this.props.form} disableNext={this.disableNext}/>,
         newLang: true
       },
       {
@@ -174,6 +175,10 @@ class UpdateAccountPage extends Component {
           "There was an error loading your data. Please contact the system administrator."
         );
       });
+  }
+
+  disableNext = value => {
+    this.setState({ disabledNext: value});
   }
 
   next() {
@@ -313,7 +318,7 @@ class UpdateAccountPage extends Component {
   render() {
     const { currentStep: current } = this.state;
     const { getFieldsError } = this.props.form;
-
+    console.log(this.state.disabledNext);
     return (
       <AuthUserContext.Consumer>
         {authUser => {
@@ -347,7 +352,7 @@ class UpdateAccountPage extends Component {
                     )}
                     {current < this.state.allSteps.length - 1 && (
                       <Button
-                        disabled={hasErrors(getFieldsError())}
+                        disabled={this.state.disabledNext || hasErrors(getFieldsError())}
                         type='primary'
                         onClick={() => this.handleSubmit(authUser.role)}
                       >

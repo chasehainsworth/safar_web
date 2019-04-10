@@ -68,6 +68,7 @@ class CustomUpload extends Upload {
   };
 
   firebaseUpload = file => {
+    if(this.props.disableNext) this.props.disableNext(true);
     if (file.size > 2000000) {
       // Image > 2mb. TODO: Stop import into browser freeze.
       file.status = "error";
@@ -75,6 +76,7 @@ class CustomUpload extends Upload {
         "Image upload error:",
         "Cannot upload an image over 2mb in size"
       );
+      if(this.props.disableNext) this.props.disableNext(false);
       return false;
     }
 
@@ -107,6 +109,7 @@ class CustomUpload extends Upload {
         newFL[idx]["response"] = error.message;
 
         this.refs.uploadRef.onChange({ file: file, fileList: newFL });
+        if(this.props.disableNext) this.props.disableNext(false);
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -119,6 +122,7 @@ class CustomUpload extends Upload {
           newFL[idx].status = "done";
 
           this.refs.uploadRef.onChange({ file: file, fileList: newFL });
+          if(this.props.disableNext) this.props.disableNext(false);
         });
       }
     );
