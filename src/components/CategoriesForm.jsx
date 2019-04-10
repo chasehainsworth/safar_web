@@ -1,7 +1,8 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Form, Select, Tabs } from "antd";
+import { Form, Select, Tabs, Button, Row, Col, Checkbox, Divider } from "antd";
 import CheckboxGroup from "antd/lib/checkbox/Group";
+import Column from "antd/lib/table/Column";
 
 const TabPane = Tabs.TabPane;
 const categories = ["Health", "Education", "Entertainment", "Legal"];
@@ -54,6 +55,10 @@ class CategoriesForm extends StepFormComponent {
     this.setState({ categories: [...values] });
   }
 
+  // checkCategorySelect(rule, value, callback) {
+
+  // }
+
   render() {
     const {
       getFieldDecorator,
@@ -65,9 +70,14 @@ class CategoriesForm extends StepFormComponent {
       isFieldTouched("categories") && getFieldError("categories");
     return (
       <div>
+        {/* <Row>
+        </Row> */}
         <Form.Item
           validateStatus={noCatError ? "error" : ""}
           help={noCatError || ""}
+          labelCol={{span: 11, textAlign: "right"}}
+          wrapperCol={{span: 5, offset: 1}}
+          label="Choose Categories"
         >
           {getFieldDecorator("categories", {
             rules: [{ required: true, message: "Select 1 or more categories" }]
@@ -84,7 +94,77 @@ class CategoriesForm extends StepFormComponent {
             </Select>
           )}
         </Form.Item>
-        <Tabs defaultActiveKey='1' tabPosition='left' style={{ width: 400 }}>
+        {/* <Row>
+          <Col offset={2} span={4} style={{ textAlign: "left"}}>
+            <Form.Item>
+              {getFieldDecorator("categories", { rules: [{required: true}]})(
+                <CheckboxGroup style={{width: "100%"}}>
+                        <Row>
+                          <Col style={{ marginBottom: "5.8em"}}>
+                            <Checkbox value="Health">Health</Checkbox>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col style={{ marginBottom: "5em"}}>
+                            <Checkbox value="Education">Education</Checkbox>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col style={{ marginBottom: "5em"}}>
+                            <Checkbox value="Entertainment">Entertainment</Checkbox>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col style={{ marginBottom: "5em"}}>
+                            <Checkbox value="Legal">Legal</Checkbox>
+                          </Col>
+                        </Row>
+                </CheckboxGroup>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={18} style={{textAlign: "left"}}>
+            {categories
+              .map((cat, index) => {
+                return (
+                  <Row>
+                    <Col span={18} style={{textAlign: "left"}}>
+                      <Form.Item>
+                        {getFieldDecorator(cat + "Tags", { initialValue: initial })(
+                          <CheckboxGroup style={{width: "100%"}} disabled={true}>
+                            {tags[cat].map(tag => <Col span={8}><Checkbox value={tag}>{tag}</Checkbox></Col>)}
+                          </CheckboxGroup>
+                        )}
+                      </Form.Item>
+                    </Col>
+                    {index != this.state.categories.length - 1 && (<Divider />) }
+                  </Row>
+                );
+              })}
+          </Col>
+        </Row> */}
+        {this.state.categories
+          .map((cat, index) => {
+            return (
+              <Row>
+                <Col span={6} style={{fontWeight: "bold"}}>
+                  {cat}
+                </Col>
+                <Col span={18} style={{textAlign: "left"}}>
+                  <Form.Item>
+                    {getFieldDecorator(cat + "Tags", { initialValue: initial })(
+                      <CheckboxGroup style={{width: "100%"}}>
+                        {tags[cat].map(tag => <Col span={8}><Checkbox value={tag}>{tag}</Checkbox></Col>)}
+                      </CheckboxGroup>
+                    )}
+                  </Form.Item>
+                </Col>
+                {index != this.state.categories.length - 1 && (<Divider />) }
+              </Row>
+
+            );
+          })}
+        {/* <Tabs defaultActiveKey='1' tabPosition='left' style={{ width: 400 }}>
           {this.state.categories
             .filter(cat => cat in tags)
             .map((cat, index) => {
@@ -98,7 +178,7 @@ class CategoriesForm extends StepFormComponent {
                 </TabPane>
               );
             })}
-        </Tabs>
+        </Tabs> */}
       </div>
     );
   }
