@@ -1,4 +1,5 @@
 export const ADD_ACC = "/AddAccount";
+export const REQ_ACC = "/RequestAccount";
 export const LOGIN = "/";
 export const ACCOUNT = "/Account";
 export const UPDATE_ACC = "/UpdateAccount";

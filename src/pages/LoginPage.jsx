@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
 import { withFirebase, AuthUserContext } from "../components/Firebase";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
@@ -151,9 +151,12 @@ class LoginPage extends Component {
                 : strings.GO_BACK}
             </button>
             {!this.state.forgotPassword && (
-              <Button type='default' style={{float: "right"}}>
-                {strings.REQUEST_ACCESS}
-              </Button>)}
+              <Link to={ROUTES.REQ_ACC}>
+                <Button type='default' style={{float: "right"}}>
+                  {strings.REQUEST_ACCESS}
+                </Button>
+              </Link>
+            )}
           </Form>
         </div>
       </div>
