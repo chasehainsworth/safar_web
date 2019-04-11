@@ -150,9 +150,10 @@ class LoginPage extends Component {
                 ? strings.FORGOT_PASSWORD
                 : strings.GO_BACK}
             </button>
-            <Button type='default'>
-              {strings.REQUEST_ACCESS}
-            </Button>
+            {!this.state.forgotPassword && (
+              <Button type='default' style={{float: "right"}}>
+                {strings.REQUEST_ACCESS}
+              </Button>)}
           </Form>
         </div>
       </div>
