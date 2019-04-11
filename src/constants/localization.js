@@ -27,6 +27,11 @@ const strings = new LocalizedStrings({
     REENTER_PASSWORD: "Re-enter the password",
     CREATE_ACCOUNT: "Create Account",
 
+    // Request Account Page
+    REQUEST_ACCOUNT: "Request Account",
+    SELECT_CAMP: "Select Camp",
+    MORIA: "Moria",
+
     // Login Page
     EMAIL: "Email",
     PASSWORD: "Password",

@@ -46,17 +46,17 @@ class ServiceTable extends Component {
         key: "language"
       },
       {
-        title: strings.NAME,
+        title: strings.SERVICE_NAME,
         dataIndex: "name",
         key: "name"
       },
       {
-        title: strings.DESCRIPTION,
+        title: strings.SERVICE_DESCRIPTION,
         dataIndex: "description",
         key: "description"
       },
       {
-        title: strings.HOURS,
+        title: strings.SERVICE_HOURS,
         dataIndex: "hours",
         key: "hours"
       },
@@ -209,7 +209,7 @@ class ServiceTable extends Component {
     const { getFieldDecorator } = this.props.form;
     return this.state.isLoadingImage ? null : (
       <div>
-        <Row type='flex' justify='end'>
+        <Row type='flex' justify='start'>
           <Col>
             <Form layout='inline' style={{ margin: 10 }}>
               <Form.Item

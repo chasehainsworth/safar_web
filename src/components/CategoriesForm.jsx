@@ -1,7 +1,8 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Form, Select, Tabs } from "antd";
+import { Form, Select, Tabs, Button, Row, Col, Checkbox, Divider } from "antd";
 import CheckboxGroup from "antd/lib/checkbox/Group";
+import Column from "antd/lib/table/Column";
 
 const TabPane = Tabs.TabPane;
 const categories = ["Health", "Education", "Entertainment", "Legal"];
@@ -37,7 +38,6 @@ const tags = {
 const initial = null;
 
 class CategoriesForm extends StepFormComponent {
-  //state = { categories: [], tags: [] }
 
   constructor(props) {
     super(props);
@@ -68,6 +68,9 @@ class CategoriesForm extends StepFormComponent {
         <Form.Item
           validateStatus={noCatError ? "error" : ""}
           help={noCatError || ""}
+          labelCol={{span: 11, textAlign: "right"}}
+          wrapperCol={{span: 5, offset: 1}}
+          label="Choose Categories"
         >
           {getFieldDecorator("categories", {
             rules: [{ required: true, message: "Select 1 or more categories" }]
@@ -84,21 +87,27 @@ class CategoriesForm extends StepFormComponent {
             </Select>
           )}
         </Form.Item>
-        <Tabs defaultActiveKey='1' tabPosition='left' style={{ width: 400 }}>
-          {this.state.categories
-            .filter(cat => cat in tags)
-            .map((cat, index) => {
-              return (
-                <TabPane tab={cat} key={index}>
+        {this.state.categories
+          .map((cat, index) => {
+            return (
+              <Row>
+                <Col span={6} style={{fontWeight: "bold"}}>
+                  {cat}
+                </Col>
+                <Col span={18} style={{textAlign: "left"}}>
                   <Form.Item>
                     {getFieldDecorator(cat + "Tags", { initialValue: initial })(
-                      <CheckboxGroup options={tags[cat]} />
+                      <CheckboxGroup style={{width: "100%"}}>
+                        {tags[cat].map(tag => <Col span={8}><Checkbox value={tag}>{tag}</Checkbox></Col>)}
+                      </CheckboxGroup>
                     )}
                   </Form.Item>
-                </TabPane>
-              );
-            })}
-        </Tabs>
+                </Col>
+                {index != this.state.categories.length - 1 && (<Divider />) }
+              </Row>
+
+            );
+          })}
       </div>
     );
   }

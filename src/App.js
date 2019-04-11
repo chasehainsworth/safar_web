@@ -9,9 +9,9 @@ import { withAuthentication } from "./components/Firebase";
 import * as ROUTES from "./constants/routes";
 import strings from "./constants/localization";
 
-import HomePage from "./pages/HomePage";
 import UpdateAccountPage from "./pages/UpdateAccountPage";
 import AddAccountPage from "./pages/AddAccountPage";
+import RequestAccountPage from "./pages/RequestAccountPage";
 import LoginPage from "./pages/LoginPage";
 import ServicesPage from "./pages/ServicesPage";
 import TopMenu from "./components/TopMenu";
@@ -32,11 +32,10 @@ class App extends Component {
         <TopMenu setLanguage={this.setLanguage} />
         <Content>
           <Switch>
-            <Route exact path='/' component={HomePage} />
-
+            <Route exact path='/' component={LoginPage} />
             <Route path={ROUTES.UPDATE_ACC} component={UpdateAccountPage} />
             <Route path={ROUTES.ADD_ACC} component={AddAccountPage} />
-            <Route path={ROUTES.LOGIN} component={LoginPage} />
+            <Route path={ROUTES.REQ_ACC} component={RequestAccountPage} />
             <Route path={ROUTES.SERVICES} component={ServicesPage} />
             <Route path={ROUTES.ADMIN} component={AdminPage} />
           </Switch>

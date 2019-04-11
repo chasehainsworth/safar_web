@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
-import { withFirebase } from "../components/Firebase";
-import { withRouter } from "react-router-dom";
+import { withFirebase, AuthUserContext } from "../components/Firebase";
+import { withRouter, Link } from "react-router-dom";
 
+import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
 import strings from "../constants/localization";
 
@@ -50,7 +51,7 @@ class LoginPage extends Component {
       .doSignInWithEmailAndPassword(values.email, values.password)
       .then(() => {
         console.log("Success:", values.email);
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.LOGIN);
       })
       .catch(firebaseErr => {
         errorMessage("Failed to Login.", firebaseErr.message);
@@ -82,6 +83,12 @@ class LoginPage extends Component {
 
     return (
       <div className='smallFormWrapper'>
+        <AuthUserContext.Consumer>
+          {authUser => {
+            authUser && authUser.role === ROLES.ADMIN && (this.props.history.push(ROUTES.ADMIN));
+            authUser && authUser.role === ROLES.ORGANIZATION && (this.props.history.push(ROUTES.UPDATE_ACC));
+          }} 
+        </AuthUserContext.Consumer>
         <h1>{strings.LOGIN}</h1>
         <div className='smallForm'>
           <Form onSubmit={this.handleSubmit}>
@@ -132,6 +139,7 @@ class LoginPage extends Component {
             </Button>
 
             <button
+              type="button"
               onClick={() =>
                 this.setState({ forgotPassword: !this.state.forgotPassword })
               }
@@ -142,6 +150,13 @@ class LoginPage extends Component {
                 ? strings.FORGOT_PASSWORD
                 : strings.GO_BACK}
             </button>
+            {!this.state.forgotPassword && (
+              <Link to={ROUTES.REQ_ACC}>
+                <Button type='default' style={{float: "right"}}>
+                  {strings.REQUEST_ACCESS}
+                </Button>
+              </Link>
+            )}
           </Form>
         </div>
       </div>

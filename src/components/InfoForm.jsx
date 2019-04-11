@@ -156,6 +156,7 @@ class InfoForm extends StepFormComponent {
               <CustomUpload
                 onPreview={this.handlePreview}
                 maxUploads={3}
+                disableNext={this.props.disableNext}
                 {...this.props}
               />
             )}
