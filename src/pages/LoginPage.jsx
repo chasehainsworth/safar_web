@@ -85,7 +85,6 @@ class LoginPage extends Component {
       <div className='smallFormWrapper'>
         <AuthUserContext.Consumer>
           {authUser => {
-            console.log(authUser);
             authUser && authUser.role === ROLES.ADMIN && (this.props.history.push(ROUTES.ADMIN));
             authUser && authUser.role === ROLES.ORGANIZATION && (this.props.history.push(ROUTES.UPDATE_ACC));
           }} 
@@ -140,6 +139,7 @@ class LoginPage extends Component {
             </Button>
 
             <button
+              type="button"
               onClick={() =>
                 this.setState({ forgotPassword: !this.state.forgotPassword })
               }
@@ -150,6 +150,9 @@ class LoginPage extends Component {
                 ? strings.FORGOT_PASSWORD
                 : strings.GO_BACK}
             </button>
+            <Button type='default'>
+              {strings.REQUEST_ACCESS}
+            </Button>
           </Form>
         </div>
       </div>
