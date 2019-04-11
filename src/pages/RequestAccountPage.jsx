@@ -15,6 +15,22 @@ function hasErrors(fieldsError) {
 
 const Option = Select.Option;
 
+function modalMessage(type, title, content) {
+  if(type === 'error') {
+    Modal.error({
+      title,
+      content,
+      centered: true
+    });
+  } else {
+    Modal.success({
+      title,
+      content,
+      centered: true
+    });
+  }
+}
+
 class RequestAccountPage extends Component {
   state = {};
 
@@ -26,12 +42,22 @@ class RequestAccountPage extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
-      const { name, email, camp } = values;
-      let requestAccount = this.props.firebase.functions.httpsCallable('requestAccount');
-      requestAccount({name: name, email: email, camp: camp })
-        .catch(error => {
-          console.log(error);
-        })
+      if(!fieldErr) {
+        const { name, email, camp } = values;
+        let requestAccount = this.props.firebase.functions
+          .httpsCallable('requestAccount');
+        requestAccount({'name': name, 'email': email, 'camp': camp})
+        // requestAccount({'name': 'UN', 'email': 'hello@un.org', 'camp': 'Moria'})
+          .then(res => {
+            modalMessage('success', 'Request successfully sent!', '');
+            console.log(res);
+            return res;
+          })
+          .catch(error => {
+            modalMessage('error', 'Error in sending request', <p>Please contact the system administrator</p>)
+            console.log(error);
+          })
+        }
     });
   };
 
