@@ -27,29 +27,12 @@ class RequestAccountPage extends Component {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
       const { name, email, camp } = values;
-      let requestAccount = this.firebase.functions.httpsCallable('requestAccount');
+      let requestAccount = this.props.firebase.functions.httpsCallable('requestAccount');
       requestAccount({name: name, email: email, camp: camp })
         .catch(error => {
           console.log(error);
         })
     });
-  };
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue("passOne")) {
-      callback("The second password does not match!");
-    } else {
-      callback();
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value) {
-      form.validateFields(["confirm"], { force: true });
-    }
-    callback();
   };
 
   render() {
