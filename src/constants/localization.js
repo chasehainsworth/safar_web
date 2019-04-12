@@ -66,6 +66,16 @@ const strings = new LocalizedStrings({
     ADD_ANOTHER_LANGUAGE: "Add another language",
     UPDATE_ACCOUNT_FINISHED_MESSAGE:
       "You're all done. Please try to fill out your information in as many languages as possible.",
+    MONDAY: "Monday",
+    TUESDAY: "Tuesday",
+    WEDNESDAY: "Wednesday",
+    THURSDAY: "Thursday",
+    FRIDAY: "Friday",
+    SATURDAY: "Saturday",
+    SUNDAY: "Sunday",
+    CHOOSE_DAY: "Choose Day",
+    SELECT_START_TIME: "Select Start Time",
+    SELECT_END_TIME: "Select End Time",
     // TODO: All form hints/errors
 
     // Services Page
@@ -145,8 +155,7 @@ const strings = new LocalizedStrings({
     // TODO: Categories and tags
     DONE: "French",
     ADD_ANOTHER_LANGUAGE: "French",
-    UPDATE_ACCOUNT_FINISHED_MESSAGE:
-      "French",
+    UPDATE_ACCOUNT_FINISHED_MESSAGE: "French",
     // TODO: All form hints/errors
 
     // Services Page
@@ -176,7 +185,7 @@ export function getCurrentLanguageAsString() {
   switch (strings.getLanguage()) {
     case "en":
       return "English";
-    case "fr": 
+    case "fr":
       return "français";
     case "ar":
       return "العربية";

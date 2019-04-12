@@ -1,28 +1,38 @@
 import React from "react";
 import StepFormComponent from "./StepFormComponent";
-import { Modal, Form, Input, Select } from "antd";
+import { Modal, Form, Input, Select, Button } from "antd";
 import CustomUpload from "./CustomUpload";
 import TextArea from "antd/lib/input/TextArea";
 import { withFirebase } from "./Firebase";
 import strings from "../constants/localization";
-import * as i18nIsoCountries from 'i18n-iso-countries';
+import * as i18nIsoCountries from "i18n-iso-countries";
+import HoursPicker from "./HoursPicker";
 
 const initial = "";
 const Option = Select.Option;
 
 class InfoForm extends StepFormComponent {
-
   constructor(props) {
     super(props);
 
-    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/en.json"));
-    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/fr.json"));
-    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/fa.json"));
-    i18nIsoCountries.registerLocale(require("i18n-iso-countries/langs/ar.json"));
+    i18nIsoCountries.registerLocale(
+      require("i18n-iso-countries/langs/en.json")
+    );
+    i18nIsoCountries.registerLocale(
+      require("i18n-iso-countries/langs/fr.json")
+    );
+    i18nIsoCountries.registerLocale(
+      require("i18n-iso-countries/langs/fa.json")
+    );
+    i18nIsoCountries.registerLocale(
+      require("i18n-iso-countries/langs/ar.json")
+    );
 
     this.state = {
       previewVisible: false,
-      previewImage: ""
+      previewImage: "",
+      hoursVisible: false,
+      hoursString: this.props.formData.hours
     };
   }
 
@@ -35,6 +45,12 @@ class InfoForm extends StepFormComponent {
       previewImage: file.url || file.thumbUrl,
       previewVisible: true
     });
+  };
+
+  enterHours = times => {
+    const hoursString = JSON.stringify(times);
+    this.props.formObject.setFieldsValue({ hours: hoursString });
+    this.setState({ hoursVisible: false, hoursString });
   };
 
   checkPhoneNumber = (rule, value, callback) => {
@@ -71,20 +87,28 @@ class InfoForm extends StepFormComponent {
     const orgNameError = isFieldTouched("orgName") && getFieldError("orgName");
     const descError =
       isFieldTouched("description") && getFieldError("description");
-    const countryError = isFieldTouched("countryOfOrigin") && getFieldError("countryOfOrigin");
+    const countryError =
+      isFieldTouched("countryOfOrigin") && getFieldError("countryOfOrigin");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const phoneError = isFieldTouched("phone") && getFieldError("phone");
     const emailError = isFieldTouched("email") && getFieldError("email");
     const imageError = this.props.formData.images.length > 0;
 
     const formItemLayout = {
-      labelCol: { offset: 5, span: 5},
+      labelCol: { offset: 5, span: 5 },
       wrapperCol: { offset: 1, span: 10 }
+    };
+
+    const hoursBtnStyle = {
+      border: "none",
+      height: "inherit",
+      background: "inherit",
+      boxShadow: "none"
     };
 
     let countries = i18nIsoCountries.getNames(strings.getLanguage());
     return (
-      <div style={{textAlign: "left"}}>
+      <div style={{ textAlign: "left" }}>
         <Form.Item
           {...formItemLayout}
           validateStatus={orgNameError ? "error" : ""}
@@ -105,9 +129,7 @@ class InfoForm extends StepFormComponent {
             rules: [
               { required: true, message: "Enter organization description" }
             ]
-          })(
-            <TextArea/>
-          )}
+          })(<TextArea />)}
         </Form.Item>
         <Form.Item
           {...formItemLayout}
@@ -119,11 +141,11 @@ class InfoForm extends StepFormComponent {
             rules: [{ required: true, message: "Enter country of origin" }]
           })(
             <Select>
-              { 
-                Object.keys(countries).map(countryCode => {
-                  return (<Option value={countryCode}>{countries[countryCode]}</Option>)
-                })
-              }
+              {Object.keys(countries).map(countryCode => {
+                return (
+                  <Option value={countryCode}>{countries[countryCode]}</Option>
+                );
+              })}
             </Select>
           )}
         </Form.Item>
@@ -187,13 +209,37 @@ class InfoForm extends StepFormComponent {
         >
           {getFieldDecorator("hours", {
             rules: [{ required: true, message: "Enter hours" }]
-          })(<Input />)}
+          })(
+            <Input
+              disabled
+              addonAfter={
+                <Button
+                  icon='plus'
+                  style={hoursBtnStyle}
+                  onClick={() => {
+                    const v = this.state.hoursVisible;
+                    this.setState({
+                      hoursVisible: !v
+                    });
+                  }}
+                >
+                  Update Hours
+                </Button>
+              }
+            />
+          )}
         </Form.Item>
+
         <Form.Item label={strings.SPECIAL_NOTE} {...formItemLayout}>
           {getFieldDecorator("availabilityNote", { initialValue: initial })(
             <Input />
           )}
         </Form.Item>
+        <HoursPicker
+          visible={this.state.hoursVisible}
+          onOk={this.enterHours}
+          currentTimes={this.state.hoursString}
+        />
       </div>
     );
   }
