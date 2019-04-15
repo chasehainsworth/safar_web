@@ -4,31 +4,39 @@ import TextArea from "antd/lib/input/TextArea";
 import { withAuthorization } from "./Firebase";
 import strings from "../constants/localization";
 
-class ServiceModal extends Component {
+export class ServiceModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      language: (this.props.language === "New Language") ? this.props.newLanguage : this.props.language
-    }
+      language:
+        this.props.language === "New Language"
+          ? this.props.newLanguage
+          : this.props.language
+    };
   }
 
   componentDidMount() {
     // autofill email field from org
     // create deep copy of data to avoid it being added to table if user cancels
     let data = JSON.parse(JSON.stringify(this.props.data));
-    if(this.props.org && this.props.org["langs"] && this.props.org["langs"][this.state.language]) {
+    if (
+      this.props.org &&
+      this.props.org["langs"] &&
+      this.props.org["langs"][this.state.language]
+    ) {
       data[this.state.language] = {};
-      data[this.state.language]["hours"] = this.props.org["langs"][this.state.language]["hours"];
+      data[this.state.language]["hours"] = this.props.org["langs"][
+        this.state.language
+      ]["hours"];
     }
     this.props.form.setFieldsValue({ ...data[this.state.language] });
   }
 
   onCancel = () => {
     let modalsVisible = this.props.modalsVisible;
-    if(this.props.newLanguage) {
+    if (this.props.newLanguage) {
       modalsVisible["New Language"] = false;
-    }
-    else {
+    } else {
       modalsVisible[this.state.language] = false;
     }
     this.props.updateParent(modalsVisible, this.props.data);
@@ -42,10 +50,9 @@ class ServiceModal extends Component {
           .set({ ...values }, { merge: true })
           .then(() => {
             let modalsVisible = this.props.modalsVisible;
-            if(this.props.newLanguage) {
+            if (this.props.newLanguage) {
               modalsVisible["New Language"] = false;
-            }
-            else {
+            } else {
               modalsVisible[this.state.language] = false;
             }
             let langData = values;
@@ -69,7 +76,10 @@ class ServiceModal extends Component {
       isFieldTouched("description") && getFieldError("description");
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
 
-    let modalName = (this.props.language === "New Language") ? "New Language" : this.state.language;
+    let modalName =
+      this.props.language === "New Language"
+        ? "New Language"
+        : this.state.language;
 
     return (
       <div>

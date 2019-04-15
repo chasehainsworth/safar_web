@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-class StepFormComponent extends Component {
+export class StepFormComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {};
