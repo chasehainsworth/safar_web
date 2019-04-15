@@ -1,4 +1,5 @@
 module.exports = {
+  pagePerSection: true,
   sections: [
     {
       name: "Introduction",
