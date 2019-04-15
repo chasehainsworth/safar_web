@@ -2,7 +2,7 @@ import { Component } from "react";
 import PropTypes from "prop-types";
 
 /**
- * The base class for all Step Forms used on [UpdateAccountPage](#updateaccountpage).
+ * The base class for all Step Forms used on [UpdateAccountPage](/#/Pages?id=updateaccountpage).
  *
  * Keeps track of the overall form object and values between each step, and sets the
  * form items of the step when it is loaded on screen.

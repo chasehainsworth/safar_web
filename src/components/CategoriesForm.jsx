@@ -40,7 +40,7 @@ const initial = null;
  * Form with a multi-select categories dropdown, with at least one required category. For each selected category, a row
  * will appear with checkboxes for each subcategory.
  *
- * Parent: [StepFormComponent](#stepformcomponent)
+ * Parent: [StepFormComponent](/#/Components?id=stepformcomponent)
  *
  * The hardcoded categories and subcategories are:
  * * Health: Pregnancy, Dental, Emergency, Shots/Vaccines, Hospitals/Clinics, General, Specialized, Hygiene
