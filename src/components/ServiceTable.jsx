@@ -20,7 +20,7 @@ let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
 const confirm = Modal.confirm;
 
-class ServiceTable extends Component {
+export class ServiceTable extends Component {
   constructor(props) {
     super(props);
     this.org = {};
@@ -149,7 +149,10 @@ class ServiceTable extends Component {
 
   updateFromChild = (modalsVisible, dataSource) => {
     this.setState({ modalsVisible, dataSource, newLanguage: "" });
-    this.props.updateTitle(this.props.serviceKey, Object.values(this.state.dataSource));
+    this.props.updateTitle(
+      this.props.serviceKey,
+      Object.values(this.state.dataSource)
+    );
   };
 
   // Used in columns to pull up modal
@@ -261,10 +264,9 @@ class ServiceTable extends Component {
           );
         })}
 
-        { 
-          this.state.newLanguage ? (
+        {this.state.newLanguage ? (
           <WrappedServiceModal
-            language="New Language"
+            language='New Language'
             modalsVisible={this.state.modalsVisible}
             data={this.state.dataSource}
             org={this.props.org}
@@ -272,7 +274,7 @@ class ServiceTable extends Component {
             updateParent={this.updateFromChild}
             newLanguage={this.state.newLanguage}
           />
-        ) : null }
+        ) : null}
       </div>
     );
   }

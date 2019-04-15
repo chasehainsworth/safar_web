@@ -5,7 +5,7 @@ import { withFirebase, AuthUserContext } from "../";
 
 import * as ROUTES from "../../../constants/routes";
 
-const withAuthorization = condition => Component => {
+export const withAuthorization = condition => Component => {
   class WithAuthorization extends Component {
     componentDidMount() {
       this.listener = this.props.firebase.onAuthUserListener(
