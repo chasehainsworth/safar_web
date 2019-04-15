@@ -1,10 +1,12 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import StepFormComponent from "./StepFormComponent";
 import { Form, Input, Icon } from "antd";
 
 import strings from "../constants/localization";
 
 const initial = "";
+// Hardcoded WhatsApp logo svg. TODO: move to resources
 const whatsapp = () => (
   <svg
     t='1550173387257'
@@ -28,6 +30,14 @@ const whatsapp = () => (
   </svg>
 );
 
+/**
+ * Form with optional input fields for:
+ * * Organization Site
+ * * Facebook
+ * * Instagram
+ * * WhatsApp
+ * * Twitter
+ */
 class SocialForm extends StepFormComponent {
   render() {
     const {
@@ -37,7 +47,6 @@ class SocialForm extends StepFormComponent {
     } = this.getFormObject();
 
     const orgSiteError = isFieldTouched("orgSite") && getFieldError("orgSite");
-
     const formItemLayout = {
       labelCol: { span: 6, offset: 5 },
       wrapperCol: { span: 6 }
@@ -102,4 +111,10 @@ class SocialForm extends StepFormComponent {
   }
 }
 
+SocialForm.propTypes = {
+  /** Form data retrieved from Firebase or entered by user */
+  formData: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object
+}
 export default SocialForm;

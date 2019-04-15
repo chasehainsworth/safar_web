@@ -6,6 +6,10 @@ import strings from "../constants/localization";
 
 const languages = ["English", "Farsi", "Arabic", "French"];
 
+/**
+ * Form with a required language select dropdown. When a language is already complete, it will have a checkbox next to its name.
+ * English, Farsi, Arabic, and French are the hardcoded choices.
+ */
 class LanguageForm extends StepFormComponent {
   state = {
     filledLanguages: null
