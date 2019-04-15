@@ -4,14 +4,23 @@ import Menu from "antd/lib/menu";
 import Icon from "antd/lib/icon";
 import { withFirebase, AuthUserContext } from "../components/Firebase";
 import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
 import strings, { getCurrentLanguageAsString } from "../constants/localization";
 
 const { Header } = Layout;
-
-class TopMenu extends Component {
+/**
+ * Test
+ */
+export class TopMenu extends Component {
+  /**
+   * Handles any choices that aren't links. In this case, logout or language settings.
+   *
+   * @param {event} e
+   * @public
+   */
   handleClick = e => {
     switch (e.key) {
       case "SignOut":
@@ -54,8 +63,8 @@ class TopMenu extends Component {
         <AuthUserContext.Consumer>
           {authUser => (
             <Menu
-              theme="dark"
-              mode="horizontal"
+              theme='dark'
+              mode='horizontal'
               selectedKeys={[this.props.location.pathname]}
               onClick={this.handleClick}
               style={{ height: "100%" }}
@@ -65,9 +74,7 @@ class TopMenu extends Component {
                 style={{ backgroundColor: "inherit", ...menuItemProps }}
               >
                 {/* Everyone */ console.log(authUser)}
-
-                {/* <Link to={ROUTES.LOGIN} className="logo"> */}
-                  S A F A R
+                {/* <Link to={ROUTES.LOGIN} className="logo"> */}S A F A R
                 {/* </Link> */}
               </Menu.Item>
 
@@ -105,8 +112,11 @@ class TopMenu extends Component {
               {/* All Logged In */}
 
               {!!authUser && (
-                <Menu.Item key="SignOut" style={{...menuItemProps, float: "right"}}>
-                  <Icon type="logout" />
+                <Menu.Item
+                  key='SignOut'
+                  style={{ ...menuItemProps, float: "right" }}
+                >
+                  <Icon type='logout' />
                   {strings.SIGN_OUT}
                 </Menu.Item>
               )}
@@ -114,17 +124,17 @@ class TopMenu extends Component {
               {/* Language Selection (All Users) */}
               <Menu.SubMenu
                 title={
-                  <span className="submenu-title-wrapper">
-                    <Icon type="global" />
+                  <span className='submenu-title-wrapper'>
+                    <Icon type='global' />
                     {getCurrentLanguageAsString()}
                   </span>
                 }
                 style={{ ...menuItemProps, float: "right" }}
               >
-                <Menu.Item key="English">English</Menu.Item>
-                <Menu.Item key="French">Français</Menu.Item>
-                <Menu.Item key="Farsi">فارسی</Menu.Item>
-                <Menu.Item key="Arabic">العربية</Menu.Item>
+                <Menu.Item key='English'>English</Menu.Item>
+                <Menu.Item key='French'>Français</Menu.Item>
+                <Menu.Item key='Farsi'>فارسی</Menu.Item>
+                <Menu.Item key='Arabic'>العربية</Menu.Item>
               </Menu.SubMenu>
             </Menu>
           )}
@@ -133,5 +143,14 @@ class TopMenu extends Component {
     );
   }
 }
+
+TopMenu.propTypes = {
+  /** The firebase instance. */
+  firebase: PropTypes.object,
+  /** React-Routers location to keep track of page moves. */
+  location: PropTypes.object,
+  /** The method to change the language via react-localization */
+  setLanguage: PropTypes.object
+};
 
 export default withRouter(withFirebase(TopMenu));

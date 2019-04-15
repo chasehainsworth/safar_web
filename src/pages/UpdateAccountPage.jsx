@@ -5,6 +5,7 @@ import InfoForm from "../components/InfoForm";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import SocialForm from "../components/SocialForm";
 import CategoriesForm from "../components/CategoriesForm";
+import PropTypes from "prop-types";
 
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
@@ -12,6 +13,11 @@ import strings from "../constants/localization";
 
 const Step = Steps.Step;
 
+/**
+ * @param {*} fieldsError
+ * @returns A filtered list of all fields that have errors.
+ * @public
+ */
 function hasErrors(fieldsError) {
   // console.log(
   //   'Errors: ',
@@ -20,6 +26,13 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+/**
+ * Creates an antd Modal (Error type) with an error message.
+ *
+ * @param {string} title
+ * @param {string} content
+ * @public
+ */
 function errorMessage(title, content) {
   Modal.error({
     title,
@@ -38,11 +51,23 @@ let currLanguage = {};
 const emptyFormData = { images: [], tags: [] };
 // let formData = { ...emptyFormData };
 
-class UpdateAccountPage extends Component {
+/**
+ * The main page for an organization to update their information. The information
+ * is entered in antd Steps, each of which is a
+ * [StepFormComponent](/#/Components?id=stepformcomponent). In the first step,
+ * the user chooses a language to upload the information. If they have not uploaded
+ * information before, all step will be shown, otherwise only steps that have newLang
+ * will be shown, since some information does not need to be entered for each language.
+ *
+ * The steps are wrapped by an antd Form object which keeps track of the data input
+ * during each step. This data is uploaded to firebase when the user clicks done. A
+ * user cannot click next to proceed to the next step until all required information
+ * is filled out in the current step.
+ */
+export class UpdateAccountPage extends Component {
   getFilledLanguages = () => {
     return this.state.filledLanguages;
   };
-
 
   constructor(props) {
     super(props);
@@ -60,7 +85,7 @@ class UpdateAccountPage extends Component {
       isLoadingData: true,
       isLoadingLang: true,
       filledLanguages: null,
-      formData: {...emptyFormData},
+      formData: { ...emptyFormData },
       disabledNext: false
       // steps: steps
     };
@@ -82,17 +107,31 @@ class UpdateAccountPage extends Component {
       },
       {
         title: strings.INFO,
-        content: <InfoForm formData={this.state.formData} formObject={this.props.form} disableNext={this.disableNext}/>,
+        content: (
+          <InfoForm
+            formData={this.state.formData}
+            formObject={this.props.form}
+            disableNext={this.disableNext}
+          />
+        ),
         newLang: true
       },
       {
         title: strings.SOCIALS,
-        content: <SocialForm formData={this.state.formData} formObject={this.props.form} />
+        content: (
+          <SocialForm
+            formData={this.state.formData}
+            formObject={this.props.form}
+          />
+        )
       },
       {
         title: strings.CATEGORIES,
         content: (
-          <CategoriesForm formData={this.state.formData} formObject={this.props.form} />
+          <CategoriesForm
+            formData={this.state.formData}
+            formObject={this.props.form}
+          />
         )
       },
       {
@@ -141,7 +180,7 @@ class UpdateAccountPage extends Component {
                     url: url
                   };
                   formData.fileList.push(newFile);
-                  this.setState({formData});
+                  this.setState({ formData });
                 })
                 .catch(error => {
                   // Broken link, remove the image from the list
@@ -163,7 +202,7 @@ class UpdateAccountPage extends Component {
             .then(snapshot => {
               let langs = {};
               snapshot.forEach(doc => (langs[doc.id] = doc.data()));
-              this.setState({filledLanguages: langs, isLoadingLang: false });
+              this.setState({ filledLanguages: langs, isLoadingLang: false });
             });
         } else {
           this.setState({ isLoadingData: false, isLoadingLang: false });
@@ -177,20 +216,40 @@ class UpdateAccountPage extends Component {
       });
   }
 
+  /**
+   * Sets the state of the next button.
+   *
+   * @param {bool} value
+   * @public
+   */
   disableNext = value => {
-    this.setState({ disabledNext: value});
-  }
+    this.setState({ disabledNext: value });
+  };
 
+  /**
+   * Moves to the next step.
+   * @public
+   */
   next() {
     const current = this.state.currentStep + 1;
     this.setState({ currentStep: current });
   }
 
+  /**
+   * Moves back to the previous step.
+   * @public
+   */
   prev() {
     const current = this.state.currentStep - 1;
     this.setState({ currentStep: current });
   }
 
+  /**
+   * Combines the tags from the form of checkboxes to a map of arrays to upload to firebase
+   *
+   * @param {Object} rest
+   * @public
+   */
   consolidateTags = rest => {
     let formData = this.state.formData;
     formData.tags = {};
@@ -201,9 +260,14 @@ class UpdateAccountPage extends Component {
         let tag = fullTag.slice(0, -4);
         formData.tags[tag] = formData[fullTag];
       });
-      this.setState({formData});
+    this.setState({ formData });
   };
 
+  /**
+   * Breaks the tags from the map of arrays in firebase into the checkboxes of the form data.
+   *
+   * @public
+   */
   breakTags = () => {
     let formData = this.state.formData;
     Object.keys(formData.tags).forEach(cat => {
@@ -212,10 +276,13 @@ class UpdateAccountPage extends Component {
       }
     });
     delete formData.tags;
-    this.setState({formData});
+    this.setState({ formData });
   };
 
-  // removeIndividual
+  /**
+   * Pushes all data that _isn't_ language-specific from the formdata into firebase
+   * @public
+   */
   submitCompletedNonLang = () => {
     const {
       language,
@@ -233,12 +300,20 @@ class UpdateAccountPage extends Component {
       .set({ ...rest }, { merge: true });
   };
 
+  /**
+   * Pushes all data that _is_ language-specific from the formdata into firebase
+   * @public
+   */
   submitCompletedLang = () => {
     this.props.firebase
       .providerLanguage(this.state.uid, this.state.formData.language)
       .set({ ...currLanguage }, { merge: true });
   };
 
+  /**
+   * Submits inputted data, clears the language-specific fields in the formdata, and returns to step one.
+   * @public
+   */
   addLang() {
     if (!this.isAnotherLang) {
       this.submitCompletedNonLang();
@@ -252,14 +327,22 @@ class UpdateAccountPage extends Component {
     });
   }
 
+  /**
+   * Fills the email input box of the form with the email of the account.
+   * @public
+   */
   autofillEmailField = () => {
     let formData = this.state.formData;
     if (!formData.hasOwnProperty("email")) {
       formData["email"] = this.props.firebase.auth.currentUser.email;
-      this.setState({formData});
+      this.setState({ formData });
     }
   };
 
+  /**
+   * Copies the data from the document returned by firestore into the fields of the formdata.
+   * @public
+   */
   prepareForm = values => {
     let formData = this.state.formData;
     for (let v in values) {
@@ -268,17 +351,25 @@ class UpdateAccountPage extends Component {
       }
       formData[v] = values[v];
     }
-    this.setState({formData});
+    this.setState({ formData });
   };
-  
+
+  /**
+   * Clears the language-specific fields in the formdata.
+   * @public
+   */
   setTranslatableFieldsBlank = () => {
     let formData = this.state.formData;
     languageFields.forEach(field => {
-      formData[field] = '';
+      formData[field] = "";
     });
-    this.setState({formData});
-  }
-  
+    this.setState({ formData });
+  };
+
+  /**
+   * Validates and submits the inputted form data to firebase.
+   * @public
+   */
   handleSubmit = role => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -289,16 +380,15 @@ class UpdateAccountPage extends Component {
           if (
             this.state.filledLanguages &&
             this.state.filledLanguages[this.state.formData.language]
-          ) 
-            {
-              this.prepareForm(this.state.filledLanguages[this.state.formData.language]);
-            }
-          else {
+          ) {
+            this.prepareForm(
+              this.state.filledLanguages[this.state.formData.language]
+            );
+          } else {
             // Old language data needs to be cleaned out here for new languages
             this.setTranslatableFieldsBlank();
           }
-        }
-        else if(this.state.currentStep === this.state.allSteps.length - 2) {
+        } else if (this.state.currentStep === this.state.allSteps.length - 2) {
           if (!this.isAnotherLang) {
             this.submitCompletedNonLang();
           }
@@ -306,11 +396,11 @@ class UpdateAccountPage extends Component {
         }
         this.next();
       } else {
-          this.setState({
-            currentStep: 0,
-            isAnotherLang: true,
-            allSteps: this.state.allSteps.filter(s => s.newLang)
-          });
+        this.setState({
+          currentStep: 0,
+          isAnotherLang: true,
+          allSteps: this.state.allSteps.filter(s => s.newLang)
+        });
       }
     });
   };
@@ -339,7 +429,9 @@ class UpdateAccountPage extends Component {
                     </Steps>
                   </Row>
                   <div className='steps-content'>
-                    {!this.state.isLoadingData && !this.state.isLoadingLang && this.state.allSteps[current].content}
+                    {!this.state.isLoadingData &&
+                      !this.state.isLoadingLang &&
+                      this.state.allSteps[current].content}
                   </div>
                   <div className='steps-action'>
                     {current > 0 && (
@@ -352,7 +444,9 @@ class UpdateAccountPage extends Component {
                     )}
                     {current < this.state.allSteps.length - 1 && (
                       <Button
-                        disabled={this.state.disabledNext || hasErrors(getFieldsError())}
+                        disabled={
+                          this.state.disabledNext || hasErrors(getFieldsError())
+                        }
                         type='primary'
                         onClick={() => this.handleSubmit(authUser.role)}
                       >
@@ -379,6 +473,15 @@ class UpdateAccountPage extends Component {
     );
   }
 }
+
+UpdateAccountPage.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  form: PropTypes.object,
+  /** React-Router's history to redirect users. */
+  history: PropTypes.object
+};
 
 const WrappedUpdateAccountPage = Form.create({ name: "update_account" })(
   UpdateAccountPage

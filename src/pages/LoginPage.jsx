@@ -2,11 +2,17 @@ import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
 import { withFirebase, AuthUserContext } from "../components/Firebase";
 import { withRouter, Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import * as ROLES from "../constants/roles";
 import * as ROUTES from "../constants/routes";
 import strings from "../constants/localization";
 
+/**
+ * @param {*} fieldsError
+ * @returns A filtered list of all fields that have errors.
+ * @public
+ */
 function hasErrors(fieldsError) {
   // console.log(
   //   "Errors: ",
@@ -15,6 +21,13 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+/**
+ * Creates an antd Modal (Error type) with an error message.
+ *
+ * @param {string} title
+ * @param {string} content
+ * @public
+ */
 function errorMessage(title, content) {
   Modal.error({
     title,
@@ -23,16 +36,25 @@ function errorMessage(title, content) {
   });
 }
 
+/**
+ * Provides a form with email and password for a user to login to the portal via
+ * firebase authentication.
+ */
 class LoginPage extends Component {
   state = {
     forgotPassword: false
   };
 
   componentDidMount() {
-    // To disabled next button at the beginning.
+    // To disable login button at the beginning.
     this.props.form.validateFields();
   }
 
+  /**
+   * Validates the fields and attempts login.
+   * @param {event} e
+   * @public
+   */
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
@@ -46,6 +68,12 @@ class LoginPage extends Component {
     });
   };
 
+  /**
+   * Attempts to login via firebase authentication. Shows a modal with the error
+   * on failure.
+   * @param {Object} values
+   * @public
+   */
   submitLogin = values => {
     this.props.firebase
       .doSignInWithEmailAndPassword(values.email, values.password)
@@ -58,6 +86,11 @@ class LoginPage extends Component {
       });
   };
 
+  /**
+   * Validates the email and calls firebase's reset password method.
+   * @param {Object} values
+   * @public
+   */
   submitResetPW = values => {
     this.props.firebase
       .doPasswordReset(values.email)
@@ -85,9 +118,13 @@ class LoginPage extends Component {
       <div className='smallFormWrapper'>
         <AuthUserContext.Consumer>
           {authUser => {
-            authUser && authUser.role === ROLES.ADMIN && (this.props.history.push(ROUTES.ADMIN));
-            authUser && authUser.role === ROLES.ORGANIZATION && (this.props.history.push(ROUTES.UPDATE_ACC));
-          }} 
+            authUser &&
+              authUser.role === ROLES.ADMIN &&
+              this.props.history.push(ROUTES.ADMIN);
+            authUser &&
+              authUser.role === ROLES.ORGANIZATION &&
+              this.props.history.push(ROUTES.UPDATE_ACC);
+          }}
         </AuthUserContext.Consumer>
         <h1>{strings.LOGIN}</h1>
         <div className='smallForm'>
@@ -139,7 +176,7 @@ class LoginPage extends Component {
             </Button>
 
             <button
-              type="button"
+              type='button'
               onClick={() =>
                 this.setState({ forgotPassword: !this.state.forgotPassword })
               }
@@ -152,7 +189,7 @@ class LoginPage extends Component {
             </button>
             {!this.state.forgotPassword && (
               <Link to={ROUTES.REQ_ACC}>
-                <Button type='default' style={{float: "right"}}>
+                <Button type='default' style={{ float: "right" }}>
                   {strings.REQUEST_ACCESS}
                 </Button>
               </Link>
@@ -163,6 +200,15 @@ class LoginPage extends Component {
     );
   }
 }
+
+LoginPage.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  form: PropTypes.object,
+  /** React-Router's history to redirect users. */
+  history: PropTypes.object
+};
 
 const WrappedLoginPage = Form.create({ name: "login" })(
   withRouter(withFirebase(LoginPage))

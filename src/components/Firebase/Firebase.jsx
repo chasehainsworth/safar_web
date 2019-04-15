@@ -13,6 +13,16 @@ const config = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 };
 
+/**
+ * The base class to control all firebase properties in the application.
+ * Keeps track of the following firebase features:
+ * * Authentication - To allow user logins
+ * * Firestore Database - To store all data
+ * * Storage - To upload large files (images)
+ * * Functions - To provide extra functionality (emailing for request access)
+ *
+ * For full documentation, see Firebase.jsx file.
+ */
 class Firebase {
   constructor() {
     app.initializeApp(config);
@@ -33,21 +43,56 @@ class Firebase {
 
   // *** Auth API ***
 
+  /**
+   * Create a user in Firebase auth with email and password.
+   *
+   * @param {String} email
+   * @param {String} password
+   * @returns Firebase.authUser
+   * @public
+   */
   doCreateUserWithEmailAndPassword = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);
-
+  /**
+   * Sign in to Firebase auth with email and password.
+   *
+   * @param {String} email
+   * @param {String} password
+   * @returns Firebase.authUser
+   * @public
+   */
   doSignInWithEmailAndPassword = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
+  /**
+   * Sign out of Firebase auth
+   *
+   * @public
+   */
   doSignOut = () => this.auth.signOut();
 
+  /**
+   * Sends an email to the provided email to reset password.
+   *
+   * @param {String} email
+   * @public
+   */
   doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
+  /**
+   * @unused
+   */
   doSendEmailVerification = () =>
     this.auth.currentUser.sendEmailVerification({
       url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT
     });
 
+  /**
+   * Sets the password of the current user to the provided password.
+   *
+   * @param {String} password
+   * @public
+   */
   doPasswordUpdate = password => this.auth.currentUser.updatePassword(password);
 
   // *** Merge Auth and DB User API *** //
@@ -85,16 +130,48 @@ class Firebase {
 
   // *** User API ***
 
+  /**
+   * Gets a user's properties by uid
+   *
+   * @param {string} uid
+   * @returns Firestore.Document
+   * @public
+   */
   user = uid => this.db.doc(`users/${uid}`);
 
+  /**
+   * Gets a list of all users
+   * @returns Firestore.Collection
+   * @public
+   */
   users = () => this.db.collection("users");
 
   // *** Providers API ***
 
+  /**
+   * Gets a provider's information by uid. Providers are linked one-to-one to users by uid.
+   *
+   * @param {string} uid
+   * @returns Firebase.Document
+   * @public
+   */
   provider = uid => this.db.doc(`providers/${uid}`);
 
+  /**
+   * Gets a list of all providers
+   * @returns Firestore.Collection
+   * @public
+   */
   providers = () => this.db.collection("providers");
 
+  /**
+   * Gets all translated language elements of a provider's information
+   *
+   * @param {string} uid
+   * @param {[English, French, Arabic, Farsi]} language
+   * @returns Firestore.Collection
+   * @public
+   */
   providerLanguage = (uid, language) =>
     this.provider(uid)
       .collection("languages")
@@ -102,18 +179,49 @@ class Firebase {
 
   // *** Services API ***
 
+  /**
+   * Gets a service's information by it's uid.
+   *
+   * @param {string} uid
+   * @returns Firestore.Document
+   * @public
+   */
   service = uid => this.db.doc(`services/${uid}`);
-
+  /**
+   * Gets a list of all services
+   * @returns Firestore.Collection
+   * @public
+   */
   services = () => this.db.collection("services");
-  
-  serviceLanguage = (uid, language) => 
+
+  /**
+   * Gets all translated language elements of a service's information
+   *
+   * @param {string} uid
+   * @param {[English, French, Arabic, Farsi]} language
+   * @public
+   */
+  serviceLanguage = (uid, language) =>
     this.service(uid)
       .collection("languages")
-      .doc(language)
+      .doc(language);
 
+  /**
+   * Gets a reference to the firebase storage.
+   *
+   * @returns Firebase.StorageRef
+   * @public
+   */
   storageRef = () => this.storage.ref();
 
+  /**
+   * Gets a Reference to the folder where images are stored.
+   *
+   * @returns Firebase.StorageRef
+   * @public
+   */
   imageUploads = () => this.storageRef().child("uploads/images");
 }
 
+/** @component */
 export default Firebase;
