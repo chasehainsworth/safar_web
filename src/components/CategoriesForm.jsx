@@ -1,10 +1,9 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import StepFormComponent from "./StepFormComponent";
-import { Form, Select, Tabs, Button, Row, Col, Checkbox, Divider } from "antd";
+import { Form, Select, Row, Col, Checkbox, Divider } from "antd";
 import CheckboxGroup from "antd/lib/checkbox/Group";
-import Column from "antd/lib/table/Column";
 
-const TabPane = Tabs.TabPane;
 const categories = ["Health", "Education", "Entertainment", "Legal"];
 const tags = {
   Health: [
@@ -37,6 +36,16 @@ const tags = {
 };
 const initial = null;
 
+/**
+ * Form with a multi-select categories dropdown, with at least one required category. For each selected category, a row
+ * will appear with checkboxes for each subcategory.
+ * 
+ * The hardcoded categories and subcategories are:
+ * * Health: Pregnancy, Dental, Emergency, Shots/Vaccines, Hospitals/Clinics, General, Specialized, Hygiene
+ * * Education: Computer, Language, Child Education, Adult Education, Writing, Health
+ * * Legal: Sports, Art, Community Center, Cooking, Music
+ * * Entertainment: Children's Rights, Domestic Violence, Family, Single Males, Protection, Asylum
+ */
 class CategoriesForm extends StepFormComponent {
 
   constructor(props) {
@@ -50,6 +59,12 @@ class CategoriesForm extends StepFormComponent {
     };
   }
 
+  /**
+ * Sets categories in state to update rows displayed.
+ *
+ * @param {array} values
+ * @public
+ */
   handleCatChange(values) {
     this.setState({ categories: [...values] });
   }
@@ -103,7 +118,7 @@ class CategoriesForm extends StepFormComponent {
                     )}
                   </Form.Item>
                 </Col>
-                {index != this.state.categories.length - 1 && (<Divider />) }
+                {index !== this.state.categories.length - 1 && (<Divider />) }
               </Row>
 
             );
@@ -111,6 +126,13 @@ class CategoriesForm extends StepFormComponent {
       </div>
     );
   }
+}
+
+CategoriesForm.propTypes = {
+  /** Form data retrieved from Firebase or entered by user */
+  formData: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object
 }
 
 export default CategoriesForm;

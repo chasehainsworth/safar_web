@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import StepFormComponent from "./StepFormComponent";
 import { Modal, Form, Input, Select, Button } from "antd";
 import CustomUpload from "./CustomUpload";
@@ -35,7 +36,12 @@ class InfoForm extends StepFormComponent {
       hoursString: this.props.formData.hours
     };
   }
-
+  
+  /**
+ * Set image preview modal to invisible.
+ * 
+ * @public
+ */
   handleCancel = () => this.setState({ previewVisible: false });
 
   handlePreview = file => {
@@ -47,12 +53,26 @@ class InfoForm extends StepFormComponent {
     });
   };
 
+  /**
+ * Update 'hours' field and state with newly input value. 
+ *
+ * @param {string} text
+ * @public
+ */
   enterHours = times => {
     const hoursString = JSON.stringify(times);
     this.props.formObject.setFieldsValue({ hours: hoursString });
     this.setState({ hoursVisible: false, hoursString });
   };
 
+  /**
+ * Validate phone number to only contain numbers, parenthesis, space, or plus sign.
+ *
+ * @param {object} rule - Not used. 
+ * @param {string} value - User input. 
+ * @param {string} callback - Not used. 
+ * @public
+ */
   checkPhoneNumber = (rule, value, callback) => {
     if (value) {
       for (const i of value) {
@@ -67,6 +87,14 @@ class InfoForm extends StepFormComponent {
     callback();
   };
 
+  /**
+ * Validate at least one image has been uploaded.
+ *
+ * @param {object} rule - Not used. 
+ * @param {string} value - User input. 
+ * @param {string} callback - Not used. 
+ * @public
+ */
   checkImages = (rule, value, callback) => {
     // console.log(this.props.formData.images);
     if (this.props.formData.images.length < 1) {
@@ -245,4 +273,10 @@ class InfoForm extends StepFormComponent {
   }
 }
 
+InfoForm.propTypes = {
+  /** Form data retrieved from Firebase or entered by user */
+  formData: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object
+}
 export default withFirebase(InfoForm);
