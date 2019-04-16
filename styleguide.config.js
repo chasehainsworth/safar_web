@@ -2,7 +2,7 @@ module.exports = {
   pagePerSection: true,
   sections: [
     {
-      name: "Introduction",
+      name: "Safar Web Portal Documentation",
       content: "docs/introduction.md"
     },
     {
@@ -16,6 +16,11 @@ module.exports = {
           name: "Configuration",
           content: "docs/configuration.md"
         },
+
+        {
+          name: "Known Issues",
+          content: "docs/knownissues.md"
+        },
         {
           name: "Live Version",
           external: true,
@@ -25,18 +30,13 @@ module.exports = {
     },
     {
       name: "Components",
-      // content: 'docs/ui.md',
       components: "src/components/**/*.{js,jsx}"
-      //   exampleMode: "expand", // 'hide' | 'collapse' | 'expand'
-      //   usageMode: "expand" // 'hide' | 'collapse' | 'expand'
     },
     {
       name: "Pages",
       components: "src/pages/*.jsx"
-    },
-    {
-      name: "Known Issues",
-      content: "docs/knownissues.md"
     }
-  ]
+  ],
+  ignore: ["**/components/Firebase/index.js"],
+  styleguideDir: "./docs/build"
 };

@@ -1,13 +1,26 @@
 import React from "react";
 import { Upload, Modal, Icon, Button } from "antd";
 import { withFirebase } from "./Firebase";
+import PropTypes from "prop-types";
 
 import strings from "../constants/localization";
 
+/**
+ * Creates an antd Modal (Error type) with an error message.
+ *
+ * @param {string} title
+ * @param {string} content
+ * @public
+ */
 function errorMessage(title, content) {
   Modal.error({ title, content, centered: true });
 }
 
+/**
+ * An extension of antd's Upload component to use uploading into Firebase storage.
+ * <br>
+ * _Uses deprecated ref parameter to access parent methods!_
+ */
 class CustomUpload extends Upload {
   constructor(props) {
     super(props);
@@ -17,10 +30,23 @@ class CustomUpload extends Upload {
     };
   }
 
+  /**
+   * Updates the progress indicator of the wrapped Upload.
+   *
+   * @param {event} e
+   * @param {file} file
+   * @public
+   */
   onProgress = (e, file) => {
     this.refs.uploadRef.onProgress(e, file);
   };
 
+  /**
+   * Updates the list of images in the formData when the upload is completed.
+   *
+   * @param {Object: {event, array, file}}
+   * @public
+   */
   handleChange = ({ e, fileList, file }) => {
     this.props.formData.fileList = [...fileList];
     this.props.formObject.setFieldsValue({
@@ -30,6 +56,16 @@ class CustomUpload extends Upload {
     this.setState({ fileList: this.props.formData.fileList });
   };
 
+  /**
+   * Deletes an upload from firebase storage and removes it from the form list if successful.
+   * <br>
+   * Always returns false by antd's Upload design.
+   *
+   * @param {file} file
+   * @returns false
+   *
+   * @public
+   */
   handleRemove = file => {
     if (file.originFileObj && file.originFileObj.status === "error")
       return true;
@@ -67,8 +103,13 @@ class CustomUpload extends Upload {
     return del;
   };
 
+  /**
+   * Uploads a file to firebase storage and adds it to the form list if successful.
+   *
+   * @param {file} file
+   */
   firebaseUpload = file => {
-    if(this.props.disableNext) this.props.disableNext(true);
+    if (this.props.disableNext) this.props.disableNext(true);
     if (file.size > 2000000) {
       // Image > 2mb. TODO: Stop import into browser freeze.
       file.status = "error";
@@ -76,7 +117,7 @@ class CustomUpload extends Upload {
         "Image upload error:",
         "Cannot upload an image over 2mb in size"
       );
-      if(this.props.disableNext) this.props.disableNext(false);
+      if (this.props.disableNext) this.props.disableNext(false);
       return false;
     }
 
@@ -109,7 +150,7 @@ class CustomUpload extends Upload {
         newFL[idx]["response"] = error.message;
 
         this.refs.uploadRef.onChange({ file: file, fileList: newFL });
-        if(this.props.disableNext) this.props.disableNext(false);
+        if (this.props.disableNext) this.props.disableNext(false);
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -122,7 +163,7 @@ class CustomUpload extends Upload {
           newFL[idx].status = "done";
 
           this.refs.uploadRef.onChange({ file: file, fileList: newFL });
-          if(this.props.disableNext) this.props.disableNext(false);
+          if (this.props.disableNext) this.props.disableNext(false);
         });
       }
     );
@@ -174,5 +215,22 @@ class CustomUpload extends Upload {
     );
   }
 }
+
+CustomUpload.propTypes = {
+  /** Form data retrieved from Firebase or entered by user */
+  formData: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object,
+  /** Limits the number of possible uploads. */
+  maxUploads: PropTypes.number,
+  /** A method to call when the image is clicked to preview it in a lightbox. */
+  onPreview: PropTypes.object,
+  /** Whether the CustomUpload shows the name of the uploaded image or a preview. */
+  text: PropTypes.bool,
+  /** The name of the service to connect the uploaded image to. */
+  serviceId: PropTypes.string,
+  /** A method from the parent to disable the next button until the upload is finished. */
+  disableNext: PropTypes.object
+};
 
 export default withFirebase(CustomUpload);

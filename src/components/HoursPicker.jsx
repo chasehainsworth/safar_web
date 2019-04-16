@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { TimePicker, Modal, Select, Button, Row, Col } from "antd";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 import strings from "../constants/localization";
 
+/*
+dayStrings is the visible value of days. days will be what submits to the database.
+ */
 const dayStrings = [
   strings.MONDAY,
   strings.TUESDAY,
@@ -49,7 +53,36 @@ function parseTimes(timesString) {
   return returnObj;
 }
 
-class HoursPicker extends Component {
+/**
+ * An antd Modal for choosing open and closing times for providers and services. A
+ * blank list will show only a __+__. Each time the plus is clicked, a new entry will
+ * be added to the list with _day, start time, and end time_ entry points. On closing
+ * the Modal, all fields with proper data will be converted to a json string for
+ * keeping track of and submitting the days in firebase.
+ *
+ * The json is formatted as follows:
+ *
+ * ```json
+ * {
+ *    "Monday": ["12:00", "14:00", "15:00", "16:30"],
+ *    "Friday": ["12:34", "12:38"]
+ * }
+ *
+ * Which means:
+ * Monday, 12-14, 15-16 (or 12p-2p, 3p-4p)
+ * Friday, 12:34-12:38
+ *
+ * ```
+ *
+ * The keys will only be the names of days of the week in english
+ * and will only exist if the array is not empty, and the values
+ * will always be an array of strings which are pairs of <start-end> times.
+ *
+ * If the currentTimes string prop is not empty when opening the Modal, the json in
+ * the string will be attempted to parse. It will parse into a list of inputs of
+ * times.
+ */
+export class HoursPicker extends Component {
   constructor(props) {
     super(props);
 
@@ -70,38 +103,76 @@ class HoursPicker extends Component {
     }
   }
 
+  /**
+   * Adds a new blank row to the list of times to be filled out.
+   * @public
+   */
   addTimeRow = () => {
     let { times } = this.state;
     times.push({ ...timeRow });
     this.setState({ times });
   };
 
+  /**
+   * Updates the list of times with the day that was set at a row's index (when the
+   * day is changed).
+   *
+   * @param {number} index
+   * @param {string} value
+   * @public
+   */
   setDay = (index, value) => {
     let { times } = this.state;
     times[index].day = value;
     this.setState({ times });
   };
 
+  /**
+   * Updates the list of times with the start that was set at a row's index (when the
+   * start time is changed).
+   *
+   * @param {number} index
+   * @param {string} timeStr
+   * @public
+   */
   setStart = (index, timeStr) => {
     let { times } = this.state;
     times[index].start = timeStr;
     this.setState({ times });
   };
 
+  /**
+   * Updates the list of times with the end that was set at a row's index (when the
+   * end time is changed).
+   *
+   * @param {number} index
+   * @param {string} timeStr
+   * @public
+   */
   setEnd = (index, timeStr) => {
     let { times } = this.state;
     times[index].end = timeStr;
     this.setState({ times });
   };
 
+  /**
+   * Removes a row from the array of times.
+   * <br>
+   * _Note: Deletes the object but doesn't resize the array._
+   * @public
+   */
   removeTimeRow = i => {
     let { times } = this.state;
     delete times[i];
     this.setState({ times });
   };
 
+  /**
+   * Validates the list of times, filters any bad values, and parses the times into
+   * a json string.
+   * @public
+   */
   handleOk = () => {
-    // TODO: MAKE SURE TO CHECK FOR NULL VALUES IN ARRAY BC Deleting them, not removing the space.
     let compiledDays = {};
 
     this.state.times
@@ -207,5 +278,14 @@ class HoursPicker extends Component {
     );
   }
 }
+
+HoursPicker.propTypes = {
+  /** A string to parse for times and input times to. */
+  currentTimes: PropTypes.string,
+  /** Whether or not the Modal is visible. */
+  visible: PropTypes.bool,
+  /** Method called when the Modal is closed. */
+  onOkay: PropTypes.object
+};
 
 export default HoursPicker;

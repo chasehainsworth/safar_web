@@ -4,6 +4,14 @@ import { withRouter } from "react-router-dom";
 
 const AuthUserContext = React.createContext(null);
 
+/**
+ * Provides a wrapper to components to keep track of the state of the authenticated
+ * user. Listens for user state changes and provides the updates to that state
+ * via an AuthUserContext Provider.
+ *
+ * @param {Component} Component
+ * @public
+ */
 const withAuthentication = Component => {
   class WithAuthentication extends Component {
     constructor(props) {

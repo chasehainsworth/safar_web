@@ -6,8 +6,10 @@ import PropTypes from "prop-types";
  *
  * Keeps track of the overall form object and values between each step, and sets the
  * form items of the step when it is loaded on screen.
+ *
+ * For full documentation, see StepFormComponent.jsx file.
  */
-export class StepFormComponent extends Component {
+class StepFormComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {};
