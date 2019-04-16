@@ -1,4 +1,5 @@
-##Welcome. Herein lies all documentation for the Safar Web Portal.
+<br>
+**Welcome. Herein lies all documentation for the Safar Web Portal.**
 
 The Safar Web Portal is an online resource to provide a CMS for Service Providers and Administrators of the [Safar](https://safarapp.org) app.
 
