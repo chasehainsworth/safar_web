@@ -16,7 +16,10 @@ module.exports = {
           name: "Configuration",
           content: "docs/configuration.md"
         },
-
+        {
+          name: "Administrators",
+          content: "docs/administrators.md"
+        },
         {
           name: "Known Issues",
           content: "docs/knownissues.md"
