@@ -4,7 +4,7 @@ The Safar Web Portal is an online resource to provide a CMS for Service Provider
 
 It was built using React and ES6, and compiled using create-react-app.
 
-This documentation was compiled by React-Styleguidist\*. For that reason, all methods are marked as public in the code comments to make them visible here. They're accessibility follows the ES6 standard.
+This documentation was compiled by React-Styleguidist\*. For that reason, all methods are marked as public in the code comments to make them visible here. Their accessibility follows the ES6 standard.
 
 This documentation is **Version 1.0** and was last edited on **04/15/2019**.
 
