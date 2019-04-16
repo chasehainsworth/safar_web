@@ -112,9 +112,9 @@ class SocialForm extends StepFormComponent {
 }
 
 SocialForm.propTypes = {
-  /** Form data retrieved from Firebase or entered by user */
+  /** *Inherited:* Form data retrieved from Firebase or entered by user */
   formData: PropTypes.object,
-  /** Antd form object */
+  /** *Inherited:* Antd form object */
   formObject: PropTypes.object
 }
 export default SocialForm;

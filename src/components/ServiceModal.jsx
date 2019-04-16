@@ -1,9 +1,18 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Form, Input, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { withAuthorization } from "./Firebase";
 import strings from "../constants/localization";
 
+/**
+ * Modal with the service name and description for a given translation. They
+ * are wrapped in an antd form, which allows the fields to be loaded with existing data.
+ * 
+ * Each visibility of each modal is controlled state variables in modalsVisible. Since the
+ * "Add New Language" modal could be associated with any language, it has a special variable
+ * newLanguage which contains the new language being added.
+*/
 export class ServiceModal extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +25,7 @@ export class ServiceModal extends Component {
   }
 
   componentDidMount() {
-    // autofill email field from org
+    // autofill hours field from org
     // create deep copy of data to avoid it being added to table if user cancels
     let data = JSON.parse(JSON.stringify(this.props.data));
     if (
@@ -32,6 +41,9 @@ export class ServiceModal extends Component {
     this.props.form.setFieldsValue({ ...data[this.state.language] });
   }
 
+  /**
+   * Make modal invisible.
+  */
   onCancel = () => {
     let modalsVisible = this.props.modalsVisible;
     if (this.props.newLanguage) {
@@ -42,6 +54,9 @@ export class ServiceModal extends Component {
     this.props.updateParent(modalsVisible, this.props.data);
   };
 
+  /**
+   * Update language entry for service in firebase, update the parent, and make modal invisible.
+  */
   onOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -124,6 +139,23 @@ export class ServiceModal extends Component {
       </div>
     );
   }
+}
+
+ServiceModal.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object,
+  /** Current language. Used as a key in modalsVisible */
+  language: PropTypes.string,
+  /** Specify the new language being added. Optional */
+  newLanguage: PropTypes.string, 
+  /** Map between language and bool controlling visibility of the associated modal */
+  modalsVisible: PropTypes.object,
+  /** Function to update parent state */
+  updateParent: PropTypes.func,
+  /** Translation of service name and description */
+  data: PropTypes.object 
 }
 
 const WrappedServiceModal = Form.create()(ServiceModal);
