@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Modal } from "antd";
-import { withAuthorization } from "../components/Firebase";
+import { withAuthorization, AuthUserContext } from "../components/Firebase";
 
 import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
@@ -14,8 +14,10 @@ function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
+let camp = "";
+
 class SignUpPage extends Component {
-  state = {};
+  state = { camp: "" };
 
   componentDidMount() {
     // To disabled next button at the beginning.
@@ -27,6 +29,7 @@ class SignUpPage extends Component {
     this.props.form.validateFields((fieldErr, values) => {
       const { email, passOne } = values;
       const role = ROLES.ORGANIZATION;
+
       if (!fieldErr) {
         this.props.firebase
           .doCreateUserWithEmailAndPassword(email, passOne)
@@ -35,7 +38,8 @@ class SignUpPage extends Component {
             let r = this.props.firebase.user(authUser.user.uid).set(
               {
                 email,
-                role
+                role,
+                camp
               },
               { merge: true }
             );
@@ -92,6 +96,11 @@ class SignUpPage extends Component {
 
     return (
       <div key='title' className='smallFormWrapper'>
+        <AuthUserContext.Consumer>
+          {authUser => {
+            camp = authUser.camp;
+          }}
+        </AuthUserContext.Consumer>
         <h1>{strings.CREATE_ACCOUNT}</h1>
         <div className='smallForm'>
           <Form onSubmit={this.handleSubmit}>

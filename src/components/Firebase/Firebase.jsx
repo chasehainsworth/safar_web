@@ -118,6 +118,7 @@ class Firebase {
               providerData: authUser.providerData,
               ...dbUser
             };
+            console.log("au", authUser, dbUser);
 
             next(authUser);
           });

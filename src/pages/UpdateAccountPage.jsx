@@ -49,6 +49,7 @@ const languageFields = new Set([
 ]);
 let currLanguage = {};
 const emptyFormData = { images: [], tags: [] };
+let camp = "";
 // let formData = { ...emptyFormData };
 
 /**
@@ -297,7 +298,7 @@ export class UpdateAccountPage extends Component {
     this.consolidateTags(rest);
     this.props.firebase
       .provider(this.state.uid)
-      .set({ ...rest }, { merge: true });
+      .set({ ...rest, camp }, { merge: true });
   };
 
   /**
@@ -413,6 +414,7 @@ export class UpdateAccountPage extends Component {
       <AuthUserContext.Consumer>
         {authUser => {
           const { uid } = this.state;
+          camp = authUser.camp;
           if (!uid || uid === authUser.uid || authUser.role === ROLES.ADMIN) {
             return (
               <Form onSubmit={this.handleSubmit}>

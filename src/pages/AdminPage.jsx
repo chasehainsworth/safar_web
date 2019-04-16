@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withAuthorization } from "../components/Firebase";
+import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import { Table, Divider, Button, Modal } from "antd";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -19,6 +19,8 @@ const oddRows = {
 };
 
 const confirm = Modal.confirm;
+
+let camp = "";
 
 /**
  * Creates a table listing all provider accounts by name, all languages they've uploaded
@@ -167,94 +169,97 @@ class AdminPage extends Component {
   componentDidMount() {
     this.setState({ loadingLangs: false, loadingServices: false });
 
-    this.unsubscribe = this.props.firebase.providers().onSnapshot(snapshot => {
-      let providersList = [];
+    this.unsubscribe = this.props.firebase
+      .providers()
+      .where("camp", "==", camp)
+      .onSnapshot(snapshot => {
+        let providersList = [];
 
-      let idx = 0;
-      if (snapshot.size === 0) {
-        this.setState({ loadingLangs: false, loadingServices: false });
-      }
-      snapshot.forEach(doc => {
-        let names = [];
-        let languages = [];
-        // let services = [];
-        let services = 0;
+        let idx = 0;
+        if (snapshot.size === 0) {
+          this.setState({ loadingLangs: false, loadingServices: false });
+        }
+        snapshot.forEach(doc => {
+          let names = [];
+          let languages = [];
+          // let services = [];
+          let services = 0;
 
-        let gotLangs = false,
-          gotServices = false;
-        this.props.firebase
-          .provider(doc.id)
-          .collection("languages")
-          .get()
-          .then(langSnapshot => {
-            if (langSnapshot.size === 0) {
-              this.setState({ loadingLangs: false });
-            }
-            langSnapshot.forEach(langDoc => {
-              names.push(langDoc.data().orgName);
-              languages.push({ language: langDoc.id, ...langDoc.data() });
-            });
-
-            if (gotServices) {
-              providersList.push({
-                key: idx,
-                uid: doc.id,
-                names,
-                // ...doc.data(),
-                services,
-                languages
+          let gotLangs = false,
+            gotServices = false;
+          this.props.firebase
+            .provider(doc.id)
+            .collection("languages")
+            .get()
+            .then(langSnapshot => {
+              if (langSnapshot.size === 0) {
+                this.setState({ loadingLangs: false });
+              }
+              langSnapshot.forEach(langDoc => {
+                names.push(langDoc.data().orgName);
+                languages.push({ language: langDoc.id, ...langDoc.data() });
               });
 
-              if (idx === snapshot.size - 1) {
-                this.setState({
-                  loadingLangs: false,
-                  providers: [...providersList]
+              if (gotServices) {
+                providersList.push({
+                  key: idx,
+                  uid: doc.id,
+                  names,
+                  // ...doc.data(),
+                  services,
+                  languages
                 });
+
+                if (idx === snapshot.size - 1) {
+                  this.setState({
+                    loadingLangs: false,
+                    providers: [...providersList]
+                  });
+                }
+                idx++;
+                console.log("idx p", idx);
+              } else {
+                gotLangs = true;
               }
-              idx++;
-              console.log("idx p", idx);
-            } else {
-              gotLangs = true;
-            }
-          })
-          .catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
 
-        this.props.firebase
-          .services()
-          .where("provider", "==", doc.id)
-          .get()
-          .then(servsSnapshot => {
-            // servsSnapshot.forEach(servDoc => {
-            //   services.push(servDoc.id);
-            // });
-            services = servsSnapshot.size;
-            if (services === 0) {
-              this.setState({ loadingServices: false });
-            }
-            if (gotLangs) {
-              providersList.push({
-                key: idx,
-                uid: doc.id,
-                names,
-                // ...doc.data(),
-                services,
-                languages
-              });
-
-              if (idx === snapshot.size - 1) {
-                this.setState({
-                  loadingServices: false,
-                  providers: [...providersList]
+          this.props.firebase
+            .services()
+            .where("provider", "==", doc.id)
+            .get()
+            .then(servsSnapshot => {
+              // servsSnapshot.forEach(servDoc => {
+              //   services.push(servDoc.id);
+              // });
+              services = servsSnapshot.size;
+              if (services === 0) {
+                this.setState({ loadingServices: false });
+              }
+              if (gotLangs) {
+                providersList.push({
+                  key: idx,
+                  uid: doc.id,
+                  names,
+                  // ...doc.data(),
+                  services,
+                  languages
                 });
+
+                if (idx === snapshot.size - 1) {
+                  this.setState({
+                    loadingServices: false,
+                    providers: [...providersList]
+                  });
+                }
+                idx++;
+              } else {
+                gotLangs = true;
               }
-              idx++;
-            } else {
-              gotLangs = true;
-            }
-          })
-          .catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
+        });
       });
-    });
   }
 
   componentWillUnmount() {
@@ -265,6 +270,9 @@ class AdminPage extends Component {
     console.log(this.state.providers);
     return (
       <div style={{ padding: 50 }}>
+        <AuthUserContext.Consumer>
+          {authUser => (camp = authUser.camp)}
+        </AuthUserContext.Consumer>
         <div style={{ textAlign: "right", marginBottom: 10 }}>
           <Link to={ROUTES.ADD_ACC}>
             <Button type='primary' icon='plus'>
