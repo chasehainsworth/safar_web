@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button, Tabs, Form, Icon } from "antd";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
 import ServiceTable from "../components/ServiceTable";
@@ -9,7 +10,13 @@ import * as ROUTES from "../constants/routes";
 
 const TabPane = Tabs.TabPane;
 
-class ServicesPage extends Component {
+/**
+ * The page for an organization to view and update their services. Each service
+ * is associated with an antd Tab, which contains a [ServiceTable](/#/Components?id=servicetable).
+ * New tabs can be added by clicking the "Add New Service" button. All existing services
+ * will be loaded from firebase when the components loads. 
+ */
+export class ServicesPage extends Component {
   constructor(props) {
     super(props);
     this.org = {};
@@ -39,13 +46,11 @@ class ServicesPage extends Component {
             let langs = {};
             orgLangSnapshot.forEach(orgLangDoc => {
               let langData = orgLangDoc.data();
-              // langData["language"] = orgLangDoc.id;
               langs[orgLangDoc.id] = langData;
             });
             this.org["langs"] = langs;
           })
         });
-        console.log(this.org);
     this.props.firebase
       .services()
       .where("provider", "==", this.state.uid)
@@ -79,10 +84,23 @@ class ServicesPage extends Component {
       });
   }
 
+  /**
+   * Sets the state of the activeKey. This changes the tab in view.
+   *
+   * @param {string} activeKey
+   * @public
+   */
   onChange = activeKey => {
     this.setState({ activeKey });
   };
 
+  /**
+   * Refreshes the title of a tab. 
+   *
+   * @param {string} targetKey
+   * @param {string} langs
+   * @public
+   */
   updateTitle = (targetKey, langs) => {
     const panes = this.state.panes;
     panes.forEach((pane, i) => {
@@ -93,6 +111,13 @@ class ServicesPage extends Component {
     this.setState({panes});
   }
 
+  /**
+   * Removes a service. Works by finding the index of tab prior to this one, 
+   * deleting the service from firebase, and setting the activeKey as the prior tab.
+   *
+   * @param {string} targetKey
+   * @public
+   */
   remove = targetKey => {
     let activeKey = this.state.activeKey;
     let lastIndex;
@@ -113,6 +138,12 @@ class ServicesPage extends Component {
     this.setState({ panes, activeKey });
   };
 
+  /**
+   * Adds a blank service. Creates a document in firebase and associates the 
+   * [ServiceTable](/#/Components?id=servicetable) with the document id.
+   *
+   * @public
+   */
   addBlank = () => {
     this.props.firebase
       .services()
@@ -138,8 +169,15 @@ class ServicesPage extends Component {
       });
   };
 
+  /**
+   * Finds the service name. Prefers English, but will choose the first language's version otherwise.
+   * Returns default string "Service" if no languages exist. 
+   *
+   * @param {array} langs
+   * @returns {string}
+   * @public
+   */
   findServiceName = langs => {
-    console.log(langs);
     if (!langs || langs.length === 0) {
       return strings.SERVICE;
     } else {
@@ -152,6 +190,12 @@ class ServicesPage extends Component {
     return langs[0].name;
   };
 
+  /**
+   * Adds an existing service retrieved from firebase to a tab.
+   *
+   * @param {object} service
+   * @public
+   */
   addFilled = service => {
     const panes = this.state.panes;
     const activeKey = service.id;
@@ -213,6 +257,17 @@ class ServicesPage extends Component {
     </AuthUserContext.Consumer>
     );
   }
+}
+
+ServicesPage.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object,
+  /** React-Router's history to redirect users. */
+  history: PropTypes.object,
+  /** React-Routers location to keep track of page moves. */
+  location: PropTypes.object
 }
 
 const WrappedServicesPage = Form.create({ name: "services" })(ServicesPage);

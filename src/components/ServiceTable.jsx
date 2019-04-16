@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   Table,
   Modal,
@@ -20,6 +21,16 @@ let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
 const confirm = Modal.confirm;
 
+/**
+ * Contains buttons to upload an image or delete the service, and a dropdown to 
+ * add a new language. Only languages which have not been added are displayed under the dropdown.
+ * 
+ * Beneath those is an antd Table. Each table row is a translation of the service name,
+ * and service description. There are links to delete or edit a row, which will pull up a
+ * [ServiceModal](/#/Components?id=servicemodal).
+ * 
+ * We currently have hardcoded languages of: English, Farsi, Arabic, and French.
+ */
 export class ServiceTable extends Component {
   constructor(props) {
     super(props);
@@ -127,26 +138,11 @@ export class ServiceTable extends Component {
     }
   }
 
-  // Firebase Image Uploading
-  handleCancel = () => this.setState({ previewVisible: false });
-
-  handlePreview = file => {
-    // TODO: Remove thumburl and preview from URL
-    //  console.log("file", file);
-    this.setState({
-      previewImage: file.url || file.thumbUrl,
-      previewVisible: true
-    });
-  };
-
-  checkImages = (rule, value, callback) => {
-    if (formData.images.length < 1) {
-      callback("Please upload at least one image.");
-    } else {
-      callback();
-    }
-  };
-
+  /**
+   * Used by ServiceModal to update state. 
+   * @param {object} modalsVisible 
+   * @param {object} dataSource
+  */
   updateFromChild = (modalsVisible, dataSource) => {
     this.setState({ modalsVisible, dataSource, newLanguage: "" });
     this.props.updateTitle(
@@ -155,14 +151,21 @@ export class ServiceTable extends Component {
     );
   };
 
-  // Used in columns to pull up modal
+  /**
+   * Used by columns to pull up modal
+   * @param {string} lang 
+   * @param {string} value
+  */
   setEditLanguageVisible = (lang, value) => {
     let modalsVisible = this.state.modalsVisible;
     modalsVisible[lang] = value;
     this.setState({ modalsVisible });
   };
 
-  // Used by Add New Language dropdown to pull up modal
+  /**
+   * Used by Add New Language dropdown to pull up modal
+   * @param {object} e
+  */
   setNewLanguageVisible = e => {
     let newLanguage = e.key;
     let modalsVisible = this.state.modalsVisible;
@@ -170,6 +173,9 @@ export class ServiceTable extends Component {
     this.setState({ newLanguage, modalsVisible });
   };
 
+  /**
+   * Show a confirmation modal to delete the service. 
+  */
   deleteServiceConfirm = () => {
     confirm({
       title: "Are you sure you want to delete this service?",
@@ -179,6 +185,10 @@ export class ServiceTable extends Component {
     });
   };
 
+  /**
+   * Delete the translation from firebase.
+   * @param {string} language 
+  */
   deleteLanguageRecord = language => {
     this.props.firebase
       .serviceLanguage(this.props.service.id, language)
@@ -189,6 +199,9 @@ export class ServiceTable extends Component {
     this.setState({ dataSource });
   };
 
+  /**
+   * Show a confirmation modal to delete the language.
+  */
   deleteLanguageConfirm = language => {
     confirm({
       title: `Are you sure you want to delete the ${language} record?`,
@@ -278,6 +291,22 @@ export class ServiceTable extends Component {
       </div>
     );
   }
+}
+
+ServiceTable.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object,
+  /** Service data object */
+  service: PropTypes.object,
+  /** Document key of this service in the firebase Services collection */
+  serviceKey: PropTypes.string,
+  /** Function to remove service */
+  remove: PropTypes.func,
+  /** Function to update service tab title */
+  updateTitle: PropTypes.func
+  
 }
 
 const WrappedServiceTable = Form.create()(ServiceTable);

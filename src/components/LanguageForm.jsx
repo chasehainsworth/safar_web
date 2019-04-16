@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import StepFormComponent from "./StepFormComponent";
 import { Form, Select, Icon } from "antd";
 
@@ -15,9 +16,14 @@ class LanguageForm extends StepFormComponent {
     filledLanguages: null
   };
 
+  /**
+   * Sets the state of filledLanguages state variable.
+   * @public
+   */
   updateFilledLanguages = () => {
     this.setState({ filledLanguages: this.props.getFilledLanguages() });
   };
+
   render() {
     const {
       getFieldDecorator,
@@ -53,6 +59,15 @@ class LanguageForm extends StepFormComponent {
       </div>
     );
   }
+}
+
+LanguageForm.propTypes = {
+  /** *Inherited:* Form data retrieved from Firebase or entered by user */
+  formData: PropTypes.object,
+  /** *Inherited:* Antd form object */
+  formObject: PropTypes.object,
+  /** Function to retrieve filled languages array from parent state */
+  getFilledLanguages: PropTypes.func
 }
 
 export default LanguageForm;

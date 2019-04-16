@@ -1,10 +1,16 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Form, Icon, Input, Button, Modal, Select } from "antd";
 import { withFirebase} from "../components/Firebase";
 import { withRouter } from "react-router-dom";
 
 import strings from "../constants/localization";
 
+/**
+ * @param {*} fieldsError
+ * @returns A filtered list of all fields that have errors.
+ * @public
+ */
 function hasErrors(fieldsError) {
   // console.log(
   //   "Errors: ",
@@ -15,6 +21,14 @@ function hasErrors(fieldsError) {
 
 const Option = Select.Option;
 
+/**
+ * Creates an antd Modal of either Error or Success type.
+ *
+ * @param {string} type
+ * @param {string} title
+ * @param {string} content
+ * @public
+ */
 function modalMessage(type, title, content) {
   if(type === 'error') {
     Modal.error({
@@ -31,6 +45,11 @@ function modalMessage(type, title, content) {
   }
 }
 
+/**
+ * The page for an organization to request an account from the camp admin. 
+ * The input for organization name and email, and a dropdown of all camps using Safar
+ * is wrapped in an antd form object.
+ */
 class RequestAccountPage extends Component {
   state = {};
 
@@ -39,6 +58,10 @@ class RequestAccountPage extends Component {
     this.props.form.validateFields();
   }
 
+/**
+ * Calls the requestAccount cloud function to send an email to the camp admin
+ * with the organization's information.
+ */
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
@@ -47,7 +70,6 @@ class RequestAccountPage extends Component {
         let requestAccount = this.props.firebase.functions
           .httpsCallable('requestAccount');
         requestAccount({'name': name, 'email': email, 'camp': camp})
-        // requestAccount({'name': 'UN', 'email': 'hello@un.org', 'camp': 'Moria'})
           .then(res => {
             modalMessage('success', 'Request successfully sent!', '');
             console.log(res);
@@ -133,6 +155,13 @@ class RequestAccountPage extends Component {
       </div>
     );
   }
+}
+
+RequestAccountPage.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object
 }
 
 const WrappedRequestAccountPage = Form.create({ name: "request" })(

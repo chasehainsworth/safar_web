@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Form, Icon, Input, Button, Modal } from "antd";
 import { withAuthorization, AuthUserContext } from "../components/Firebase";
 
@@ -6,6 +7,11 @@ import * as ROUTES from "../constants/routes";
 import * as ROLES from "../constants/roles";
 import strings from "../constants/localization";
 
+/**
+ * @param {*} fieldsError
+ * @returns A filtered list of all fields that have errors.
+ * @public
+ */
 function hasErrors(fieldsError) {
   // console.log(
   //   "Errors: ",
@@ -16,7 +22,12 @@ function hasErrors(fieldsError) {
 
 let camp = "";
 
-class SignUpPage extends Component {
+/**
+ * The page for an administrator to create a new account for an organization. 
+ * The input for organization name, password, and password confirmation are wrapped
+ * in an antd form object.
+ */
+export class SignUpPage extends Component {
   state = { camp: "" };
 
   componentDidMount() {
@@ -24,6 +35,10 @@ class SignUpPage extends Component {
     this.props.form.validateFields();
   }
 
+  /**
+  * Creates a new user in firebase authentication, and the firestore users collection.
+  * @param {*} e
+  */
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((fieldErr, values) => {
@@ -34,7 +49,6 @@ class SignUpPage extends Component {
         this.props.firebase
           .doCreateUserWithEmailAndPassword(email, passOne)
           .then(authUser => {
-            // Create a user in your Firebase realtime database
             let r = this.props.firebase.user(authUser.user.uid).set(
               {
                 email,
@@ -63,6 +77,12 @@ class SignUpPage extends Component {
     });
   };
 
+  /**
+  * Validates password in second field matches first. 
+  * @param {*} rule
+  * @param {value} strings
+  * @param {function} callback
+  */
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
     if (value && value !== form.getFieldValue("passOne")) {
@@ -72,6 +92,12 @@ class SignUpPage extends Component {
     }
   };
 
+  /**
+  * Validates password in first field matches second. 
+  * @param {*} rule
+  * @param {value} strings
+  * @param {function} callback
+  */
   validateToNextPassword = (rule, value, callback) => {
     const form = this.props.form;
     if (value) {
@@ -169,6 +195,15 @@ class SignUpPage extends Component {
       </div>
     );
   }
+}
+
+SignUpPage.propTypes = {
+  /** The firebase instance */
+  firebase: PropTypes.object,
+  /** Antd form object */
+  formObject: PropTypes.object,
+  /** React-Router's history to redirect users. */
+  history: PropTypes.object
 }
 
 const WrappedSignUpPage = Form.create({ name: "signup" })(SignUpPage);
