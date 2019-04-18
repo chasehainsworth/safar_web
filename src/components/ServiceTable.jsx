@@ -10,12 +10,14 @@ import {
   Icon,
   Row,
   Col,
-  Divider
+  Divider,
+  Input
 } from "antd";
 import WrappedServiceModal from "./ServiceModal";
 import CustomUpload from "./CustomUpload";
 import { withFirebase } from "./Firebase/FirebaseContext";
 import strings from "../constants/localization";
+import HoursPicker from "./HoursPicker";
 
 let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
@@ -35,7 +37,8 @@ export class ServiceTable extends Component {
   constructor(props) {
     super(props);
     this.org = {};
-    let dataSource = {};
+    let dataSource = {}
+    let hoursString = props.service.hours ? props.service.hours : '';
     let modalsVisible = { "New Language": false };
     if (props.service["langs"]) {
       props.service["langs"].forEach((lang, index) => {
@@ -67,11 +70,6 @@ export class ServiceTable extends Component {
         key: "description"
       },
       {
-        title: strings.SERVICE_HOURS,
-        dataIndex: "hours",
-        key: "hours"
-      },
-      {
         title: strings.ACTIONS,
         key: "actions",
         render: (text, record) => (
@@ -98,6 +96,8 @@ export class ServiceTable extends Component {
       columns,
       dataSource,
       modalsVisible,
+      hoursVisible: false,
+      hoursString: hoursString,
       newLanguage: null,
       isLoadingImage: true
     };
@@ -137,6 +137,21 @@ export class ServiceTable extends Component {
       this.setState({ isLoadingImage: false });
     }
   }
+
+  /**
+ * Update 'hours' field and state with newly input value. 
+ *
+ * @param {string} text
+ * @public
+ */
+  enterHours = times => {
+    const hoursString = JSON.stringify(times);
+    this.props.form.setFieldsValue({ hours: hoursString });
+    this.setState({ hoursVisible: false, hoursString });
+    this.props.firebase
+      .service(this.props.serviceKey)
+      .set({ hours: hoursString}, { merge: true});
+  };
 
   /**
    * Used by ServiceModal to update state. 
@@ -221,6 +236,15 @@ export class ServiceTable extends Component {
           })}
       </Menu>
     );
+    const hoursBtnStyle = {
+      border: "none",
+      height: "inherit",
+      background: "inherit",
+      boxShadow: "none"
+    };
+
+    const { isFieldTouched, getFieldError } = this.props.form;
+    const hoursError = isFieldTouched("hours") && getFieldError("hours");
     const imageError = formData.images.length > 0;
     const { getFieldDecorator } = this.props.form;
     return this.state.isLoadingImage ? null : (
@@ -228,6 +252,34 @@ export class ServiceTable extends Component {
         <Row type='flex' justify='start'>
           <Col>
             <Form layout='inline' style={{ margin: 10 }}>
+              <Form.Item
+                validateStatus={hoursError ? "error" : ""}
+                help={hoursError || ""}
+                label={strings.SERVICE_HOURS}
+              >
+                {getFieldDecorator("hours", {
+                  rules: [{ required: true, message: "Enter hours" }],
+                  initialValue: this.state.hoursString
+                })(
+                  <Input
+                    disabled
+                    addonAfter={
+                      <Button
+                        icon='plus'
+                        style={hoursBtnStyle}
+                        onClick={() => {
+                          const v = this.state.hoursVisible;
+                          this.setState({
+                            hoursVisible: !v
+                          });
+                        }}
+                      >
+                        Update Hours
+                      </Button>
+                    }
+                  />
+                )}
+              </Form.Item>
               <Form.Item
                 validateStatus={imageError ? "error" : ""}
                 help={imageError || ""}
@@ -288,6 +340,11 @@ export class ServiceTable extends Component {
             newLanguage={this.state.newLanguage}
           />
         ) : null}
+        <HoursPicker
+          visible={this.state.hoursVisible}
+          onOk={this.enterHours}
+          currentTimes={this.state.hoursString}
+        />
       </div>
     );
   }

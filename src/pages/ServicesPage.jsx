@@ -59,6 +59,7 @@ export class ServicesPage extends Component {
         snapshot.forEach(doc => {
           let service = {
             images: doc.data().images,
+            hours: doc.data().hours,
             id: doc.id
           };
           this.props.firebase
@@ -124,6 +125,7 @@ export class ServicesPage extends Component {
     this.state.panes.forEach((pane, i) => {
       if (pane.key === targetKey) {
         lastIndex = i - 1;
+        this.props.firebase.service(pane.key).collection("languages").delete();
         this.props.firebase.service(pane.key).delete();
       }
     });

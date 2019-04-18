@@ -44,7 +44,6 @@ function errorMessage(title, content) {
 const languageFields = new Set([
   "orgName",
   "description",
-  "hours",
   "availabilityNote"
 ]);
 let currLanguage = {};
@@ -291,7 +290,6 @@ export class UpdateAccountPage extends Component {
       fileList,
       orgName,
       description,
-      hours,
       availabilityNote,
       ...rest
     } = this.state.formData;

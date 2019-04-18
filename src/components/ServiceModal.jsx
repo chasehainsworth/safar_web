@@ -125,15 +125,6 @@ export class ServiceModal extends Component {
                 ]
               })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
             </Form.Item>
-            <Form.Item
-              validateStatus={hoursError ? "error" : ""}
-              help={hoursError || ""}
-              label={strings.SERVICE_HOURS}
-            >
-              {getFieldDecorator("hours", {
-                rules: [{ required: true, message: "Enter service hours" }]
-              })(<Input />)}
-            </Form.Item>
           </Form>
         </Modal>
       </div>
