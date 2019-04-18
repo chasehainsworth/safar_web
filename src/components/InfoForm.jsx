@@ -38,7 +38,8 @@ class InfoForm extends StepFormComponent {
     i18nIsoCountries.registerLocale(
       require("i18n-iso-countries/langs/ar.json")
     );
-
+    
+    console.log(this.props.formData.hours)
     this.state = {
       previewVisible: false,
       previewImage: "",
@@ -169,6 +170,11 @@ class InfoForm extends StepFormComponent {
             ]
           })(<TextArea />)}
         </Form.Item>
+        <Form.Item label={strings.LOCATION} {...formItemLayout}>
+          {getFieldDecorator("availabilityNote", { initialValue: initial })(
+            <Input />
+          )}
+        </Form.Item>
         <Form.Item
           {...formItemLayout}
           validateStatus={countryError ? "error" : ""}
@@ -246,7 +252,7 @@ class InfoForm extends StepFormComponent {
           label={strings.OPERATING_HOURS}
         >
           {getFieldDecorator("hours", {
-            rules: [{ required: true, message: "Enter hours" }]
+            rules: [{ required: true, message: "Enter hours" }], initialValue: this.props.formData.hoursString
           })(
             <Input
               disabled
@@ -268,11 +274,6 @@ class InfoForm extends StepFormComponent {
           )}
         </Form.Item>
 
-        <Form.Item label={strings.SPECIAL_NOTE} {...formItemLayout}>
-          {getFieldDecorator("availabilityNote", { initialValue: initial })(
-            <Input />
-          )}
-        </Form.Item>
         <HoursPicker
           visible={this.state.hoursVisible}
           onOk={this.enterHours}

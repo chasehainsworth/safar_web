@@ -53,7 +53,7 @@ export class SignUpPage extends Component {
               {
                 email,
                 role,
-                camp
+                camp: "Moria"
               },
               { merge: true }
             );
