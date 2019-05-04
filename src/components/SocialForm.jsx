@@ -41,9 +41,7 @@ const whatsapp = () => (
 class SocialForm extends StepFormComponent {
   render() {
     const {
-      getFieldDecorator,
-      getFieldError,
-      isFieldTouched
+      getFieldDecorator
     } = this.getFormObject();
 
     const formItemLayout = {

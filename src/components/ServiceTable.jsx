@@ -110,7 +110,8 @@ export class ServiceTable extends Component {
     console.log(images)
     if (images && images.length > 0) {
       images.forEach(img => {
-        this.state.formData.fileList = [];
+        let formData = this.state.formData;
+        // this.state.formData.fileList = [];
         this.props.firebase
           .imageUploads()
           .child(img)
@@ -125,9 +126,10 @@ export class ServiceTable extends Component {
               status: "done",
               url: url
             };
-            this.state.formData.fileList.push(newFile);
-            this.state.formData.images = [fileName];
-            this.setState({ isLoadingImage: false });
+
+            formData.fileList.push(newFile);
+            formData.images = [fileName];
+            this.setState({ formData, isLoadingImage: false });
           })
           .catch(error => {
             // Broken link, remove the image

@@ -89,7 +89,6 @@ export class ServiceModal extends Component {
     const nameError = isFieldTouched("name") && getFieldError("name");
     const descError =
       isFieldTouched("description") && getFieldError("description");
-    const hoursError = isFieldTouched("hours") && getFieldError("hours");
 
     let modalName =
       this.props.language === "New Language"
