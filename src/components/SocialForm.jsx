@@ -46,7 +46,6 @@ class SocialForm extends StepFormComponent {
       isFieldTouched
     } = this.getFormObject();
 
-    const orgSiteError = isFieldTouched("orgSite") && getFieldError("orgSite");
     const formItemLayout = {
       labelCol: { span: 6, offset: 5 },
       wrapperCol: { span: 6 }
@@ -55,13 +54,11 @@ class SocialForm extends StepFormComponent {
     return (
       <div>
         <Form.Item
-          validateStatus={orgSiteError ? "error" : ""}
-          help={orgSiteError || ""}
           {...formItemLayout}
           label={strings.ORGANIZATION_WEBSITE}
         >
           {getFieldDecorator("orgSite", {
-            rules: [{ message: "Enter organization website" }]
+            initialValue: initial
           })(<Input prefix={<Icon type='link' />} />)}
         </Form.Item>
         <Form.Item {...formItemLayout} label={strings.FACEBOOK}>

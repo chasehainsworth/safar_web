@@ -19,7 +19,7 @@ import { withFirebase } from "./Firebase/FirebaseContext";
 import strings from "../constants/localization";
 import HoursPicker from "./HoursPicker";
 
-let formData = { images: [] };
+// let formData = { images: [] };
 const languages = ["English", "Farsi", "Arabic", "French"];
 const confirm = Modal.confirm;
 
@@ -99,15 +99,18 @@ export class ServiceTable extends Component {
       hoursVisible: false,
       hoursString: hoursString,
       newLanguage: null,
-      isLoadingImage: true
+      isLoadingImage: true,
+      formData: { images: [] }
     };
   }
 
   componentDidMount() {
     let images = this.props.service.images;
+    console.log(this.state.formData);
+    console.log(images)
     if (images && images.length > 0) {
       images.forEach(img => {
-        formData.fileList = [];
+        this.state.formData.fileList = [];
         this.props.firebase
           .imageUploads()
           .child(img)
@@ -122,8 +125,8 @@ export class ServiceTable extends Component {
               status: "done",
               url: url
             };
-            formData.fileList.push(newFile);
-            formData.images = [fileName];
+            this.state.formData.fileList.push(newFile);
+            this.state.formData.images = [fileName];
             this.setState({ isLoadingImage: false });
           })
           .catch(error => {
@@ -245,7 +248,7 @@ export class ServiceTable extends Component {
 
     const { isFieldTouched, getFieldError } = this.props.form;
     const hoursError = isFieldTouched("hours") && getFieldError("hours");
-    const imageError = formData.images.length > 0;
+    const imageError = this.state.formData.images.length > 0;
     const { getFieldDecorator } = this.props.form;
     return this.state.isLoadingImage ? null : (
       <div>
@@ -288,7 +291,7 @@ export class ServiceTable extends Component {
                   <CustomUpload
                     onPreview={this.handlePreview}
                     maxUploads={1}
-                    formData={formData}
+                    formData={this.state.formData}
                     formObject={this.props.form}
                     text={true}
                     serviceId={this.props.serviceKey}

@@ -53,6 +53,7 @@ const strings = new LocalizedStrings({
     UPLOAD_IMAGES: "Upload Images",
     UPLOAD: "Upload",
     OPERATING_HOURS: "Hours",
+    LOCATION: "Location",
     SPECIAL_NOTE: "Any special notes regarding availability?",
     NEXT: "Next",
     PREVIOUS: "Previous",

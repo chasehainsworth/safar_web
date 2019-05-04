@@ -47,7 +47,7 @@ const languageFields = new Set([
   "availabilityNote"
 ]);
 let currLanguage = {};
-const emptyFormData = { images: [], tags: [] };
+const emptyFormData = { images: [], tags: {"Health": [], "Education": [], "Entertainment": [], "Legal": []} };
 let camp = "";
 // let formData = { ...emptyFormData };
 
@@ -156,7 +156,6 @@ export class UpdateAccountPage extends Component {
             fileList,
             orgName,
             description,
-            hours,
             availabilityNote,
             ...rest
           } = data;

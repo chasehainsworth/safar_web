@@ -125,7 +125,7 @@ export class ServicesPage extends Component {
     this.state.panes.forEach((pane, i) => {
       if (pane.key === targetKey) {
         lastIndex = i - 1;
-        this.props.firebase.service(pane.key).collection("languages").delete();
+        // this.props.firebase.service(pane.key).collection("languages").delete();
         this.props.firebase.service(pane.key).delete();
       }
     });
